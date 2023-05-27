@@ -40,7 +40,7 @@ export default function LoginPage() {
             borderWidth: 1,
             backgroundColor: "white",
             width: '75%',
-            borderRadius: 10
+            borderRadius: 5
             //textAlign: 'center',
             //justifyContent: 'center',
             //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
@@ -61,15 +61,20 @@ export default function LoginPage() {
             color: "black",
             marginTop: 20,
             textAlign: 'left',
-            marginRight: 255,
+            marginRight: 230,
             marginBottom: 5,
         },
 
         text2: {
             color: "black",
+            textAlign: "left",
+        },
+
+        text3: {
+            color: "black",
             marginTop: 20,
             textAlign: 'left',
-            marginRight: 230,
+            marginRight: 255,
             marginBottom: 5,
         },
         
@@ -79,7 +84,7 @@ export default function LoginPage() {
         <View style= {styles.container}>
             <Image source={require('./../../images/icon.png')}
                    style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
-            <Text style= {styles.text1}>Email</Text>
+            <Text style= {styles.text3}>Email</Text>
             <TextInput
                 placeholder='Email'
                 placeholderTextColor={"#dfd8dc"}
@@ -88,7 +93,7 @@ export default function LoginPage() {
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
-            <Text style= {styles.text2}>Password</Text>
+            <Text style= {styles.text1}>Password</Text>
             <TextInput
                 secureTextEntry
                 style={styles.input}

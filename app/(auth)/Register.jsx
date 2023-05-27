@@ -31,7 +31,6 @@ export default function Register() {
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
         },
         input: {
@@ -39,20 +38,15 @@ export default function Register() {
             borderWidth: 1,
             backgroundColor: "white",
             width: '75%',
-            borderRadius: 10
-            //textAlign: 'center',
-            //justifyContent: 'center',
-            //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
+            borderRadius: 5
         },
         button: {
             borderColor: "black",
             alignItems: 'center',
-            //justifyContent: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
             marginBottom: 10,
-            //marginRight: 200,
             borderRadius: 10,
             
         },
