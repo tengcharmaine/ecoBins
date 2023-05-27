@@ -9,14 +9,18 @@ export default function LoginPage() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const [emailErrMsg, setEmailErrMsg] = useState('');
+    const [passwordErrMsg, setPasswordErrMsg] = useState('');
     const handleSubmit = async () => {
         setErrMsg('');
+        setEmailErrMsg('');
         if (email == '') {
-            setErrMsg("Email cannot be empty")
+            setEmailErrMsg("Email cannot be empty")
             return;
         }
+        setPasswordErrMsg('');
         if (password == '') {
-            setErrMsg("Password cannot be empty")
+            setPasswordErrMsg("Password cannot be empty")
             return;
         }
         setLoading(true);
@@ -77,6 +81,12 @@ export default function LoginPage() {
             marginRight: 255,
             marginBottom: 5,
         },
+
+        error: {
+            color: "red",
+            marginTop: 4,
+            marginBottom: 5,
+        }
         
     });
 
@@ -93,6 +103,8 @@ export default function LoginPage() {
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
+            {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
+
             <Text style= {styles.text1}>Password</Text>
             <TextInput
                 secureTextEntry
@@ -103,12 +115,13 @@ export default function LoginPage() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
+            {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
 
             <Button style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Login </Text>
             </Button>
             
-            {errMsg !== "" && <Text>{errMsg}</Text>}
+            {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
             <Link href="/Register">
                 <Button style = {styles.text2}>

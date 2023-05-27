@@ -8,8 +8,22 @@ export default function Register() {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
+    const [emailErrMsg, setEmailErrMsg] = useState('');
+    const [passwordErrMsg, setPasswordErrMsg] = useState('');
 
     const handleSubmit = async () => {
+        setErrMsg('');
+        setEmailErrMsg('');
+        if (email == '') {
+            setEmailErrMsg("Email cannot be empty")
+            return;
+        }
+        setPasswordErrMsg('');
+        if (password == '') {
+            setPasswordErrMsg("Password cannot be empty")
+            return;
+        }
+        /*
         if (email == '') {
             setErrMsg("Email cannot be empty")
             return;
@@ -17,7 +31,7 @@ export default function Register() {
         if (password == '') {
             setErrMsg("Password cannot be empty")
             return;
-        }
+        }*/
         setLoading(true);
         const { error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
@@ -65,11 +79,24 @@ export default function Register() {
             marginRight: 230,
             marginBottom: 5,
         },
+
+        title: {
+            color: "black",
+            fontSize: 20,
+            marginBottom: 20, 
+            fontWeight: "bold",
+        },
+        error: {
+            color: "red",
+            marginTop: 4,
+            marginBottom: 5,
+        },
         
     });
 
     return (
         <View style={styles.container}>
+            <Text style= {styles.title}> Registration </Text>
             <Text style= {styles.text1}>Email</Text>
             <TextInput
                 autoCapitalize='none'
@@ -79,6 +106,8 @@ export default function Register() {
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
+            {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
+
             <Text style= {styles.text2}>Password</Text>
             <TextInput
                 secureTextEntry
@@ -89,10 +118,12 @@ export default function Register() {
                 textContentType='password'
                 value={password}
                 onChangeText={setPassword} />
+            {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
+
             <Button style = {styles.button} onPress={handleSubmit}>
-                <Text style={styles.text1}> Register </Text>
+                <Text style={styles.text1}> Enter </Text>
             </Button>
-            {errMsg !== "" && <Text>{errMsg}</Text>}
+            {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
         </View>
     );
