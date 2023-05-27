@@ -1,4 +1,4 @@
-import { StyleSheet, View} from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
@@ -12,11 +12,11 @@ export default function LoginPage() {
     const handleSubmit = async () => {
         setErrMsg('');
         if (email == '') {
-            setErrMsg("email cannot be empty")
+            setErrMsg("Email cannot be empty")
             return;
         }
         if (password == '') {
-            setErrMsg("password cannot be empty")
+            setErrMsg("Password cannot be empty")
             return;
         }
         setLoading(true);
@@ -78,6 +78,8 @@ export default function LoginPage() {
 
     return (
         <View style= {styles.container}>
+            <Image source={require('./../../images/icon.png')}
+                   style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
             <Text style= {styles.text1}>Username</Text>
             <TextInput
                 placeholder='Username'
@@ -102,7 +104,7 @@ export default function LoginPage() {
             
             {errMsg !== "" && <Text>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
-            <Link href="/register">
+            <Link href="/Register">
                 <Button style = {styles.text2}>
                     <Text>First time user? Register here.</Text>
                 </Button>

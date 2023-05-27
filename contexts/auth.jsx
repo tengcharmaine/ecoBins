@@ -18,7 +18,7 @@ function useProtectedRoute(user) {
         const inAuthGroup = segments[0] === "(auth)"
         if (!user && !inAuthGroup) {
             console.log(`inAuthGroup: ${inAuthGroup}`);
-            router.replace("/login");
+            router.replace("/Login");
         } else if (user && inAuthGroup) {
             router.replace("/");
         }
