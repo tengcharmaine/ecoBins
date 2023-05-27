@@ -92,7 +92,7 @@ export default function LoginPage() {
 
     return (
         <View style= {styles.container}>
-            <Image source={require('./../../images/icon.png')}
+            <Image source={require('./../../images/finalicon.jpeg')}
                    style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
             <Text style= {styles.text3}>Email</Text>
             <TextInput
