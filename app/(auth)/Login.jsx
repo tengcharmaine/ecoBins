@@ -61,17 +61,16 @@ export default function LoginPage() {
             color: "black",
             marginTop: 20,
             textAlign: 'left',
-            marginRight: 230,
+            marginRight: 255,
             marginBottom: 5,
         },
 
         text2: {
             color: "black",
-            textAlign: "left",
-            //marginTop: 30,
-            //borderWidth: 1, borderColor: "black", textAlign: "left",
-            //marginRight:5,
-            //width: "75%",
+            marginTop: 20,
+            textAlign: 'left',
+            marginRight: 230,
+            marginBottom: 5,
         },
         
     });
@@ -80,19 +79,21 @@ export default function LoginPage() {
         <View style= {styles.container}>
             <Image source={require('./../../images/icon.png')}
                    style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
-            <Text style= {styles.text1}>Username</Text>
+            <Text style= {styles.text1}>Email</Text>
             <TextInput
-                placeholder='Username'
+                placeholder='Email'
+                placeholderTextColor={"#dfd8dc"}
                 style={styles.input}
                 autoCapitalize='none'
                 textContentType='emailAddress'
                 value={email}
                 onChangeText={setEmail} />
-            <Text style= {styles.text1}>Password</Text>
+            <Text style= {styles.text2}>Password</Text>
             <TextInput
                 secureTextEntry
                 style={styles.input}
                 placeholder='Password'
+                placeholderTextColor={"#dfd8dc"}
                 autoCapitalize='none'
                 textContentType='password'
                 value={password}
