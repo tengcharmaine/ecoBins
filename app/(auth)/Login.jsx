@@ -11,6 +11,7 @@ export default function LoginPage() {
     const [errMsg, setErrMsg] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState('');
     const [passwordErrMsg, setPasswordErrMsg] = useState('');
+    
     const handleSubmit = async () => {
         setErrMsg('');
         setEmailErrMsg('');
