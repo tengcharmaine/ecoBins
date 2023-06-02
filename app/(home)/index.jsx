@@ -1,60 +1,122 @@
-import { Alert, FlatList, Pressable, View } from 'react-native';
+import { Alert, FlatList, Pressable, View, StyleSheet } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
-import { Checkbox, Text } from 'react-native-paper';
-import { useRouter } from 'expo-router';
+import { Checkbox, Text, Button } from 'react-native-paper';
+import { useRouter, Stack, Link } from 'expo-router';
 
 export default function HomeScreen() {
-    const [todos, setTodos] = useState([]);
-    const [refreshing, setRefreshing] = useState(false);
 
-    async function fetchTodos() {
-        setRefreshing(true);
-        let { data } = await supabase.from('todos').select('*');
-        setRefreshing(false);
-        setTodos(data);
-    }
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1, 
+            justifyContent: 'center',  
+            //alignItems: 'flex-start',
+            alignItems: 'center',
+        },
+        input: {
+            borderColor: "black",
+            borderWidth: 1,
+            backgroundColor: "white",
+            width: '75%',
+            borderRadius: 5
+            //textAlign: 'center',
+            //justifyContent: 'center',
+            //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
+        },
+        button: {
+            borderColor: "black",
+            justifyContent: 'center',
+            // alignItems: 'center',
+            backgroundColor: "#c7dede",
+            width: '25%',
+            marginTop: 20,
+            marginBottom: 10,
+            //marginRight: 200,
+            borderRadius: 10,
+        },
 
-    useEffect(() => {
-        fetchTodos();
-    }, []);
+        text1: {
+            color: "black",
+            marginTop: 20,
+            textAlign: 'left',
+            marginRight: 230,
+            marginBottom: 5,
+        },
 
-    useEffect(() => {
-        if (refreshing) {
-            fetchTodos();
-            setRefreshing(false);
-        }
-    }, [refreshing]);
+        text2: {
+            color: "black",
+            textAlign: "left",
+        },
+
+        text3: {
+            color: "black",
+            marginTop: 20,
+            textAlign: 'left',
+            marginRight: 255,
+            marginBottom: 5,
+        },
+
+    });
 
     return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <FlatList
-                data={todos}
-                renderItem={({ item }) => <TodoItem todo={item} />}
-                onRefresh={() => setRefreshing(true)}
-                refreshing={refreshing}
-            />
+        <View>
+            <Button style = {styles.button} 
+                onPress={() => supabase.auth.signOut()
+                            /* navigation.navigate{'/Logout'}*/}>Logout</Button>
         </View>
-    );
-}
-
-function TodoItem({ todo }) {
-    const [checked, setChecked] = useState(todo.is_complete)
-    const router = useRouter();
-    const handleCheckboxPress = async () => {
-        const { error } = await supabase.from('todos').update({ is_complete: !checked }).eq('id', todo.id)
-        if (error != null) {
-            Alert.alert(error.message);
-        }
-        setChecked(!checked)
-    }
-    const handleItemPress = () => {
-        router.push({ pathname: '/detailedTodo', params: { id: todo.id } })
-    }
-    return (
-        <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={handleItemPress}>
-            <Text>{todo.task}</Text>
-            <Checkbox.Android status={checked ? 'checked' : 'unchecked'} onPress={handleCheckboxPress} />
-        </Pressable>
     )
 }
+
+//     const [todos, setTodos] = useState([]);
+//     const [refreshing, setRefreshing] = useState(false);
+
+//     async function fetchTodos() {
+//         setRefreshing(true);
+//         let { data } = await supabase.from('todos').select('*');
+//         setRefreshing(false);
+//         setTodos(data);
+//     }
+
+//     useEffect(() => {
+//         fetchTodos();
+//     }, []);
+
+//     useEffect(() => {
+//         if (refreshing) {
+//             fetchTodos();
+//             setRefreshing(false);
+//         }
+//     }, [refreshing]);
+
+//     return (
+//         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//             <FlatList
+//                 data={todos}
+//                 renderItem={({ item }) => <TodoItem todo={item} />}
+//                 onRefresh={() => setRefreshing(true)}
+//                 refreshing={refreshing}
+//             />
+//         </View>
+//     );
+// }
+
+// function TodoItem({ todo }) {
+//     const [checked, setChecked] = useState(todo.is_complete)
+//     const router = useRouter();
+//     const handleCheckboxPress = async () => {
+//         const { error } = await supabase.from('todos').update({ is_complete: !checked }).eq('id', todo.id)
+//         if (error != null) {
+//             Alert.alert(error.message);
+//         }
+//         setChecked(!checked)
+//     }
+//     const handleItemPress = () => {
+//         router.push({ pathname: '/detailedTodo', params: { id: todo.id } })
+//     }
+//     return (
+//         <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={handleItemPress}>
+//             <Text>{todo.task}</Text>
+//             <Checkbox.Android status={checked ? 'checked' : 'unchecked'} onPress={handleCheckboxPress} />
+//         </Pressable>
+//     )
+// }
