@@ -1,8 +1,10 @@
 import { Alert, FlatList, Pressable, View, StyleSheet } from 'react-native';
-import { supabase } from '../../lib/supabase';
+// import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text, Button } from 'react-native-paper';
 import { useRouter, Stack, Link } from 'expo-router';
+import UploadImage from '../uploadimage';
+import * as ImagePicker from 'expo-image-picker';
 
 export default function HomeScreen() {
 
@@ -12,6 +14,7 @@ export default function HomeScreen() {
             justifyContent: 'center',  
             //alignItems: 'flex-start',
             alignItems: 'center',
+            padding: 50,
         },
         input: {
             borderColor: "black",
@@ -25,14 +28,15 @@ export default function HomeScreen() {
         },
         button: {
             borderColor: "black",
-            justifyContent: 'center',
-            // alignItems: 'center',
+            alignItems: 'center',
+            //justifyContent: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
             marginBottom: 10,
             //marginRight: 200,
             borderRadius: 10,
+            
         },
 
         text1: {
@@ -59,10 +63,12 @@ export default function HomeScreen() {
     });
 
     return (
-        <View>
-            <Button style = {styles.button} 
-                onPress={() => supabase.auth.signOut()
-                            /* navigation.navigate{'/Logout'}*/}>Logout</Button>
+        <View style={styles.container}>
+            <UploadImage/>
+            <Text style={{marginVertical:20,fontSize:16}}>Welcome, FuzzySid</Text>
+            <Button style = {styles.button}>
+                <Link style={styles.text1} href='/Logout'>Logout</Link>
+            </Button>
         </View>
     )
 }

@@ -1,8 +1,9 @@
 import { StyleSheet, View, Image } from "react-native";
 import { Text, Button } from "react-native-paper";
-import { Link } from "expo-router";
+import { supabase } from '../lib/supabase';
 
 export default function LogoutScreen() {
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -23,25 +24,22 @@ export default function LogoutScreen() {
             
         },
         text: {
-            color: "black",
+            justifyContent: 'center',
             marginTop: 20,
-            textAlign: 'left',
-            marginRight: 230,
             marginBottom: 5,
+            fontSize: 20,
         },
     });
 
     return (
         <View style= {styles.container}>
             <Image source={require('../images/finalicon.jpeg')}
-                   style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
+                   style={{height: '25%', width: '50%', borderRadius: 60}}></Image>
             <Text style= {styles.text}>You have successfully logged out!</Text>
             
-            <Link href="/Login">
-                <Button style = {styles.button}>
-                    <Text>Login</Text>
-                </Button>
-            </Link>
+            <Button style = {styles.button} onPress={() => supabase.auth.signOut()}>
+                <Text>Login</Text>
+            </Button>
         </View>
     )
 }
