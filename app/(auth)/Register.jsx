@@ -2,8 +2,10 @@ import { useState } from "react";
 import { supabase } from "../../lib/supabase";
 import { StyleSheet, View } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Register() {
+    const navigation = useNavigation();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -39,6 +41,8 @@ export default function Register() {
             setErrMsg(error.message);
             return;
         }
+
+        navigation.navigate('Login');
     }
 
     const styles = StyleSheet.create({
@@ -122,7 +126,7 @@ export default function Register() {
 
             <Button style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Enter </Text>
-            </Button>
+            </Button>            
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
         </View>

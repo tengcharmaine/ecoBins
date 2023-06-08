@@ -1,31 +1,35 @@
 import { useState } from "react";
-import { View, Image } from "react-native";
-import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { Text, Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
-import { useRouter } from "expo-router";
+import { useRouter, Link } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 
-
-export default function NewTodo() {
-    const [title, setTitle] = useState('');
-    const [errMsg, setErrMsg] = useState('');
+export default function SubmitScreen() {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(null);
+    const [errMsg, setErrMsg] = useState('');
     const { user } = useAuth();
     const router = useRouter();
+    const [showButton, setShowButton] = useState(true);
 
     const handleAddImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images });
+        
+        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+                                                                 allowsEditing: true});
+        //setShowButton(false);
         if (!result.canceled) {
             setImage(result.assets[0].uri);
+            setShowButton(false);
         }
+        
     }
 
     const handleSubmit = async () => {
         setErrMsg('');
-        if (title === '') {
-            setErrMsg('title cannot be empty')
+        if (image === null) {
+            setErrMsg('Image cannot be empty')
             return;
         }
         setLoading(true);
@@ -41,9 +45,15 @@ export default function NewTodo() {
             }
             const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
             uploadedImage = publicUrl;
+        } else if (image == null) {
+            if (error) {
+                console.log(error);
+                setErrMsg(error.message)
+                setLoading(false);
+                return;
+            }
         }
-        const { error } = await supabase.from('todos').insert({ task: title, user_id: user.id, image_url: uploadedImage }).select().single();
-
+        const { error } = await supabase.from('submissions').insert({ user_id: user.id, image_url: uploadedImage }).select().single();
         if (error != null) {
             setLoading(false);
             console.log(error);
@@ -54,13 +64,102 @@ export default function NewTodo() {
         router.push('/');
     }
 
-    return <View style={{ flex: 1, justifyContent: 'center' }}>
-        <Text>Title: </Text>
-        <TextInput value={title} onChangeText={setTitle} />
-        {errMsg !== '' && <Text>{errMsg}</Text>}
-        <Button onPress={handleAddImage}>Add Image</Button>
-        {image && <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />}
-        <Button onPress={handleSubmit}>Submit</Button>
-        {loading && <ActivityIndicator />}
-    </View>;
+    const styles = StyleSheet.create({
+        container: {
+            flex: 1, 
+            justifyContent: 'center',  
+            //alignItems: 'flex-start',
+            alignItems: 'center',
+        },
+        input: {
+            borderColor: "black",
+            borderWidth: 1,
+            backgroundColor: "white",
+            width: '75%',
+            borderRadius: 5
+        },
+        button: {
+            borderColor: "black",
+            alignItems: 'center',
+            backgroundColor: "#c7dede",
+            width: '25%',
+            marginTop: 20,
+            marginBottom: 10,
+            marginLeft: 10,
+            borderRadius: 10,
+        },
+        button2: {
+            borderColor: "black",
+            backgroundColor: "#cccc",
+            width: '75%',
+            height: '45%',
+            marginTop: 20,
+            marginBottom: 10,
+            marginLeft: 10,
+            borderRadius: 10,
+            position: 'relative',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+        },
+        text: {
+            color: "black",
+            marginBottom: 10,
+            fontSize: 15,
+            textAlign: 'center',
+            flex: 1,
+            width: '90%'
+        },
+        text1: {
+            color: "black",
+            marginTop: 15,
+            textAlign: 'left',
+            marginRight: 255,
+            marginBottom: 5,
+        },
+        text2: {
+            color: "black",
+            marginBottom: 10,
+            fontSize: 15,
+            textAlign: 'center',
+            width: '70%',
+        },
+        title: {
+            color: "black",
+            fontSize: 20,
+            marginBottom: 10, 
+            marginLeft: 20,
+            marginTop: 30,
+            fontWeight: "bold",
+        },
+        error: {
+            color: "red",
+            marginTop: 4,
+            marginBottom: 5,
+        },
+        
+    });
+    return (
+        <View style={styles.container}>
+             {/* <Text style={styles.title}>Instructions: </Text>
+             <Text style={styles.text}>- Fill in this 
+                <Link href='https://forms.gle/WzBJumoQ7AZPihnM9'> Google Form </Link>
+                with the relevant information.</Text>
+             <Text style={styles.text}>- Screenshot and upload a picture of the confirmation email below.</Text> */}
+             <Text style={styles.text2}>Hi! Please take a photo of all the items you recycled and upload the photos here!</Text>
+             
+             {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
+             {showButton && <Button onPress={handleAddImage}
+                     style={styles.button2}>
+                        {<Text style={styles.text}>Upload here!</Text>}
+             </Button>}
+             {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
+             <Button onPress={handleSubmit}
+                     style={styles.button}>
+                <Link style={styles.text1}
+                      href='/SubmissionComplete'>Submit</Link>
+             </Button>
+             {loading && <ActivityIndicator />}
+         </View>
+    );
 }
