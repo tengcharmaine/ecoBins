@@ -5,6 +5,7 @@ import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
 import { useRouter, Link } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
+import Pick from '../pick';
 
 export default function SubmitScreen() {
     const [loading, setLoading] = useState(false);
@@ -154,6 +155,7 @@ export default function SubmitScreen() {
                         {<Text style={styles.text}>Upload here!</Text>}
              </Button>}
              {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
+             <Pick />
              <Button onPress={handleSubmit}
                      style={styles.button}>
                 <Link style={styles.text1}
