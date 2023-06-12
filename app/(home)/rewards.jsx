@@ -1,5 +1,310 @@
+import React, { useState } from 'react';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Link } from 'expo-router';
+import { Button } from 'react-native-paper';
 
+const foodcataloguedata = [
+    {
+        id: 1,
+        title: 'Pasta Express',
+        description: 'The Deck',
+        image: require('../../images/pastaexpress.jpeg'),
+        points: '(20 Points)',
+        menu1: 'Smoked Duck Aglio Oilo',
+        menu2: 'Meat Lovers',
+        menu3: 'Creamy Mushroom',
+    },
+    {
+        id: 2,
+        title: 'Japanese',
+        description: 'The Deck',
+        image: require('../../images/japanese.avif'),
+        points: '(20 Points)',
+        menu1: 'Oyako Don',
+        menu2: 'Teriyaki Chicken Don',
+        menu3: 'Ramen',
+    },
+    {
+        id: 3,
+        title: 'Western',
+        description: 'The Deck',
+        image: require('../../images/western.jpeg'),
+        points: '(20 Points)',
+        menu1: 'Fish and Chips',
+        menu2: 'Chicken Chop',
+        menu3: 'Cabonara Pasta',
+    },
+    {
+        id: 4,
+        title: 'Yong Tau Foo',
+        description: 'The Deck',
+        image: require('../../images/yongtaufoo.jpeg'),
+        points: '(20 Points)',
+        menu1: '3 items + Noodles (Larger portion)',
+        menu2: '4 items + Noodles (Smaller portion)',
+        menu3: '5 items',
+    },
+    {
+        id: 5,
+        title: 'Ban Mian',
+        description: 'Terrace',
+        image: require('../../images/banmian.jpeg'),
+        points: '(20 Points)',
+        menu1: 'Ban Mian',
+        menu2: 'Fishball Noodles',
+        menu3: 'Fish Soup',
+    },
+    {
+        id: 6,
+        title: 'Indian',
+        description: 'Terrace',
+        image: require('../../images/indian.jpeg'),
+        points: '(20 Points)',
+        menu1: 'Roti Prata',
+        menu2: 'Fish Head Curry',
+        menu3: 'Tandoori Chicken',
+    }
+]
 
-export default function RewardsScreen() {
+const styles = StyleSheet.create({
+    container: {
+        flex: 1, 
+        justifyContent: 'center',  
+        // alignItems: 'center',
+        padding: 20,
+    },
+
+    selectcontainer: {
+        flex: 1, 
+        justifyContent: 'top',  
+        padding: 20,
+        backgroundColor: '#c7dede',
+        borderRadius: 40,
+        marginBottom: 40,
+        marginTop: 10,
+    },
     
+    button: {
+        borderColor: "black",
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'lightgrey',
+        width: '25%',
+        //marginRight: 200,
+        borderRadius: 30,
+        height: 40,
+    },
+
+    button1: {
+        borderColor: "black",
+        backgroundColor: 'lightgrey',
+        width: '25%',
+        alignSelf: 'center',
+        borderRadius: 30,
+        marginTop: 20,
+    },
+
+    buttonPressed: {
+        borderColor: "black",
+        alignItems: 'center',
+        //justifyContent: 'center',
+        backgroundColor: 'grey',
+        width: '25%',
+        //marginRight: 200,
+        borderRadius: 30,
+    },
+
+    text1: {
+        color: "black",
+        marginTop: 20,
+        textAlign: 'left',
+        marginRight: 230,
+        marginBottom: 5,
+        fontSize: 15,
+    },
+
+    itemContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: '#c7dede',
+        borderRadius: 30,
+        height: 100,
+    },
+
+    textContainer: {
+        flex: 1,
+        marginRight: 10,
+    },
+
+    title: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 5,
+        marginLeft: 30,
+    },
+
+    description: {
+        fontSize: 14,
+        color: 'gray',
+        marginLeft: 30,
+    },
+
+    image: {
+        height: 80,
+        width: 100,
+        borderRadius: 30,
+        marginRight: 30,
+    },
+
+    pointsheading: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginBottom: 30,
+        marginTop: 30,
+        alignSelf: 'center',
+    },
+});
+
+export function RewardsScreen() {
+    const navigation = useNavigation();
+    
+    const handleSelectFood = (foodId) => {
+        navigation.navigate('Select', { foodId });
+    };
+
+    const renderfooditem = ({ item }) => {
+        return (
+          <View style={styles.container}>
+            <TouchableOpacity style={styles.itemContainer} 
+                              key={item.id}
+                              onPress={() => handleSelectFood(item.id)} >
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>{item.title}</Text>
+                <Text style={styles.description}>{item.description}</Text>
+              </View>
+              <Image style={styles.image} source={item.image} />
+            </TouchableOpacity>
+          </View>
+        );
+      };
+      
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.pointsheading}>You have: 1000 Points</Text>
+            <Text style={styles.text1}>Catalogue:</Text>
+            <FlatList
+            data={foodcataloguedata}
+            renderItem={renderfooditem}
+            keyExtractor={item => item.id.toString()}/>
+        </View>
+    )
+}
+
+export function SelectionScreen({ route }) {
+    const { foodId } = route.params;
+    const selectedFood = foodcataloguedata.find((item) => item.id === foodId);
+    const [buttonPressed, setButtonPressed] = useState({
+      menu1: false,
+      menu2: false,
+      menu3: false
+    });
+  
+    const handleButtonPress = (menu) => {
+      setButtonPressed((prevButtonPressed) => ({
+        menu1: menu === "menu1" ? !prevButtonPressed.menu1 : false,
+        menu2: menu === "menu2" ? !prevButtonPressed.menu2 : false,
+        menu3: menu === "menu3" ? !prevButtonPressed.menu3 : false,
+      }));
+    };
+  
+    const selectedChooseButtons = Object.values(buttonPressed).filter((pressed) => pressed);
+    const isConfirmButtonVisible = selectedChooseButtons.length > 0;
+  
+    return (
+      <View style={styles.container}>
+        <Text style={styles.pointsheading}>You have: 1000 Points</Text>
+        <Text style={styles.text1}>Catalogue:</Text>
+  
+        <View style={styles.selectcontainer}>
+          <View style={styles.itemContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{selectedFood.title}</Text>
+              <Text style={styles.description}>{selectedFood.description}</Text>
+            </View>
+            <Image style={styles.image} source={selectedFood.image} />
+          </View>
+  
+          <View style={styles.itemContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{selectedFood.menu1}</Text>
+              <Text style={styles.description}>{selectedFood.points}</Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                buttonPressed.menu1 ? styles.buttonPressed : null
+              ]}
+              onPress={() => handleButtonPress("menu1")}
+            >
+              <Text style={styles.buttonText}>Choose</Text>
+            </TouchableOpacity>
+          </View>
+  
+          <View style={styles.itemContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{selectedFood.menu2}</Text>
+              <Text style={styles.description}>{selectedFood.points}</Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                buttonPressed.menu2 ? styles.buttonPressed : null
+              ]}
+              onPress={() => handleButtonPress("menu2")}
+            >
+              <Text style={styles.buttonText}>Choose</Text>
+            </TouchableOpacity>
+          </View>
+  
+          <View style={styles.itemContainer}>
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{selectedFood.menu3}</Text>
+              <Text style={styles.description}>{selectedFood.points}</Text>
+            </View>
+            <TouchableOpacity
+              style={[
+                styles.button,
+                buttonPressed.menu3 ? styles.buttonPressed : null
+              ]}
+              onPress={() => handleButtonPress("menu3")}
+            >
+              <Text style={styles.buttonText}>Choose</Text>
+            </TouchableOpacity>
+          </View>
+  
+          {isConfirmButtonVisible && (
+            <Button style={styles.button1}>
+              <Link style={styles.text1} href="/QRcode">
+                Confirm
+              </Link>
+            </Button>
+          )}
+        </View>
+      </View>
+    );
+  }  
+  
+const Stack = createNativeStackNavigator();
+
+export default function Movement() {
+    return (
+      <Stack.Navigator initialRouteName="Rewards" screenOptions={{headerShown:false}}>
+        <Stack.Screen name="Rewards" component={RewardsScreen} />
+        <Stack.Screen name="Select" component={SelectionScreen} />
+      </Stack.Navigator>
+    );
 }
