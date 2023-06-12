@@ -322,6 +322,7 @@ export default class App extends React.Component {
              <TouchableOpacity
               style={styles.myLocationButton}
               onPress={this.handleMyLocationPress}
+              title={'My Location'}
             >
               <Text style={styles.myLocationButtonText}>My Location</Text>
             </TouchableOpacity>

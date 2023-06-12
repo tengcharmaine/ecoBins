@@ -9,8 +9,11 @@ export default function QRCodeScreen() {
 
   return (
     <View style={styles.container}>
-      <QRCode value={qrCodeValue} size={200} />
+      <QRCode value={qrCodeValue} size={300} />
       <Button style = {styles.button}>
+            <Link style={styles.text1} href='/redemptionsuccess'>Confirm Redemption</Link>
+      </Button>
+      <Button style = {styles.button1}>
             <Link style={styles.text1} href='/rewards'>Cancel</Link>
       </Button>
     </View>
@@ -27,20 +30,34 @@ const styles = StyleSheet.create({
   button: {
     borderColor: "black",
     alignItems: 'center',
-    //justifyContent: 'center',
     backgroundColor: "#c7dede",
-    width: '25%',
+    width: '40%',
     marginTop: 20,
     marginBottom: 10,
-    //marginRight: 200,
+    borderRadius: 10,
+    
+  },
+
+  button1: {
+    borderColor: "black",
+    alignItems: 'center',
+    backgroundColor: "#c7dede",
+    width: '20%',
+    marginTop: 20,
+    marginBottom: 10,
     borderRadius: 10,
   },
 
   text1: {
     color: "black",
-    marginTop: 20,
-    textAlign: 'left',
-    marginRight: 230,
-    marginBottom: 5,
+    //marginTop: 20,
+    //textAlign: 'left',
+    marginLeft: 5,
+    //justifyContent: 'center',
+    flexWrap: 'wrap',
+    flex: 1,
+    //width: 1
+    //marginRight: 230,
+    //marginBottom: 5,
   },
 });
