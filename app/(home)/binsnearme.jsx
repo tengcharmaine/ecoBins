@@ -467,6 +467,7 @@ const styles = StyleSheet.create({
   nearestMarkerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   nearestMarkerDescription: {
     marginTop: 5,
@@ -484,6 +485,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 2,
     elevation: 2,
+    marginBottom: 20,
   },
   myLocationButtonText: {
     fontSize: 16,

@@ -93,7 +93,7 @@ export default function SubmitScreen() {
             borderColor: "black",
             backgroundColor: "#cccc",
             width: '75%',
-            height: '45%',
+            height: '40%',
             marginTop: 20,
             marginLeft: 10,
             borderRadius: 10,

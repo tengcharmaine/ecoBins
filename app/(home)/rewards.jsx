@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Link } from 'expo-router';
 import { Button } from 'react-native-paper';
+import { supabase } from '../../lib/supabase';
+import { BackHandler } from 'react-native';
 
 const foodcataloguedata = [
     {
@@ -82,7 +84,6 @@ const styles = StyleSheet.create({
         padding: 20,
         backgroundColor: '#c7dede',
         borderRadius: 40,
-        marginBottom: 40,
         marginTop: 10,
     },
     
@@ -100,10 +101,10 @@ const styles = StyleSheet.create({
     button1: {
         borderColor: "black",
         backgroundColor: 'lightgrey',
-        width: '25%',
+        width: '30%',
         alignSelf: 'center',
         borderRadius: 30,
-        marginTop: 20,
+        marginBottom: 10,
     },
 
     buttonPressed: {
@@ -131,7 +132,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#c7dede',
         borderRadius: 30,
-        height: 100,
+        height: 95,
     },
 
     textContainer: {
@@ -142,7 +143,6 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 5,
         marginLeft: 30,
     },
 
@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 30,
-        marginTop: 30,
+        marginTop: 20,
         alignSelf: 'center',
     },
 });
@@ -191,10 +191,52 @@ export function RewardsScreen() {
         );
       };
       
+      const [remainingPoints, setRemainingPoints] = useState(0);
+
+      useEffect(() => {
+        // Fetch the user's score or remaining points from Supabase or any other data source
+        const fetchRemainingPoints = async () => {
+          try {
+            const { data: { user } } = await supabase.auth.getUser()
+    
+            console.log(user);
+            if (user) {
+              const { data, error } = await supabase
+              .from('ranking')
+              .select('score')
+              .eq('username', user.id); 
+              console.log(2);
+              if (error) {
+                console.error('Error fetching user points1:', error.message);
+                return;
+              }
+    
+              if (data.length > 0) {
+                const userScore = data[0].score;
+                setRemainingPoints(userScore);
+                console.log(userScore);
+              } else {
+                // Handle the case when there are no matching records
+                console.log('No data found for the user');
+              }
+            } else {
+              console.log('not auth');
+            }
+          } catch (error) {
+            console.error('Error fetching user points2:', error.message);
+          }
+        };
+    
+        const unsubscribe = navigation.addListener('focus', () => {
+          fetchRemainingPoints();
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.pointsheading}>You have: 1000 Points</Text>
+            <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
             <Text style={styles.text1}>Catalogue:</Text>
             <FlatList
             data={foodcataloguedata}
@@ -205,6 +247,7 @@ export function RewardsScreen() {
 }
 
 export function SelectionScreen({ route }) {
+    const navigation = useNavigation();
     const { foodId } = route.params;
     const selectedFood = foodcataloguedata.find((item) => item.id === foodId);
     const [buttonPressed, setButtonPressed] = useState({
@@ -223,10 +266,71 @@ export function SelectionScreen({ route }) {
   
     const selectedChooseButtons = Object.values(buttonPressed).filter((pressed) => pressed);
     const isConfirmButtonVisible = selectedChooseButtons.length > 0;
+
+    const [remainingPoints, setRemainingPoints] = useState(0);
+
+      useEffect(() => {
+        // Fetch the user's score or remaining points from Supabase or any other data source
+        const fetchRemainingPoints = async () => {
+          try {
+            const { data: { user } } = await supabase.auth.getUser()
+    
+            console.log(user);
+            if (user) {
+              const { data, error } = await supabase
+              .from('ranking')
+              .select('score')
+              .eq('username', user.id); 
+              console.log(2);
+              if (error) {
+                console.error('Error fetching user points1:', error.message);
+                return;
+              }
+    
+              if (data.length > 0) {
+                const userScore = data[0].score;
+                setRemainingPoints(userScore);
+                console.log(userScore);
+              } else {
+                // Handle the case when there are no matching records
+                console.log('No data found for the user');
+              }
+            } else {
+              console.log('not auth');
+            }
+          } catch (error) {
+            console.error('Error fetching user points2:', error.message);
+          }
+        };
+    
+        const unsubscribe = navigation.addListener('focus', () => {
+          fetchRemainingPoints();
+          setButtonPressed({
+            menu1: false,
+            menu2: false,
+            menu3: false
+          });
+        });
+    
+        return unsubscribe;
+      }, [navigation]);
   
+    const handleBackButton = () => {
+      navigation.goBack();
+      return true;
+    };
+
+    useEffect(() => {
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', handleBackButton);
+      
+      return () => {
+        backHandler.remove();
+      };
+    }, []);
+      
     return (
       <View style={styles.container}>
-        <Text style={styles.pointsheading}>You have: 1000 Points</Text>
+        <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
         <Text style={styles.text1}>Catalogue:</Text>
   
         <View style={styles.selectcontainer}>
@@ -293,6 +397,9 @@ export function SelectionScreen({ route }) {
               </Link>
             </Button>
           )}
+          <Button style={styles.button1} onPress={() => navigation.goBack()}>
+              <Text style={styles.text1}>Back</Text>
+          </Button>
         </View>
       </View>
     );

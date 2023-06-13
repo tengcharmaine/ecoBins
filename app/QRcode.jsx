@@ -68,8 +68,8 @@ export default function QRCodeScreen() {
             console.error('Error updating user points:', error.message);
             return;
           }
-          console.log(user.score);
           setRemainingPoints(user.score);
+          console.log(user.score);
           router.push('redemptionsuccess');
         }
       } catch (error) {
@@ -103,13 +103,12 @@ const styles = StyleSheet.create({
 
   button: {
     borderColor: "black",
-    alignItems: 'center',
+    alignSelf: 'center',
     backgroundColor: "#c7dede",
-    width: '40%',
+    width: '47%',
     marginTop: 20,
     marginBottom: 10,
     borderRadius: 10,
-    
   },
 
   button1: {
