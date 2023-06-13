@@ -1,13 +1,51 @@
 import { Alert, FlatList, Pressable, View, StyleSheet } from 'react-native';
-// import { supabase } from '../../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { useEffect, useState } from 'react';
 import { Checkbox, Text, Button } from 'react-native-paper';
 import { useRouter, Stack, Link } from 'expo-router';
 import UploadImage from '../uploadimage';
 import * as ImagePicker from 'expo-image-picker';
+//import {supabase} from '../lib/supabase';
 
 export default function HomeScreen() {
-
+    const [remainingPoints, setRemainingPoints] = useState(0);
+    const router = useRouter();
+    useEffect(() => {
+      // Fetch the user's score or remaining points from Supabase or any other data source
+      const fetchRemainingPoints = async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+  
+          console.log(user);
+          if (user) {
+            const { data, error } = await supabase
+            .from('ranking')
+            .select('score')
+            .eq('username', user.id); 
+            console.log(2);
+            if (error) {
+              console.error('Error fetching user points1:', error.message);
+              return;
+            }
+  
+            if (data.length > 0) {
+              const userScore = data[0].score;
+              setRemainingPoints(userScore);
+              console.log(userScore);
+            } else {
+              // Handle the case when there are no matching records
+              console.log('No data found for the user');
+            }
+          } else {
+            console.log('not auth');
+          }
+        } catch (error) {
+          console.error('Error fetching user points2:', error.message);
+        }
+      };
+  
+      fetchRemainingPoints();
+    }, []); // Run this effect only once, on component mount
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -66,6 +104,7 @@ export default function HomeScreen() {
         <View style={styles.container}>
             <UploadImage/>
             <Text style={{marginVertical:20,fontSize:16}}>Welcome, FuzzySid</Text>
+            <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
             <Button style = {styles.button}>
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
             </Button>

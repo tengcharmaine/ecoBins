@@ -202,7 +202,7 @@ export function RewardsScreen() {
             console.log(user);
             if (user) {
               const { data, error } = await supabase
-              .from('ranking')
+              .from('redemption')
               .select('score')
               .eq('username', user.id); 
               console.log(2);
@@ -236,7 +236,7 @@ export function RewardsScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
+            <Text style={styles.pointsheading}>You have {remainingPoints} points for redemption.</Text>
             <Text style={styles.text1}>Catalogue:</Text>
             <FlatList
             data={foodcataloguedata}
@@ -278,7 +278,7 @@ export function SelectionScreen({ route }) {
             console.log(user);
             if (user) {
               const { data, error } = await supabase
-              .from('ranking')
+              .from('redemption')
               .select('score')
               .eq('username', user.id); 
               console.log(2);

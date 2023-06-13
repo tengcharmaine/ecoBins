@@ -18,7 +18,7 @@ export default function QRCodeScreen() {
         console.log(user);
         if (user) {
           const { data, error } = await supabase
-          .from('ranking')
+          .from('redemption')
           .select('score')
           .eq('username', user.id); 
           console.log(2);
@@ -60,7 +60,7 @@ export default function QRCodeScreen() {
         if (user) {
           console.log(user);
           const { data, error } = await supabase
-            .from('ranking')
+            .from('redemption')
             .update({ score: remainingPoints - 20 })
             .eq('username', user.id)
             .single();
