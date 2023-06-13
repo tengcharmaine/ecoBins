@@ -136,7 +136,7 @@ export default class Recyclable extends React.Component {
         const photo = await this.camera.takePictureAsync({ base64: true });
         console.log(2);
         const response = await axios.post(
-          'https://api.clarifai.com/v2/models/recyclable/versions/491c2a43a205472e9c38d4caa7665815/outputs',
+          'https://api.clarifai.com/v2/models/recyclable/versions/79aa742f62dd4ae4b7ac9e17619b59f4/outputs',
           {
             inputs: [{ data: { image: { base64: photo.base64 } } }],
           },
@@ -221,220 +221,103 @@ export default class Recyclable extends React.Component {
       );
     }
   };
+  // renderImageView = () => {
+  //   const { imageUri, predictions, errorMessage } = this.state;
+
+  //   // if (errorMessage !== '') {
+  //   //   return (
+  //   //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+  //   //       {/*<Text>{errorMessage}</Text>*/}
+  //   //     </View>
+  //   //   );
+  //   // }
+  //     // Sort the predictions by probability in descending order
+  //   const sortedPredictions = predictions.sort((a, b) => b.value - a.value);
+
+  //   // Take only the top 3 predictions
+  //   const top3Predictions = sortedPredictions.slice(0, 3);
+
+  //   return (
+  //     <View style={{ flex: 1 }}>
+  //       <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
+  //       {/* Display the name and probability of the top 3 predictions */}
+      
+  //     <View style={{ alignItems: 'center', backgroundColor: 'white', padding: 15 }}>
+  //       {top3Predictions.map((prediction, index) => (
+  //         <View key={index} style={{ marginBottom: 10, justifyContent: 'center', }}>
+  //           <Text style={{ fontSize: 18 }}>{prediction.name}</Text>
+  //           <Text style={{ fontSize: 14, color: 'gray' }}>Probability: {prediction.value}</Text>
+  //         </View>
+  //       ))}
+  //     </View>
+  //       <Button
+  //         style={{ 
+  //                 alignSelf: 'center',
+  //                 justifyContent: 'center',
+  //                 alignItems: 'center',
+  //                 // paddingVertical: 15,
+  //                 // marginBottom: 20,
+  //                 //borderRadius: 10,
+  //                 //width: 200,
+  //                 //backgroundColor: '#d9d9d6',
+  //                 padding: 15 }}
+  //         onPress={() => this.setState({ imageUri: null })}
+  //       >
+  //         <Text style={{ 
+  //                 fontSize: 18, 
+  //                 color: 'black' }}>Retake Photo</Text>
+  //       </Button>
+  //     </View>
+  //   );
+  // };
   renderImageView = () => {
     const { imageUri, predictions, errorMessage } = this.state;
-
-    // if (errorMessage !== '') {
-    //   return (
-    //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-    //       {/*<Text>{errorMessage}</Text>*/}
-    //     </View>
-    //   );
-    // }
-      // Sort the predictions by probability in descending order
+  
+    const colorMap = {
+      'recyclable': 'green',
+      'non-recyclable': 'red',
+      // Add more colors and corresponding predictions if needed
+    };
+  
+    // Sort the predictions by probability in descending order
     const sortedPredictions = predictions.sort((a, b) => b.value - a.value);
-
-    // Take only the top 3 predictions
-    const top3Predictions = sortedPredictions.slice(0, 3);
-
+  
+    // Take only the top 2 predictions
+    const top3Predictions = sortedPredictions.slice(0, 2);
+  
     return (
       <View style={{ flex: 1 }}>
         <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
         {/* Display the name and probability of the top 3 predictions */}
-      
-      <View style={{ alignItems: 'center', backgroundColor: 'white', padding: 15 }}>
-        {top3Predictions.map((prediction, index) => (
-          <View key={index} style={{ marginBottom: 10 }}>
-            <Text style={{ fontSize: 18 }}>{prediction.name}</Text>
-            <Text style={{ fontSize: 14, color: 'gray' }}>Probability: {prediction.value}</Text>
-          </View>
-        ))}
-      </View>
+        <View style={{ alignItems: 'center', padding: 15 }}>
+          {top3Predictions.map((prediction, index) => (
+            <View
+              key={index}
+              style={{
+                marginBottom: 10,
+                justifyContent: 'center',
+                backgroundColor: colorMap[prediction.name.toLowerCase()] || 'gray',
+                padding: 10,
+                borderRadius: 5,
+              }}
+            >
+              <Text style={{ fontSize: 18, color: 'white' }}>{prediction.name}</Text>
+              <Text style={{ fontSize: 14, color: 'white' }}>Probability: {prediction.value}</Text>
+            </View>
+          ))}
+        </View>
         <Button
-          style={{ 
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  // paddingVertical: 15,
-                  // marginBottom: 20,
-                  //borderRadius: 10,
-                  //width: 200,
-                  //backgroundColor: '#d9d9d6',
-                  padding: 15 }}
+          style={{ alignSelf: 'center', borderColor: 'black', borderWidth: 3, marginBottom: 10,}}
           onPress={() => this.setState({ imageUri: null })}
         >
-          <Text style={{ 
-                  fontSize: 18, 
-                  color: 'black' }}>Retake Photo</Text>
+          <Text style={{ fontSize: 18, color: 'black' }}>Retake Photo</Text>
         </Button>
       </View>
     );
   };
+  
   render() {
     const { imageUri } = this.state;
     return imageUri ? this.renderImageView() : this.renderCameraView();
   }
 }
-
-// import React, { useEffect, useRef } from 'react';
-// import { View, StyleSheet } from 'react-native';
-// import { RNCamera } from 'react-native-camera';
-// import { WebView } from 'react-native-webview';
-
-// const ObjectDetectionComponent = () => {
-//   const webViewRef = useRef(null);
-
-//   const htmlContent = `
-//   <html>
-//   <head>
-//     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/detection@0.4.0/detection.min.js"></script>
-//     <script>
-//       const canvasElement = document.createElement('canvas');
-//       const canvasCtx = canvasElement.getContext('2d');
-
-//       const objectDetection = new ObjectDetection({
-//         modelSelection: { modelName: 'ssdlite_mobiledet_dsp', modelUrl: 'https://tfhub.dev/mediapipe/ssdlite_mobiledet_dsp/1/metadata/1' },
-//       });
-
-//       objectDetection.setOptions({
-//         scoreThreshold: 0.5,
-//       });
-
-//       const onResults = (results) => {
-//         canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-//         canvasCtx.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
-    
-//         if (results.multiBoxRects) {
-//           for (const { label, score, rect } of results.multiBoxRects) {
-//             const { x, y, width, height } = rect;
-//             // Perform custom logic here based on the detected object
-//             // For example, you can draw rectangles around the detected objects
-//             canvasCtx.beginPath();
-//             canvasCtx.rect(x * canvasElement.width, y * canvasElement.height, width * canvasElement.width, height * canvasElement.height);
-//             canvasCtx.lineWidth = 2;
-//             canvasCtx.strokeStyle = 'red';
-//             canvasCtx.fillStyle = 'red';
-//             canvasCtx.stroke();
-//             canvasCtx.fillText(\`\${label} (\${(score * 100).toFixed(2)}%)\`, x * canvasElement.width, y * canvasElement.height - 5);
-//           }
-//         }
-//       };
-
-//       objectDetection.onResults(onResults);
-
-//       const videoElement = document.createElement('video');
-
-//       const constraints = {
-//         audio: false,
-//         video: true,
-//       };
-
-//       const handleSuccess = (stream) => {
-//         videoElement.srcObject = stream;
-//         videoElement.onloadedmetadata = () => {
-//           canvasElement.width = videoElement.videoWidth;
-//           canvasElement.height = videoElement.videoHeight;
-//           objectDetection.send({ image: videoElement });
-//         };
-//       };
-
-//       navigator.mediaDevices.getUserMedia(constraints)
-//         .then(handleSuccess)
-//         .catch(console.error);
-
-//       document.body.appendChild(videoElement);
-//       document.body.appendChild(canvasElement);
-//     </script>
-//     </head>
-//     <body></body>
-//   </html>
-//   `;
-
-//   useEffect(() => {
-//     webViewRef.current.injectJavaScript(`
-//       const videoElement = document.querySelector('video');
-//       videoElement.srcObject.getVideoTracks()[0].stop();
-//     `);
-//   }, []);
-
-//   return (
-//     <View style={styles.container}>
-//       <RNCamera
-//         style={styles.camera}
-//         type={RNCamera.Constants.Type.back}
-//         captureAudio={false}
-//         captureMode={RNCamera.Constants.CaptureMode.still}
-//         playSoundOnCapture={false}
-//         androidCameraPermissionOptions={{
-//           title: 'Permission to use camera',
-//           message: 'We need your permission to use your camera',
-//           buttonPositive: 'OK',
-//           buttonNegative: 'Cancel',
-//         }}
-//       >
-//         {({ camera, status }) => {
-//           if (status !== 'READY') return null;
-
-//           const takePicture = async () => {
-//             const options = { quality: 1, base64: true };
-//             const data = await camera.takePictureAsync(options);
-//             const imageData = `data:image/jpeg;base64,${data.base64}`;
-
-//             webViewRef.current.injectJavaScript(`
-//               const imageElement = new Image();
-//               imageElement.src = '${imageData}';
-//               imageElement.onload = () => {
-//                 const canvasElement = document.createElement('canvas');
-//                 const canvasCtx = canvasElement.getContext('2d');
-//                 canvasElement.width = imageElement.width;
-//                 canvasElement.height = imageElement.height;
-//                 canvasCtx.drawImage(imageElement, 0, 0);
-//                 objectDetection.send({ image: canvasElement });
-//               };
-//             `);
-//           };
-
-//           return (
-//             <>
-//               <WebView
-//                 ref={webViewRef}
-//                 source={{ html: htmlContent }}
-//                 javaScriptEnabled={true}
-//                 domStorageEnabled={true}
-//                 allowFileAccess={true}
-//                 allowFileAccessFromFileURLs={true}
-//                 allowUniversalAccessFromFileURLs={true}
-//               />
-//               <View style={styles.captureButtonContainer}>
-//                 <TouchableOpacity onPress={takePicture} style={styles.captureButton} />
-//               </View>
-//             </>
-//           );
-//         }}
-//       </RNCamera>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//   },
-//   camera: {
-//     flex: 1,
-//   },
-//   captureButtonContainer: {
-//     flex: 1,
-//     justifyContent: 'flex-end',
-//     alignItems: 'center',
-//     marginBottom: 16,
-//   },
-//   captureButton: {
-//     width: 64,
-//     height: 64,
-//     borderRadius: 32,
-//     backgroundColor: 'white',
-//   },
-// });
-
-// export default ObjectDetectionComponent;
