@@ -46,6 +46,36 @@ export default function HomeScreen() {
   
       fetchRemainingPoints();
     }, []); // Run this effect only once, on component mount
+
+    //const FriendsList = () => {
+        const [friends, setFriends] = useState([]);
+      
+        useEffect(() => {
+          // Fetch friends list from Supabase
+          const fetchFriends = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                const { data, error } = await supabase.from('friends').select('*').eq('user_id', user.id);
+                if (error) {
+                console.error(error);
+                } else {
+                console.log(data);
+                setFriends(data);
+                }
+            }
+            
+          };
+      
+          fetchFriends();
+        }, []);
+      
+    const renderFriendItem = ({ item }) => (
+      <View style={styles.friendItem}>
+        <Text style={styles.friendName}>{item.friendname}</Text>
+        {/*<Text style={styles.friendStatus}>{item.status}</Text>*/}
+        </View>
+    );
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -98,6 +128,32 @@ export default function HomeScreen() {
             marginBottom: 5,
         },
 
+        friendsList: {
+            //marginTop: 10,
+            flexDirection: 'row',
+        //alignItems: 'center',
+        //justifyContent: 'space-between',
+        //backgroundColor: '#c7dede',
+        borderRadius: 30,
+        height: 95,
+          },
+          friendItem: {
+            borderBottomWidth: 1,
+            borderBottomColor: 'gray',
+            paddingVertical: 10,
+            paddingHorizontal: 100,
+            //backgroundColor: '#c7dede',
+          },
+          friendName: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            backgroundColor: '#c7dede',
+            width: 100,
+          },
+          friendStatus: {
+            marginTop: 5,
+            color: 'gray',
+          },
     });
 
     return (
@@ -105,6 +161,14 @@ export default function HomeScreen() {
             <UploadImage/>
             <Text style={{marginVertical:20,fontSize:16}}>Welcome, FuzzySid</Text>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
+            <Text style={{marginVertical:20, fontSize:16}}>My friends</Text>
+            <FlatList
+
+                data={friends}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={renderFriendItem}
+                style={styles.friendsList}
+            />
             <Button style = {styles.button}>
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
             </Button>
