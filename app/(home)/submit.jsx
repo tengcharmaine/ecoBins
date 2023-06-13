@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
-import { useRouter, Link } from "expo-router";
+import { useRouter, Link, useFocusEffect } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import Pick from '../pick';
 
@@ -14,6 +14,14 @@ export default function SubmitScreen() {
     const { user } = useAuth();
     const router = useRouter();
     const [showButton, setShowButton] = useState(true);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            // Reset the image state when the screen is focused
+            setImage(null);
+            setShowButton(true);
+        }, [])
+    );
 
     const handleAddImage = async () => {
         
@@ -120,7 +128,7 @@ export default function SubmitScreen() {
         text2: {
             color: "black",
             marginTop: 10,
-            marginBottom: 5,
+            marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
             width: '70%',
