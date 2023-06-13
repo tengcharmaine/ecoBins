@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
-import { useRouter, Link } from "expo-router";
+import { useRouter, Link, useFocusEffect } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import Pick from '../pick';
 
@@ -14,6 +14,14 @@ export default function SubmitScreen() {
     const { user } = useAuth();
     const router = useRouter();
     const [showButton, setShowButton] = useState(true);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            // Reset the image state when the screen is focused
+            setImage(null);
+            setShowButton(true);
+        }, [])
+    );
 
     const handleAddImage = async () => {
         
@@ -93,9 +101,8 @@ export default function SubmitScreen() {
             borderColor: "black",
             backgroundColor: "#cccc",
             width: '75%',
-            height: '45%',
+            height: '40%',
             marginTop: 20,
-            marginBottom: 10,
             marginLeft: 10,
             borderRadius: 10,
             position: 'relative',
@@ -120,6 +127,7 @@ export default function SubmitScreen() {
         },
         text2: {
             color: "black",
+            marginTop: 10,
             marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
@@ -142,17 +150,12 @@ export default function SubmitScreen() {
     });
     return (
         <View style={styles.container}>
-             {/* <Text style={styles.title}>Instructions: </Text>
-             <Text style={styles.text}>- Fill in this 
-                <Link href='https://forms.gle/WzBJumoQ7AZPihnM9'> Google Form </Link>
-                with the relevant information.</Text>
-             <Text style={styles.text}>- Screenshot and upload a picture of the confirmation email below.</Text> */}
-             <Text style={styles.text2}>Hi! Please take a photo of all the items you recycled and upload the photos here!</Text>
+             <Text style={styles.text2}>Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!</Text>
              
              {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
              {showButton && <Button onPress={handleAddImage}
                      style={styles.button2}>
-                        {<Text style={styles.text}>Upload here!</Text>}
+                        {<Text style={styles.text}>Upload Photo here!</Text>}
              </Button>}
              {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
              <Pick />

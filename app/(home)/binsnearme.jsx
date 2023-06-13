@@ -205,7 +205,7 @@
 // });
 
 import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -276,6 +276,19 @@ export default class App extends React.Component {
     return dist;
   };
 
+  handleMyLocationPress = () => {
+    const { currentLocation } = this.state;
+  
+    if (currentLocation) {
+      this.mapRef.animateToRegion({
+        latitude: currentLocation.latitude,
+        longitude: currentLocation.longitude,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+      });
+    }
+  };
+
   render() {
     const { currentLocation, nearestMarker } = this.state;
   
@@ -286,7 +299,8 @@ export default class App extends React.Component {
             style={styles.map}
             provider={PROVIDER_GOOGLE}
             showsUserLocation
-            showsMyLocationButton={true}
+            ref={(ref) => (this.mapRef = ref)}
+            // showsMyLocationButton={true}
             initialRegion={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
@@ -305,6 +319,12 @@ export default class App extends React.Component {
                 description={marker.description}
               />
             ))}
+             <TouchableOpacity
+              style={styles.myLocationButton}
+              onPress={this.handleMyLocationPress}
+            >
+              <Text style={styles.myLocationButtonText}>My Location</Text>
+            </TouchableOpacity>
           </MapView>
         ) : (
           <Text>Loading...</Text>
@@ -447,8 +467,28 @@ const styles = StyleSheet.create({
   nearestMarkerText: {
     fontSize: 18,
     fontWeight: 'bold',
+    textAlign: 'center',
   },
   nearestMarkerDescription: {
     marginTop: 5,
+  },
+  myLocationButton: {
+    position: 'absolute',
+    bottom: 90,
+    right: 16,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+    marginBottom: 20,
+  },
+  myLocationButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
   },
 });
