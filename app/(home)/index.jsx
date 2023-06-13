@@ -1,15 +1,75 @@
-import { Alert, FlatList, Pressable, View, StyleSheet } from 'react-native';
+import { Alert, FlatList, Pressable, View, StyleSheet, Image } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import { useEffect, useState } from 'react';
-import { Checkbox, Text, Button } from 'react-native-paper';
-import { useRouter, Stack, Link } from 'expo-router';
-import UploadImage from '../uploadimage';
+import React, { useEffect, useState, useCallback } from 'react';
+import { Checkbox, Text, Button, IconButton } from 'react-native-paper';
+import { Link } from 'expo-router';
 import * as ImagePicker from 'expo-image-picker';
-//import {supabase} from '../lib/supabase';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
-    const router = useRouter();
+    const [username, setUsername] = useState(null);
+    const [profilePicture, setProfilePicture] = useState(null);
+    const navigation = useNavigation();
+
+    useFocusEffect(
+        useCallback(() => {
+          const fetchRemainingPoints = async () => {
+            try {
+              const { data: { user } } = await supabase.auth.getUser();
+    
+              if (user) {
+                const { data, error } = await supabase
+                  .from('ranking')
+                  .select('score')
+                  .eq('username', user.id);
+    
+                if (error) {
+                  console.error('Error fetching user points:', error.message);
+                  return;
+                }
+    
+                if (data.length > 0) {
+                  const userScore = data[0].score;
+                  setRemainingPoints(userScore);
+                } else {
+                  console.log('No data found for the user');
+                }
+              } else {
+                console.log('not auth');
+              }
+            } catch (error) {
+              console.error('Error fetching user points:', error.message);
+            }
+          };
+    
+          const fetchUsernameAndProfilePicture = async () => {
+            try {
+              const { data: { user } } = await supabase.auth.getUser();
+    
+              const { data, error } = await supabase
+                .from('users')
+                .select('username, profile_picture')
+                .eq('user_id', user.id)
+                .single();
+    
+              if (error) {
+                console.error('Error fetching username and profile picture:', error.message);
+                return;
+              }
+    
+              setUsername(data.username);
+              setProfilePicture(data.profile_picture);
+            } catch (error) {
+              console.error('Error fetching username and profile picture:', error.message);
+            }
+          };
+    
+          fetchRemainingPoints();
+          fetchUsernameAndProfilePicture();
+        }, [])
+      );
+    
     useEffect(() => {
       // Fetch the user's score or remaining points from Supabase or any other data source
       const fetchRemainingPoints = async () => {
@@ -154,12 +214,54 @@ export default function HomeScreen() {
             marginTop: 5,
             color: 'gray',
           },
+          usernameContainer: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginVertical: 20,
+          },
+          usernameText: {
+            fontSize: 16,
+          },
+          profilePicture: {
+            width: 170,
+            height: 170,
+            borderRadius: 100,
+          },
+          editProfilePictureIcon: {
+              position: 'absolute',
+              bottom: 0,
+              right: 0,
+              backgroundColor: 'white',
+              borderRadius: 20,
+            },      
     });
 
     return (
         <View style={styles.container}>
-            <UploadImage/>
-            <Text style={{marginVertical:20,fontSize:16}}>Welcome, FuzzySid</Text>
+            <View style={styles.profilePictureContainer}>
+            {profilePicture ? (
+            <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
+            ) : (
+            <Text>No profile picture found</Text>
+            )}
+
+            <IconButton
+                icon="pencil"
+                size={25}
+                color="black"
+                style={styles.editProfilePictureIcon}
+                onPress={() => navigation.navigate('editprofilepic')}
+                />
+        </View>
+        <View style={styles.usernameContainer}>
+        <Text style={styles.usernameText}>Welcome, {username}!</Text>
+        <IconButton
+          icon="pencil"
+          color="black"
+          size={20}
+          onPress={() => navigation.navigate('editusername')}
+        />
+      </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
             <Text style={{marginVertical:20, fontSize:16}}>My friends</Text>
             <FlatList
@@ -173,59 +275,5 @@ export default function HomeScreen() {
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
             </Button>
         </View>
-    )
+    );
 }
-
-//     const [todos, setTodos] = useState([]);
-//     const [refreshing, setRefreshing] = useState(false);
-
-//     async function fetchTodos() {
-//         setRefreshing(true);
-//         let { data } = await supabase.from('todos').select('*');
-//         setRefreshing(false);
-//         setTodos(data);
-//     }
-
-//     useEffect(() => {
-//         fetchTodos();
-//     }, []);
-
-//     useEffect(() => {
-//         if (refreshing) {
-//             fetchTodos();
-//             setRefreshing(false);
-//         }
-//     }, [refreshing]);
-
-//     return (
-//         <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//             <FlatList
-//                 data={todos}
-//                 renderItem={({ item }) => <TodoItem todo={item} />}
-//                 onRefresh={() => setRefreshing(true)}
-//                 refreshing={refreshing}
-//             />
-//         </View>
-//     );
-// }
-
-// function TodoItem({ todo }) {
-//     const [checked, setChecked] = useState(todo.is_complete)
-//     const router = useRouter();
-//     const handleCheckboxPress = async () => {
-//         const { error } = await supabase.from('todos').update({ is_complete: !checked }).eq('id', todo.id)
-//         if (error != null) {
-//             Alert.alert(error.message);
-//         }
-//         setChecked(!checked)
-//     }
-//     const handleItemPress = () => {
-//         router.push({ pathname: '/detailedTodo', params: { id: todo.id } })
-//     }
-//     return (
-//         <Pressable style={{ flexDirection: 'row', alignItems: 'center' }} onPress={handleItemPress}>
-//             <Text>{todo.task}</Text>
-//             <Checkbox.Android status={checked ? 'checked' : 'unchecked'} onPress={handleCheckboxPress} />
-//         </Pressable>
-//     )
-// }

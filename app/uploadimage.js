@@ -13,7 +13,7 @@ export default function UploadImage() {
             quality: 1,
         });
         console.log(JSON.stringify(_image));
-        if (!_image.cancelled) {
+        if (!_image.canceled) {
             setImage(_image.uri);
         }
     };

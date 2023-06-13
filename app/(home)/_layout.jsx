@@ -1,8 +1,6 @@
 import { SafeAreaView, View, Image } from "react-native";
 import { Tabs } from "expo-router";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { createStackNavigator } from "@react-navigation/stack";
-// import { NavigationContainer } from "@react-navigation/native";
 
 export default function HomeScreen() {
     function profileScreen() {

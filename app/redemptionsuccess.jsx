@@ -2,7 +2,7 @@ import { Text, Button } from "react-native-paper";
 import { StyleSheet, View, Image } from "react-native";
 import { Link } from "expo-router";
 
-export default function SubmissionComplete() {
+export default function RedemptionSuccess() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
