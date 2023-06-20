@@ -65,8 +65,8 @@ export default function editusername() {
       // Update the user's username in the Supabase table
       const { data, error } = await supabase
         .from('users')
-        .update({ username: name })
-        .eq('user_id', user.id)
+        .update({ email: name })
+        .eq('id', user.id)
         .single();
 
       if (error) {

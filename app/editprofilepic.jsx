@@ -111,8 +111,8 @@ export default function editprofilepic() {
                 // Update the user's profile picture in the Supabase table
                 const { data, error } = await supabase
                     .from('users')
-                    .update({ profile_picture: image })
-                    .eq('user_id', user.id)
+                    .update({ profile: image })
+                    .eq('id', user.id)
                     .single();
         
                 if (error) {

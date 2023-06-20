@@ -49,17 +49,17 @@ export default function HomeScreen() {
     
               const { data, error } = await supabase
                 .from('users')
-                .select('username, profile_picture')
-                .eq('user_id', user.id)
+                .select('email, profile')
+                .eq('id', user.id)
                 .single();
     
               if (error) {
-                console.error('Error fetching username and profile picture:', error.message);
+                console.error('Error fetching username and profile picture1:', error.message);
                 return;
               }
     
-              setUsername(data.username);
-              setProfilePicture(data.profile_picture);
+              setUsername(data.email);
+              setProfilePicture(data.profile);
             } catch (error) {
               console.error('Error fetching username and profile picture:', error.message);
             }
