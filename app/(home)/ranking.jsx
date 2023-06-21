@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { View, Text, FlatList, Image, StyleSheet, Button } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, Button, Alert } from 'react-native';
 
 const LeaderboardScreen = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -9,6 +9,19 @@ const LeaderboardScreen = () => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser()
      
+      // Prompt the user for confirmation
+      Alert.alert(
+        'Add Friend',
+        `Are you sure you want to add ${friend.user_name} to your friends?`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Add',
+            style: 'default',
+            onPress: async () => {
       const { data, error } = await supabase
         .from('friendships')
         .insert([
@@ -30,8 +43,64 @@ const LeaderboardScreen = () => {
         // Update the leaderboardData state with the copied array
         setLeaderboardData(updatedData);
       }
+    },
+  },
+],
+{ cancelable: false });
     } catch (error) {
       console.error('Error adding friend:', error);
+    }
+  };
+
+  const removeFriend = async (friend) => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+      // Prompt the user for confirmation
+      Alert.alert(
+        'Remove Friend',
+        `Are you sure you want to remove ${friend.user_name} from your friends?`,
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+          },
+          {
+            text: 'Remove',
+            style: 'destructive',
+            onPress: async () => {
+              const {error } = await supabase
+                .from('friendships')
+                .delete()
+                .match({ user_id: user.id, friend_id: friend.user_id});
+
+                const { error: error2 } = await supabase
+                  .from('friendships')
+                  .delete()
+                  .match({ user_id: friend.user_id, friend_id: user.id });
+
+              if (error || error2) {
+                console.error('Error removing friend:', error);
+                return;
+              }
+
+              // Find the index of the friend in the leaderboardData
+              const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
+              if (friendIndex !== -1) {
+                // Create a copy of the leaderboardData array
+                const updatedData = [...leaderboardData];
+                // Update the 'isFriendAdded' property of the friend in the copied array
+                updatedData[friendIndex].isFriendAdded = false;
+                // Update the leaderboardData state with the copied array
+                setLeaderboardData(updatedData);
+              }
+            },
+          },
+        ],
+        { cancelable: false }
+      );
+    } catch (error) {
+      console.error('Error removing friend:', error);
     }
   };
   
@@ -94,7 +163,10 @@ const LeaderboardScreen = () => {
               <Text style={styles.itemText1}>{item.score}</Text>
             </View>
             {item.isFriendAdded ? (
-              <Text style={styles.buttonText}>Friend Added</Text>
+              <Button
+                title="Remove Friend"
+                onPress={() => removeFriend(item)}
+              />
             ) : (
             <Button
               title="Add Friend"
