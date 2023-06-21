@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
 
 const supabaseUrl = 'https://modwjtelabjhmmhchteg.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vZHdqdGVsYWJqaG1taGNodGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODQ4NTQ5NzEsImV4cCI6MjAwMDQzMDk3MX0.ttr3X3C5CvZ0Wyrgync08D76JK9du5Q2lHJD4B9hh7o';
@@ -25,12 +25,17 @@ const LeaderboardScreen = () => {
         console.error('Error fetching leaderboard data:', error);
         return;
       }
+      // Add a 'rank' property to each item in the fetched data
+      const rankedData = fetchedData.map((item, index) => ({
+        ...item,
+        rank: index + 1,
+      }));
 
     // Use the fetched leaderboardData in your React Native component
     //   console.log(fetchedData);
 
       // Store the fetched leaderboardData in component state
-      setLeaderboardData(fetchedData);
+      setLeaderboardData(rankedData);
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
@@ -43,8 +48,12 @@ const LeaderboardScreen = () => {
         data={leaderboardData}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
-            <Text style={styles.itemText}>{item.id}</Text>
-            <Text style={styles.itemText1}>{item.score}</Text>
+            <Text style={styles.itemText}>{item.rank}</Text>
+            <Image source={{ uri: item.profile }} style={styles.profilePicture} />
+            <View style={styles.itemTextContainer}>
+              <Text style={styles.itemText}>{item.user_name}</Text>
+              <Text style={styles.itemText1}>{item.score}</Text>
+            </View>
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -77,6 +86,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'left',
+    justifyContent: 'center',
     marginLeft: 30,
   },
   itemText1: {
@@ -84,6 +94,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'right',
     marginRight: 30,
+  },
+  itemTextContainer: {
+    flex: 1,
+    marginLeft: 10,
+    justifyContent: 'space-between', // Aligns items vertically
+    flexDirection: 'row', // Aligns items horizontally
+    alignItems: 'center', // Centers items vertically
+  },
+  profilePicture: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    marginLeft: 20,
   },
   title: {
     fontSize: 25,

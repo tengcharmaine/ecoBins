@@ -22,7 +22,7 @@ export default function HomeScreen() {
                 const { data, error } = await supabase
                   .from('ranking')
                   .select('score')
-                  .eq('username', user.id);
+                  .eq('user_id', user.id);
     
                 if (error) {
                   console.error('Error fetching user points:', error.message);
@@ -81,7 +81,7 @@ export default function HomeScreen() {
             const { data, error } = await supabase
             .from('ranking')
             .select('score')
-            .eq('username', user.id); 
+            .eq('user_id', user.id); 
             console.log(2);
             if (error) {
               console.error('Error fetching user points1:', error.message);

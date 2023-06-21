@@ -84,7 +84,7 @@ export default function SubmitScreen() {
             const { data, error } = await supabase
             .from('ranking')
             .select('score')
-            .eq('username', user.id); 
+            .eq('user_id', user.id); 
             console.log(2);
             if (error) {
                 console.error('Error fetching user points1:', error.message);
@@ -140,7 +140,7 @@ export default function SubmitScreen() {
                     .eq('username', user.id)
                     .single();
                   if (error) {
-                    console.error('Error updating user points:', error.message);
+                    console.error('Error updating user points5:', error.message);
                     return;
                   }
                   setRemainingPoints(updatedScore);
@@ -151,17 +151,17 @@ export default function SubmitScreen() {
                     const { data, error } = await supabase
                       .from('ranking')
                       .update({ score: updatedScore1})
-                      .eq('username', user.id)
+                      .eq('user_id', user.id)
                       .single();
                     if (error) {
-                      console.error('Error updating user points:', error.message);
+                      console.error('Error updating user points3:', error.message);
                       return;
                     }
                     setRemainingPoints(updatedScore1);
                     console.log(updatedScore1);
                   }
             } catch (error) {
-                console.error('Error updating user points:', error.message);
+                console.error('Error updating user points4:', error.message);
             }
             router.push('SubmissionComplete');
            
