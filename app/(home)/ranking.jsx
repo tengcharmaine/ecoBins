@@ -1,15 +1,40 @@
-import { createClient } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
-
-const supabaseUrl = 'https://modwjtelabjhmmhchteg.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1vZHdqdGVsYWJqaG1taGNodGVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODQ4NTQ5NzEsImV4cCI6MjAwMDQzMDk3MX0.ttr3X3C5CvZ0Wyrgync08D76JK9du5Q2lHJD4B9hh7o';
-
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { supabase } from '../../lib/supabase';
+import { View, Text, FlatList, Image, StyleSheet, Button } from 'react-native';
 
 const LeaderboardScreen = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
 
+  const addFriend = async (friend) => {
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser()
+     
+      const { data, error } = await supabase
+        .from('friendships')
+        .insert([
+          { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
+          { user_id: friend.user_id, friend_id: user.id, friend_name: user.user_name }]);
+  
+      if (error) {
+        console.error('Error adding friend1:', error);
+        return;
+      }
+
+      // Find the index of the friend in the leaderboardData
+      const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
+      if (friendIndex !== -1) {
+        // Create a copy of the leaderboardData array
+        const updatedData = [...leaderboardData];
+        // Update the 'isFriendAdded' property of the friend in the copied array
+        updatedData[friendIndex].isFriendAdded = true;
+        // Update the leaderboardData state with the copied array
+        setLeaderboardData(updatedData);
+      }
+    } catch (error) {
+      console.error('Error adding friend:', error);
+    }
+  };
+  
   useEffect(() => {
     fetchLeaderboardData();
   }, []);
@@ -25,10 +50,24 @@ const LeaderboardScreen = () => {
         console.error('Error fetching leaderboard data:', error);
         return;
       }
+      // Fetch friendship data from the 'friendships' table
+      const { data: friendshipData, error: friendshipError } = await supabase
+        .from('friendships')
+        .select('friend_id');
+
+      if (friendshipError) {
+        console.error('Error fetching friendship data:', friendshipError);
+        return;
+      }
+
+      // Create a Set of friend IDs
+      const friendIds = new Set(friendshipData.map(item => item.friend_id));
+
       // Add a 'rank' property to each item in the fetched data
       const rankedData = fetchedData.map((item, index) => ({
         ...item,
         rank: index + 1,
+        isFriendAdded: friendIds.has(item.user_id), // Check if the friend is added
       }));
 
     // Use the fetched leaderboardData in your React Native component
@@ -54,6 +93,13 @@ const LeaderboardScreen = () => {
               <Text style={styles.itemText}>{item.user_name}</Text>
               <Text style={styles.itemText1}>{item.score}</Text>
             </View>
+            {item.isFriendAdded ? (
+              <Text style={styles.buttonText}>Friend Added</Text>
+            ) : (
+            <Button
+              title="Add Friend"
+              onPress={() => addFriend(item)}
+            />)}
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -114,6 +160,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     justifyContent: 'center',
   },
+  addButton: {
+    backgroundColor: 'blue',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  
 });
 
 export default LeaderboardScreen;

@@ -115,7 +115,7 @@ export default function HomeScreen() {
           const fetchFriends = async () => {
             const { data: { user } } = await supabase.auth.getUser()
             if (user) {
-                const { data, error } = await supabase.from('friends').select('*').eq('user_id', user.id);
+                const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
                 if (error) {
                 console.error(error);
                 } else {
@@ -128,12 +128,11 @@ export default function HomeScreen() {
       
           fetchFriends();
         }, []);
-      
+        
     const renderFriendItem = ({ item }) => (
       <View style={styles.friendItem}>
-        <Text style={styles.friendName}>{item.friendname}</Text>
-        {/*<Text style={styles.friendStatus}>{item.status}</Text>*/}
-        </View>
+        <Text style={styles.friendName}>{item.friend_name}</Text>
+      </View>
     );
 
     const styles = StyleSheet.create({
