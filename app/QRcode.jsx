@@ -4,11 +4,11 @@ import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { Link } from 'expo-router';
 import {supabase} from '../lib/supabase';
-import {useRouter} from 'expo-router';
+// import {useRouter} from 'expo-router';
 
 export default function QRCodeScreen() {
   const [remainingPoints, setRemainingPoints] = useState(0);
-  const router = useRouter();
+  // const router = useRouter();
   useEffect(() => {
     // Fetch the user's score or remaining points from Supabase or any other data source
     const fetchRemainingPoints = async () => {
@@ -52,7 +52,7 @@ export default function QRCodeScreen() {
     //   (pressed, index) => pressed && index < 3
     // ).length * 20; // Assuming each menu has 20 points
     console.log(3);
-    if (remainingPoints >= 20) {
+    // if (remainingPoints >= 20) {
       // Deduct points and proceed with redemption
       try {
         const { data: { user } } = await supabase.auth.getUser()
@@ -75,9 +75,9 @@ export default function QRCodeScreen() {
       } catch (error) {
         console.error('Error updating user points:', error.message);
       }
-    } else {
-      alert('Insufficient points. Please select a different menu or earn more points.');
-    }
+    // } else {
+    //   alert('Insufficient points. Please select a different menu or earn more points.');
+    // }
   };
   
   return (

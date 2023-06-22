@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { BackHandler } from 'react-native';
@@ -268,6 +268,7 @@ export function SelectionScreen({ route }) {
     const isConfirmButtonVisible = selectedChooseButtons.length > 0;
 
     const [remainingPoints, setRemainingPoints] = useState(0);
+    const router = useRouter();
 
       useEffect(() => {
         // Fetch the user's score or remaining points from Supabase or any other data source
@@ -327,6 +328,39 @@ export function SelectionScreen({ route }) {
         backHandler.remove();
       };
     }, []);
+  
+    const handleConfirmation = async () => {
+    // const selectedMenuPoints = Object.values(buttonPressed).filter(
+    //   (pressed, index) => pressed && index < 3
+    // ).length * 20; // Assuming each menu has 20 points
+    console.log(3);
+    if (remainingPoints >= 20) {
+      // Deduct points and proceed with redemption
+      // try {
+        // const { data: { user } } = await supabase.auth.getUser()
+        // console.log(4);
+        // if (user) {
+        //   console.log(user);
+        //   const { data, error } = await supabase
+        //     .from('redemption')
+        //     .update({ score: remainingPoints - 20 })
+        //     .eq('username', user.id)
+        //     .single();
+        //   if (error) {
+        //     console.error('Error updating user points:', error.message);
+        //     return;
+        //   }
+        // setRemainingPoints(user.score);
+          // console.log(user.score);
+          router.push('QRcode');
+      //   }
+      // } catch (error) {
+      //   console.error('Error updating user points:', error.message);
+      // }
+    } else {
+      alert('Insufficient points. Please select a different menu or earn more points.');
+    }
+  };
       
     return (
       <View style={styles.container}>
@@ -391,10 +425,10 @@ export function SelectionScreen({ route }) {
           </View>
   
           {isConfirmButtonVisible && (
-            <Button style={styles.button1}>
-              <Link style={styles.text1} href="/QRcode">
+            <Button style={styles.button1} onPress={handleConfirmation}>
+              <Text style={styles.text1}>
                 Confirm
-              </Link>
+              </Text>
             </Button>
           )}
           <Button style={styles.button1} onPress={() => navigation.goBack()}>
