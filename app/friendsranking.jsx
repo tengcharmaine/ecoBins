@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 
 const FriendRankingsScreen = () => {
     const [friendRankings, setRankings] = useState([]);
@@ -45,7 +44,7 @@ const FriendRankingsScreen = () => {
       };
       
       const navigateToRankings = () => {
-        navigation.navigate('ranking');
+        navigation.navigate('leaderBoard');
       };
   
     return (
@@ -149,61 +148,8 @@ const FriendRankingsScreen = () => {
         width: 25,
         marginRight: 30,
     },
-    // container: {
-    //   flex: 1,
-    //   alignItems: 'center',
-    //   justifyContent: 'center',
-    //   padding: 20,
-    // },
-    // title: {
-    //   fontSize: 25,
-    //   fontWeight: 'bold',
-    //   marginBottom: 20,
-    // },
-    // itemContainer: {
-    //   flexDirection: 'row',
-    //   alignItems: 'center',
-    //   justifyContent: 'space-between',
-    //   height: 80,
-    //   width: 350,
-    //   backgroundColor: 'lightgrey',
-    //   borderRadius: 20,
-    //   marginBottom: 10,
-    //   paddingHorizontal: 10,
-    // },
-    // rank: {
-    //   fontSize: 16,
-    //   fontWeight: 'bold',
-    //   textAlign: 'left',
-    // },
-    // profilePicture: {
-    //   width: 60,
-    //   height: 60,
-    //   borderRadius: 30,
-    // },
-    // username: {
-    //   fontSize: 16,
-    //   fontWeight: 'bold',
-    //   flex: 1,
-    //   marginLeft: 10,
-    // },
-    // score: {
-    //   fontSize: 16,
-    //   fontWeight: 'bold',
-    //   textAlign: 'right',
-    //   marginRight: 10,
-    // },
+    
   });
   
   export default FriendRankingsScreen;
-//   const LeaderboardStackScreen = () => {
-//     return (
-//       <LeaderboardStack.Navigator initialRouteName="ranking" screenOptions={{ headerShown: false }}>
-//         <LeaderboardStack.Screen name="ranking" component={LeaderboardScreen} />
-//         <LeaderboardStack.Screen name="friendsranking" component={FriendRankingsScreen} />
-//       </LeaderboardStack.Navigator>
-//     );
-//   };
-  
-//   export default LeaderboardStackScreen;
   

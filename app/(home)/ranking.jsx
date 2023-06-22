@@ -7,8 +7,6 @@ import { createStackNavigator } from '@react-navigation/stack';
 import FriendRankingsScreen from '../friendsranking';
 
 const LeaderboardStack = createStackNavigator();
-const Stack = createStackNavigator();
-
 
 const LeaderboardScreen = () => {
   const navigation = useNavigation();
@@ -177,7 +175,7 @@ const LeaderboardScreen = () => {
   }, []);
 
   const navigateToFriendRankings = () => {
-    navigation.navigate('friendsranking');
+    navigation.navigate('friendsRanking');
   };
   
 
@@ -300,9 +298,9 @@ const styles = StyleSheet.create({
 
 const LeaderboardStackScreen = () => {
   return (
-    <LeaderboardStack.Navigator initialRouteName="leaderboard" screenOptions={{ headerShown: false }}>
-      <LeaderboardStack.Screen name="ranking" component={LeaderboardScreen} />
-      <LeaderboardStack.Screen name="friendsranking" component={FriendRankingsScreen} />
+    <LeaderboardStack.Navigator screenOptions={{ headerShown: false }}>
+      <LeaderboardStack.Screen name="leaderBoard" component={LeaderboardScreen} />
+      <LeaderboardStack.Screen name="friendsRanking" component={FriendRankingsScreen} />
     </LeaderboardStack.Navigator>
   );
 };
