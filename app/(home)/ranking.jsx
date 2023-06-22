@@ -5,6 +5,7 @@ import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacit
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FriendRankingsScreen from '../friendsranking';
+import Modal from 'react-native-modal';
 
 const LeaderboardStack = createStackNavigator();
 
@@ -13,6 +14,8 @@ const LeaderboardScreen = () => {
 
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [yourUserId, setYourUserId] = useState(null); 
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const addFriend = async (friend) => {
     try {
@@ -177,9 +180,20 @@ const LeaderboardScreen = () => {
   const navigateToFriendRankings = () => {
     navigation.navigate('friendsRanking');
   };
-  
 
   useFocusEffect(reloadScreen); 
+
+  const toggleModal = (userName) => {
+    setSelectedUserName(userName);
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const renderUsername = (userName) => {
+    if (userName.length > 8) {
+      return `${userName.substring(0, 8)}...`;
+    }
+    return userName;
+  };
 
   return (
     <View style={styles.container}>
@@ -187,33 +201,42 @@ const LeaderboardScreen = () => {
         <TouchableOpacity style={styles.buttonContainer} onPress={navigateToFriendRankings}>
           <Text style={styles.buttonText}>View Friend Rankings</Text>
         </TouchableOpacity>
-      <FlatList
+        <FlatList
         data={leaderboardData}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
             <Text style={styles.itemText}>{item.rank}</Text>
             <Image source={{ uri: item.profile }} style={styles.profilePicture} />
             <View style={styles.itemTextContainer}>
-              <View style = {styles.container1}>
-                <Text style={styles.itemText}>{item.user_name} {item.user_id === yourUserId && "(You)"}</Text>
-                </View>
-                {item.user_id !== yourUserId && (
-                  item.isFriendAdded ? (
-                    <TouchableOpacity onPress={() => removeFriend(item)}>
-                      <Image source={require('../../images/delete-user.png')} style={styles.image} />
-                    </TouchableOpacity>
-                  ) : (
-                    <TouchableOpacity onPress={() => addFriend(item)}>
-                      <Image source={require('../../images/user-add.png')} style={styles.image} />
-                    </TouchableOpacity>
-                  )
-                )}
+              <View style={styles.container1}>
+                <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+                  <Text style={styles.itemText}>{renderUsername(item.user_name)} {item.user_id === yourUserId && "(You)"}</Text>
+                </TouchableOpacity>
               </View>
-              <Text style={styles.itemText1}>{item.score}</Text>
+              {item.user_id !== yourUserId && (
+                item.isFriendAdded ? (
+                  <TouchableOpacity onPress={() => removeFriend(item)}>
+                    <Image source={require('../../images/delete-user.png')} style={styles.image} />
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity onPress={() => addFriend(item)}>
+                    <Image source={require('../../images/user-add.png')} style={styles.image} />
+                  </TouchableOpacity>
+                )
+              )}
+            </View>
+            <Text style={styles.itemText1}>{item.score}</Text>
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
       />
+
+      <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+        <View style={styles.modalContainer}>
+          <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
+          <Button title="Close" onPress={toggleModal} />
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -261,7 +284,6 @@ const styles = StyleSheet.create({
   },
   itemTextContainer: {
     flex: 1,
-    marginLeft: 10,
     justifyContent: 'space-between', // Aligns items vertically
     flexDirection: 'row', // Aligns items horizontally
     alignItems: 'center', // Centers items vertically
@@ -285,15 +307,27 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonText: {
-    color: 'white',
+    color: 'grey',
     fontWeight: 'bold',
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
   },
   image: {
     height: 25,
     width: 25,
     marginRight: 30,
-},
-  
+  },
+  modalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  modalText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
 });
 
 const LeaderboardStackScreen = () => {

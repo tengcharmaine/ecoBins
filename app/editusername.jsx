@@ -62,6 +62,18 @@ export default function editusername() {
     try {
       const { data: { user } } = await supabase.auth.getUser();
 
+      // Check if the new username is already taken
+      const { data: existingUser } = await supabase
+        .from('users')
+        .select('id')
+        .eq('email', name)
+        .single();
+
+      if (existingUser) {
+        setError('Username is already taken. Please choose a different username.');
+        return;
+      }
+
       // Update the user's username in the Supabase table
       const { data, error } = await supabase
         .from('users')
