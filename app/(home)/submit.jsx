@@ -17,13 +17,26 @@ export default function SubmitScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [remainingPoints1, setRemainingPoints1] = useState(0);
 
+    // useFocusEffect(
+    //     React.useCallback(() => {
+    //         // Reset the image state when the screen is focused
+    //         setImage(null);
+    //         setShowButton(true);
+    //     }, [])
+    // );
     useFocusEffect(
         React.useCallback(() => {
-            // Reset the image state when the screen is focused
-            setImage(null);
-            setShowButton(true);
+            // Reload the screen when it is focused
+            reloadScreen();
         }, [])
     );
+
+    const reloadScreen = () => {
+        setImage(null);
+        setShowButton(true);
+        setRemainingPoints(fetchRemainingPoints);
+        setRemainingPoints1(fetchRemainingPoints1);
+    };
 
     const handleAddImage = async () => {
         
@@ -37,7 +50,7 @@ export default function SubmitScreen() {
         
     }
     
-    useEffect(() => {
+    // useEffect(() => {
         // Fetch the user's score or remaining points from Supabase or any other data source
         const fetchRemainingPoints = async () => {
         try {
@@ -71,9 +84,9 @@ export default function SubmitScreen() {
         };
 
         fetchRemainingPoints();
-    }, []); // Run this effect only once, on component mount
+    // }, []); // Run this effect only once, on component mount
 
-    useEffect(() => {
+    // useEffect(() => {
         // Fetch the user's score or remaining points from Supabase or any other data source
         const fetchRemainingPoints1 = async () => {
         try {
@@ -107,8 +120,8 @@ export default function SubmitScreen() {
         }
         };
 
-        fetchRemainingPoints1();
-    }, []); // Run this effect only once, on component mount
+        // fetchRemainingPoints1();
+    // }, []); // Run this effect only once, on component mount
     
     const handleSubmit = async () => {
         setErrMsg('');
