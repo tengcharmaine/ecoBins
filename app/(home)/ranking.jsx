@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
+import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 
 const LeaderboardScreen = () => {
@@ -161,6 +162,12 @@ const LeaderboardScreen = () => {
       console.error('Error fetching leaderboard data:', error);
     }
   };
+  
+  const reloadScreen = useCallback(() => {
+    fetchLeaderboardData();
+  }, []);
+
+  useFocusEffect(reloadScreen); 
 
   return (
     <View style={styles.container}>
