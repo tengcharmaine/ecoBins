@@ -364,7 +364,7 @@ export function SelectionScreen({ route }) {
       
     return (
       <View style={styles.container}>
-        <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
+          <Text style={styles.pointsheading}>You have {remainingPoints} points for redemption.</Text>
         <Text style={styles.text1}>Catalogue:</Text>
   
         <View style={styles.selectcontainer}>
