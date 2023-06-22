@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { View, Text, FlatList, Image, StyleSheet, Button, Alert } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
 
 const LeaderboardScreen = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
+  const [yourUserId, setYourUserId] = useState(null); 
 
   const addFriend = async (friend) => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser()
      
+      const { data: userData, error: userTableError } = await supabase
+        .from('users')
+        .select('email')
+        .eq('id', user.id)
+        .single();
+
+      const userEmail = userData.email;  
       // Prompt the user for confirmation
       Alert.alert(
         'Add Friend',
@@ -22,31 +30,31 @@ const LeaderboardScreen = () => {
             text: 'Add',
             style: 'default',
             onPress: async () => {
-      const { data, error } = await supabase
-        .from('friendships')
-        .insert([
-          { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
-          { user_id: friend.user_id, friend_id: user.id, friend_name: user.user_name }]);
-  
-      if (error) {
-        console.error('Error adding friend1:', error);
-        return;
-      }
+              const { data, error } = await supabase
+                .from('friendships')
+                .insert([
+                  { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
+                  { user_id: friend.user_id, friend_id: user.id, friend_name: userEmail }]);
+          
+              if (error) {
+                console.error('Error adding friend1:', error);
+                return;
+              }
 
-      // Find the index of the friend in the leaderboardData
-      const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-      if (friendIndex !== -1) {
-        // Create a copy of the leaderboardData array
-        const updatedData = [...leaderboardData];
-        // Update the 'isFriendAdded' property of the friend in the copied array
-        updatedData[friendIndex].isFriendAdded = true;
-        // Update the leaderboardData state with the copied array
-        setLeaderboardData(updatedData);
-      }
-    },
-  },
-],
-{ cancelable: false });
+              // Find the index of the friend in the leaderboardData
+              const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
+              if (friendIndex !== -1) {
+                // Create a copy of the leaderboardData array
+                const updatedData = [...leaderboardData];
+                // Update the 'isFriendAdded' property of the friend in the copied array
+                updatedData[friendIndex].isFriendAdded = true;
+                // Update the leaderboardData state with the copied array
+                setLeaderboardData(updatedData);
+              }
+            },
+          },
+        ],
+        { cancelable: false });
     } catch (error) {
       console.error('Error adding friend:', error);
     }
@@ -108,8 +116,12 @@ const LeaderboardScreen = () => {
     fetchLeaderboardData();
   }, []);
 
+
   const fetchLeaderboardData = async () => {
     try {
+      const { data: {user} } = await supabase.auth.getUser();
+      setYourUserId(user.id);
+
       const { data: fetchedData, error } = await supabase
         .from('ranking')
         .select('*')
@@ -122,7 +134,8 @@ const LeaderboardScreen = () => {
       // Fetch friendship data from the 'friendships' table
       const { data: friendshipData, error: friendshipError } = await supabase
         .from('friendships')
-        .select('friend_id');
+        .select('friend_id')
+        .eq('user_id', user.id);
 
       if (friendshipError) {
         console.error('Error fetching friendship data:', friendshipError);
@@ -159,19 +172,22 @@ const LeaderboardScreen = () => {
             <Text style={styles.itemText}>{item.rank}</Text>
             <Image source={{ uri: item.profile }} style={styles.profilePicture} />
             <View style={styles.itemTextContainer}>
-              <Text style={styles.itemText}>{item.user_name}</Text>
+              <View style = {styles.container1}>
+                <Text style={styles.itemText}>{item.user_name} {item.user_id === yourUserId && "(You)"}</Text>
+                </View>
+                {item.user_id !== yourUserId && (
+                  item.isFriendAdded ? (
+                    <TouchableOpacity onPress={() => removeFriend(item)}>
+                      <Image source={require('../../images/delete-user.png')} style={styles.image} />
+                    </TouchableOpacity>
+                  ) : (
+                    <TouchableOpacity onPress={() => addFriend(item)}>
+                      <Image source={require('../../images/user-add.png')} style={styles.image} />
+                    </TouchableOpacity>
+                  )
+                )}
+              </View>
               <Text style={styles.itemText1}>{item.score}</Text>
-            </View>
-            {item.isFriendAdded ? (
-              <Button
-                title="Remove Friend"
-                onPress={() => removeFriend(item)}
-              />
-            ) : (
-            <Button
-              title="Add Friend"
-              onPress={() => addFriend(item)}
-            />)}
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
@@ -181,6 +197,14 @@ const LeaderboardScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  buttonContainer: {
+    flex: 0,
+  },
+  container1: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginVertical: 10,
+  },
   container: {
     flex: 1,
     alignItems: 'center',
@@ -242,6 +266,11 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: 'bold',
   },
+  image: {
+    height: 25,
+    width: 25,
+    marginRight: 30,
+},
   
 });
 
