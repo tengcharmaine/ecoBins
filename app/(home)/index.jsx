@@ -10,6 +10,7 @@ export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [username, setUsername] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
+    const [friends, setFriends] = useState([]);
     const navigation = useNavigation();
 
     useFocusEffect(
@@ -64,11 +65,24 @@ export default function HomeScreen() {
               console.error('Error fetching username and profile picture:', error.message);
             }
           };
+          const fetchFriends = async () => {
+            const { data: { user } } = await supabase.auth.getUser()
+            if (user) {
+                const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
+                if (error) {
+                console.error(error);
+                } else {
+                console.log(data);
+                setFriends(data);
+                }
+            }
+          };
     
           fetchRemainingPoints();
           fetchUsernameAndProfilePicture();
+          fetchFriends();
         }, [])
-      );
+    );
     
     useEffect(() => {
       // Fetch the user's score or remaining points from Supabase or any other data source
@@ -107,27 +121,24 @@ export default function HomeScreen() {
       fetchRemainingPoints();
     }, []); // Run this effect only once, on component mount
 
-    //const FriendsList = () => {
-        const [friends, setFriends] = useState([]);
       
-        useEffect(() => {
-          // Fetch friends list from Supabase
-          const fetchFriends = async () => {
-            const { data: { user } } = await supabase.auth.getUser()
-            if (user) {
-                const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
-                if (error) {
-                console.error(error);
-                } else {
-                console.log(data);
-                setFriends(data);
-                }
+    useEffect(() => {
+      // Fetch friends list from Supabase
+      const fetchFriends = async () => {
+         const { data: { user } } = await supabase.auth.getUser()
+        if (user) {
+            const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
+            if (error) {
+            console.error(error);
+            } else {
+            console.log(data);
+            setFriends(data);
             }
-            
-          };
+        }
+      };
       
-          fetchFriends();
-        }, []);
+      fetchFriends();
+    }, []);
         
     const renderFriendItem = ({ item }) => (
       <View style={styles.friendItem}>
