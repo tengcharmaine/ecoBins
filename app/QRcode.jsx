@@ -4,11 +4,11 @@ import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { Link } from 'expo-router';
 import {supabase} from '../lib/supabase';
-// import {useRouter} from 'expo-router';
+import {useRouter} from 'expo-router';
 
 export default function QRCodeScreen() {
   const [remainingPoints, setRemainingPoints] = useState(0);
-  // const router = useRouter();
+  const router = useRouter();
   useEffect(() => {
     // Fetch the user's score or remaining points from Supabase or any other data source
     const fetchRemainingPoints = async () => {
