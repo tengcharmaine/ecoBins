@@ -2,8 +2,17 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useFocusEffect } from '@react-navigation/native';
 import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import FriendRankingsScreen from '../friendsranking';
+
+const LeaderboardStack = createStackNavigator();
+const Stack = createStackNavigator();
+
 
 const LeaderboardScreen = () => {
+  const navigation = useNavigation();
+
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [yourUserId, setYourUserId] = useState(null); 
 
@@ -167,11 +176,19 @@ const LeaderboardScreen = () => {
     fetchLeaderboardData();
   }, []);
 
+  const navigateToFriendRankings = () => {
+    navigation.navigate('friendsranking');
+  };
+  
+
   useFocusEffect(reloadScreen); 
 
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Leaderboard</Text>
+        <TouchableOpacity style={styles.buttonContainer} onPress={navigateToFriendRankings}>
+          <Text style={styles.buttonText}>View Friend Rankings</Text>
+        </TouchableOpacity>
       <FlatList
         data={leaderboardData}
         renderItem={({ item }) => (
@@ -281,4 +298,13 @@ const styles = StyleSheet.create({
   
 });
 
-export default LeaderboardScreen;
+const LeaderboardStackScreen = () => {
+  return (
+    <LeaderboardStack.Navigator initialRouteName="leaderboard" screenOptions={{ headerShown: false }}>
+      <LeaderboardStack.Screen name="ranking" component={LeaderboardScreen} />
+      <LeaderboardStack.Screen name="friendsranking" component={FriendRankingsScreen} />
+    </LeaderboardStack.Navigator>
+  );
+};
+
+export default LeaderboardStackScreen;
