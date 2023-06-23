@@ -43,28 +43,54 @@ export default function HomeScreen() {
               console.error('Error fetching user points:', error.message);
             }
           };
-    
+
           const fetchUsernameAndProfilePicture = async () => {
             try {
               const { data: { user } } = await supabase.auth.getUser();
-    
-              const { data, error } = await supabase
-                .from('users')
-                .select('email, profile')
-                .eq('id', user.id)
-                .single();
-    
-              if (error) {
-                console.error('Error fetching username and profile picture1:', error.message);
-                return;
+          
+              if (user && user.id) { // Add a check for user and user.id
+                const { data, error } = await supabase
+                  .from('users')
+                  .select('email, profile')
+                  .eq('id', user.id)
+                  .single();
+          
+                if (error) {
+                  console.error('Error fetching username and profile picture1:', error.message);
+                  return;
+                }
+          
+                setUsername(data.email);
+                setProfilePicture(data.profile);
+              } else {
+                console.log('User object or user.id is null');
               }
-    
-              setUsername(data.email);
-              setProfilePicture(data.profile);
             } catch (error) {
               console.error('Error fetching username and profile picture:', error.message);
             }
-          };
+          };          
+    
+          // const fetchUsernameAndProfilePicture = async () => {
+          //   try {
+          //     const { data: { user } } = await supabase.auth.getUser();
+    
+          //     const { data, error } = await supabase
+          //       .from('users')
+          //       .select('email, profile')
+          //       .eq('id', user.id)
+          //       .single();
+    
+          //     if (error) {
+          //       console.error('Error fetching username and profile picture1:', error.message);
+          //       return;
+          //     }
+    
+          //     setUsername(data.email);
+          //     setProfilePicture(data.profile);
+          //   } catch (error) {
+          //     console.error('Error fetching username and profile picture:', error.message);
+          //   }
+          // };
           // const fetchFriends = async () => {
           //   const { data: { user } } = await supabase.auth.getUser()
           //   if (user) {
