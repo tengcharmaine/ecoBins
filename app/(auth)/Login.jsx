@@ -15,12 +15,12 @@ export default function LoginPage() {
     const handleSubmit = async () => {
         setErrMsg('');
         setEmailErrMsg('');
-        if (email == '') {
-            setEmailErrMsg("Email cannot be empty")
-            return;
-        }
         setPasswordErrMsg('');
-        if (password == '') {
+        if (email == '' && password == '') {
+            setEmailErrMsg("Email cannot be empty")
+            setPasswordErrMsg("Password cannot be empty")
+            return;
+        } else if (password == '') {
             setPasswordErrMsg("Password cannot be empty")
             return;
         }
