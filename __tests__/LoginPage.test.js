@@ -24,27 +24,37 @@ describe('LoginPage', () => {
     expect(instance.state.passwordErrMsg).toBe('Password cannot be empty');
   });
 
-  // Add more tests for different scenarios and edge cases
-  
-  // test('handles successful login', () => {
-  //   ...
-  // });
+  test('handles login failure', async () => {
+    const mockSignInWithPassword = jest.fn(() =>
+      Promise.reject(new Error('Invalid email or password'))
+    );
 
-  // test('handles login failure', () => {
-  //   ...
-  // });
+    const component = renderer.create(<LoginPage />);
+    const instance = component.getInstance();
 
-  // test('displays loading indicator during login', () => {
-  //   ...
-  // });
+    // Mock the signInWithPassword function with a failed response
+    instance.handleSubmit = jest.fn(() => {
+      instance.setState({ loading: true });
+
+      return mockSignInWithPassword()
+        .then(() => {
+          instance.setState({ loading: false });
+        })
+        .catch((error) => {
+          instance.setState({ loading: false, errMsg: error.message });
+        });
+    });
+
+    // Set the email and password fields
+    instance.setState({ email: 'invalid@example.com', password: 'wrongpassword' });
+
+    // Trigger the form submission
+    await instance.handleSubmit();
+
+    // Check if the loading state is reset
+    expect(instance.state.loading).toBe(false);
+
+    // Check if the error message is set
+    expect(instance.state.errMsg).toBe('Invalid email or password');
+  });
 });
-
-
-// import React from 'react';
-// import renderer from 'react-test-renderer';
-// import Intro from '../components/intro';
-
-// test('renders correctly', () => {
-//   const tree = renderer.create(<Intro />).toJSON();
-//   expect(tree).toMatchSnapshot();
-// });
