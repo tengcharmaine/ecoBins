@@ -23,9 +23,12 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
+        
+      - name: Test
+        run: npm test
 
-      - name: Build and test
-        run: npm run build && npm run test
+      - name: Build 
+        run: npm expo start
 
       - name: Publish artifact
         uses: actions/upload-artifact@v2
@@ -55,8 +58,8 @@ jobs:
       - name: Install dependencies
         run: npm ci --production
 
-      - name: Deployment script
-        run: |
+      # - name: Deployment script
+        # run: |
           # Add your deployment commands here
           # For example, if deploying to a cloud service, you might have commands to deploy the app
 
