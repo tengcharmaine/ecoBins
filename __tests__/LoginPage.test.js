@@ -12,7 +12,7 @@ describe('LoginPage', () => {
     expect(tree).toMatchSnapshot();
   });
 
-  test('displays error messages for empty email', () => {
+  test('displays error messages for empty credentials', () => {
     const component = renderer.create(<LoginPage />);
     const instance = component.getInstance();
 
