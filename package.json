@@ -23,6 +23,7 @@
     "@supabase/supabase-js": "^2.24.0",
     "@testing-library/react-native": "^12.1.2",
     "axios": "^1.4.0",
+    "bezier-easing": "^2.1.0",
     "clarifai": "^2.9.1",
     "deprecated-react-native-prop-types": "^4.1.0",
     "eas": "^0.1.0",
