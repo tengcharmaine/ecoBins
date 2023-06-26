@@ -158,22 +158,22 @@ export default class HomeScreen extends Component {
             <Text>No profile picture found</Text>
             )}
 
-            <IconButton
+            {/* <IconButton
                 icon="pencil"
                 size={25}
                 color="black"
                 style={styles.editProfilePictureIcon}
                 onPress={() => navigation.navigate('editprofilepic')}
-                />
+                /> */}
         </View>
         <View style={styles.usernameContainer}>
         <Text style={styles.usernameText}>Welcome, {username}!</Text>
-        <IconButton
+        {/* <IconButton
           icon="pencil"
           color="black"
           size={20}
           onPress={() => navigation.navigate('editusername')}
-        />
+        /> */}
       </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
             <Button style = {styles.button}>Logout
