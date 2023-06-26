@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { BackHandler } from 'react-native';
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, 
         justifyContent: 'center',  
-        // alignItems: 'center',
         padding: 20,
     },
 
@@ -93,7 +92,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'lightgrey',
         width: '25%',
-        //marginRight: 200,
         borderRadius: 30,
         height: 40,
     },
@@ -110,10 +108,8 @@ const styles = StyleSheet.create({
     buttonPressed: {
         borderColor: "black",
         alignItems: 'center',
-        //justifyContent: 'center',
         backgroundColor: 'grey',
         width: '25%',
-        //marginRight: 200,
         borderRadius: 30,
     },
 
@@ -202,7 +198,7 @@ export function RewardsScreen() {
             console.log(user);
             if (user) {
               const { data, error } = await supabase
-              .from('ranking')
+              .from('redemption')
               .select('score')
               .eq('username', user.id); 
               console.log(2);
@@ -236,7 +232,7 @@ export function RewardsScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
+            <Text style={styles.pointsheading}>You have {remainingPoints} points for redemption.</Text>
             <Text style={styles.text1}>Catalogue:</Text>
             <FlatList
             data={foodcataloguedata}
@@ -268,6 +264,7 @@ export function SelectionScreen({ route }) {
     const isConfirmButtonVisible = selectedChooseButtons.length > 0;
 
     const [remainingPoints, setRemainingPoints] = useState(0);
+    const router = useRouter();
 
       useEffect(() => {
         // Fetch the user's score or remaining points from Supabase or any other data source
@@ -278,7 +275,7 @@ export function SelectionScreen({ route }) {
             console.log(user);
             if (user) {
               const { data, error } = await supabase
-              .from('ranking')
+              .from('redemption')
               .select('score')
               .eq('username', user.id); 
               console.log(2);
@@ -327,10 +324,19 @@ export function SelectionScreen({ route }) {
         backHandler.remove();
       };
     }, []);
+  
+    const handleConfirmation = async () => {
+    console.log(3);
+    if (remainingPoints >= 20) {
+          router.push('QRcode');
+    } else {
+      alert('Insufficient points. Please select a different menu or earn more points.');
+    }
+  };
       
     return (
       <View style={styles.container}>
-        <Text style={styles.pointsheading}>You have: {remainingPoints} Points</Text>
+          <Text style={styles.pointsheading}>You have {remainingPoints} points for redemption.</Text>
         <Text style={styles.text1}>Catalogue:</Text>
   
         <View style={styles.selectcontainer}>
@@ -391,10 +397,10 @@ export function SelectionScreen({ route }) {
           </View>
   
           {isConfirmButtonVisible && (
-            <Button style={styles.button1}>
-              <Link style={styles.text1} href="/QRcode">
+            <Button style={styles.button1} onPress={handleConfirmation}>
+              <Text style={styles.text1}>
                 Confirm
-              </Link>
+              </Text>
             </Button>
           )}
           <Button style={styles.button1} onPress={() => navigation.goBack()}>

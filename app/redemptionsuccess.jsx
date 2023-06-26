@@ -2,7 +2,7 @@ import { Text, Button } from "react-native-paper";
 import { StyleSheet, View, Image } from "react-native";
 import { Link } from "expo-router";
 
-export default function SubmissionComplete() {
+export default function RedemptionSuccess() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -30,24 +30,15 @@ export default function SubmissionComplete() {
             color: "black",
             marginTop: 20,
             textAlign: 'center',
-            //marginRight: 255,
             fontSize: 25,
             marginBottom: 0,
-            //flexGrow: 1,
-            //flexDirection: 'row',
         },
 
         text1: {
             color: "black",
-            //marginTop: 20,
-            //textAlign: 'left',
             marginLeft: 5,
-            //justifyContent: 'center',
             flexWrap: 'wrap',
             flex: 1,
-            //width: 1
-            //marginRight: 230,
-            //marginBottom: 5,
         },
 
         title: {

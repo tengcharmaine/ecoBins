@@ -25,15 +25,6 @@ export default function Register() {
             setPasswordErrMsg("Password cannot be empty")
             return;
         }
-        /*
-        if (email == '') {
-            setErrMsg("Email cannot be empty")
-            return;
-        }
-        if (password == '') {
-            setErrMsg("Password cannot be empty")
-            return;
-        }*/
         setLoading(true);
         const { error } = await supabase.auth.signUp({ email, password });
         setLoading(false);

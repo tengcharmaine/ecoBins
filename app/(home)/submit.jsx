@@ -14,27 +14,99 @@ export default function SubmitScreen() {
     const { user } = useAuth();
     const router = useRouter();
     const [showButton, setShowButton] = useState(true);
+    const [remainingPoints, setRemainingPoints] = useState(0);
+    const [remainingPoints1, setRemainingPoints1] = useState(0);
 
     useFocusEffect(
         React.useCallback(() => {
-            // Reset the image state when the screen is focused
-            setImage(null);
-            setShowButton(true);
+            // Reload the screen when it is focused
+            reloadScreen();
         }, [])
     );
+
+    const reloadScreen = () => {
+        setImage(null);
+        setShowButton(true);
+        setRemainingPoints(fetchRemainingPoints);
+        setRemainingPoints1(fetchRemainingPoints1);
+    };
 
     const handleAddImage = async () => {
         
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, 
                                                                  allowsEditing: true});
-        //setShowButton(false);
         if (!result.canceled) {
             setImage(result.assets[0].uri);
             setShowButton(false);
         }
         
     }
+    
+        const fetchRemainingPoints = async () => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+            console.log(user);
+            if (user) {
+            const { data, error } = await supabase
+            .from('redemption')
+            .select('score')
+            .eq('username', user.id); 
+            console.log(2);
+            if (error) {
+                console.error('Error fetching user points1:', error.message);
+                return;
+            }
 
+            if (data.length > 0) {
+                const userScore = data[0].score;
+                setRemainingPoints(userScore);
+                console.log(userScore);
+            } else {
+                // Handle the case when there are no matching records
+                console.log('No data found for the user');
+            }
+            } else {
+            console.log('not auth');
+            }
+        } catch (error) {
+            console.error('Error fetching user points2:', error.message);
+        }
+        };
+
+        fetchRemainingPoints();
+
+        const fetchRemainingPoints1 = async () => {
+        try {
+            const { data: { user } } = await supabase.auth.getUser()
+
+            console.log(user);
+            if (user) {
+            const { data, error } = await supabase
+            .from('ranking')
+            .select('score')
+            .eq('user_id', user.id); 
+            console.log(2);
+            if (error) {
+                console.error('Error fetching user points1:', error.message);
+                return;
+            }
+
+            if (data.length > 0) {
+                const userScore = data[0].score;
+                setRemainingPoints1(userScore);
+                console.log(userScore);
+            } else {
+                // Handle the case when there are no matching records
+                console.log('No data found for the user');
+            }
+            } else {
+            console.log('not auth');
+            }
+        } catch (error) {
+            console.error('Error fetching user points2:', error.message);
+        }
+        };
+    
     const handleSubmit = async () => {
         setErrMsg('');
         if (image === null) {
@@ -45,7 +117,6 @@ export default function SubmitScreen() {
         let uploadedImage = null;
         if (image != null) {
             const { data, error } = await supabase.storage.from('images').upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
-
             if (error != null) {
                 console.log(error);
                 setErrMsg(error.message)
@@ -54,6 +125,43 @@ export default function SubmitScreen() {
             }
             const { data: { publicUrl } } = supabase.storage.from('images').getPublicUrl(data.path);
             uploadedImage = publicUrl;
+            
+            try {
+                const { data: { user } } = await supabase.auth.getUser()
+                console.log(remainingPoints);
+                const updatedScore = remainingPoints + 1;
+                if (user) {
+                  const { data, error } = await supabase
+                    .from('redemption')
+                    .update({ score: updatedScore})
+                    .eq('username', user.id)
+                    .single();
+                  if (error) {
+                    console.error('Error updating user points5:', error.message);
+                    return;
+                  }
+                  setRemainingPoints(updatedScore);
+                  console.log(updatedScore);
+                }
+                const updatedScore1 = remainingPoints1 + 1;
+                if (user) {
+                    const { data, error } = await supabase
+                      .from('ranking')
+                      .update({ score: updatedScore1})
+                      .eq('user_id', user.id)
+                      .single();
+                    if (error) {
+                      console.error('Error updating user points3:', error.message);
+                      return;
+                    }
+                    setRemainingPoints(updatedScore1);
+                    console.log(updatedScore1);
+                  }
+            } catch (error) {
+                console.error('Error updating user points4:', error.message);
+            }
+            router.push('SubmissionComplete');
+           
         } else if (image == null) {
             if (error) {
                 console.log(error);
@@ -70,14 +178,12 @@ export default function SubmitScreen() {
             return;
         }
         setLoading(false);
-        router.push('/');
     }
 
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
         },
         input: {
@@ -161,8 +267,8 @@ export default function SubmitScreen() {
              <Pick />
              <Button onPress={handleSubmit}
                      style={styles.button}>
-                <Link style={styles.text1}
-                      href='/SubmissionComplete'>Submit</Link>
+                <Text style={styles.text1}
+                      href='/SubmissionComplete'>Submit</Text>
              </Button>
              {loading && <ActivityIndicator />}
          </View>

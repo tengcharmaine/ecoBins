@@ -1,20 +1,25 @@
 import { View, StyleSheet, Image } from 'react-native';
-import { supabase } from '../../lib/supabase';
-import React, { useEffect, useState, useCallback } from 'react';
+import { supabase } from '../lib/supabase';
+import React, { useEffect, useState, useCallback, Component } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
-import { Link } from 'expo-router';
-import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
-export default function HomeScreen() {
-    const [remainingPoints, setRemainingPoints] = useState(0);
-    const [username, setUsername] = useState(null);
-    const [profilePicture, setProfilePicture] = useState(null);
-    const navigation = useNavigation();
+export default class HomeScreen extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+          remainingPoints: 0,
+          username: null,
+          profilePicture: null
+        };
+      }
 
-    useFocusEffect(
-        useCallback(() => {
-          const fetchRemainingPoints = async () => {
-            try {
+    fetchRemainingPoints = async () => {
+        const { remainingPoints } = this.state;
+        this.setState({
+          remainingPoints: 0
+        });
+
+        try {
               const { data: { user } } = await supabase.auth.getUser();
     
               if (user) {
@@ -30,7 +35,7 @@ export default function HomeScreen() {
     
                 if (data.length > 0) {
                   const userScore = data[0].score;
-                  setRemainingPoints(userScore);
+                  this.setState({ remainingPoints: userScore });
                 } else {
                   console.log('No data found for the user');
                 }
@@ -40,9 +45,14 @@ export default function HomeScreen() {
             } catch (error) {
               console.error('Error fetching user points:', error.message);
             }
-          };
+    };
 
-          const fetchUsernameAndProfilePicture = async () => {
+    fetchUsernameAndProfilePicture = async () => {
+        const { username, profilePicture } = this.state;
+        this.setState({
+          username: null,
+          profilePicture: null
+        });
             try {
               const { data: { user } } = await supabase.auth.getUser();
           
@@ -58,57 +68,19 @@ export default function HomeScreen() {
                   return;
                 }
           
-                setUsername(data.email);
-                setProfilePicture(data.profile);
+                this.setState({ username: data.email });
+                this.setState({ profilePicture: data.profile });
+
               } else {
                 console.log('User object or user.id is null');
               }
             } catch (error) {
               console.error('Error fetching username and profile picture:', error.message);
             }
-          };      
-    
-          fetchRemainingPoints();
-          fetchUsernameAndProfilePicture();
-        }, [])
-    );
-    
-    useEffect(() => {
-      // Fetch the user's score or remaining points from Supabase or any other data source
-      const fetchRemainingPoints = async () => {
-        try {
-          const { data: { user } } = await supabase.auth.getUser()
-  
-          console.log(user);
-          if (user) {
-            const { data, error } = await supabase
-            .from('ranking')
-            .select('score')
-            .eq('user_id', user.id); 
-            console.log(2);
-            if (error) {
-              console.error('Error fetching user points1:', error.message);
-              return;
-            }
-  
-            if (data.length > 0) {
-              const userScore = data[0].score;
-              setRemainingPoints(userScore);
-              console.log(userScore);
-            } else {
-              // Handle the case when there are no matching records
-              console.log('No data found for the user');
-            }
-          } else {
-            console.log('not auth');
-          }
-        } catch (error) {
-          console.error('Error fetching user points2:', error.message);
-        }
-      };
-  
-      fetchRemainingPoints();
-    }, []); // Run this effect only once, on component mount
+    };          
+      
+    render() {
+        const { remainingPoints, username, profilePicture } = this.state;
 
     const styles = StyleSheet.create({
         container: {
@@ -186,27 +158,27 @@ export default function HomeScreen() {
             <Text>No profile picture found</Text>
             )}
 
-            <IconButton
+            {/* <IconButton
                 icon="pencil"
                 size={25}
                 color="black"
                 style={styles.editProfilePictureIcon}
                 onPress={() => navigation.navigate('editprofilepic')}
-                />
+                /> */}
         </View>
         <View style={styles.usernameContainer}>
         <Text style={styles.usernameText}>Welcome, {username}!</Text>
-        <IconButton
+        {/* <IconButton
           icon="pencil"
           color="black"
           size={20}
           onPress={() => navigation.navigate('editusername')}
-        />
+        /> */}
       </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
-            <Button style = {styles.button}>
-                <Link style={styles.text1} href='/Logout'>Logout</Link>
+            <Button style = {styles.button}>Logout
             </Button>
         </View>
     );
-}
+            }
+        }

@@ -18,7 +18,7 @@ export default function QRCodeScreen() {
         console.log(user);
         if (user) {
           const { data, error } = await supabase
-          .from('ranking')
+          .from('redemption')
           .select('score')
           .eq('username', user.id); 
           console.log(2);
@@ -48,19 +48,14 @@ export default function QRCodeScreen() {
   
   const qrCodeValue = Math.random().toString(36).substring(2, 8);
   const handleConfirmation = async () => {
-    // const selectedMenuPoints = Object.values(buttonPressed).filter(
-    //   (pressed, index) => pressed && index < 3
-    // ).length * 20; // Assuming each menu has 20 points
     console.log(3);
-    if (remainingPoints >= 20) {
-      // Deduct points and proceed with redemption
       try {
         const { data: { user } } = await supabase.auth.getUser()
         console.log(4);
         if (user) {
           console.log(user);
           const { data, error } = await supabase
-            .from('ranking')
+            .from('redemption')
             .update({ score: remainingPoints - 20 })
             .eq('username', user.id)
             .single();
@@ -75,9 +70,6 @@ export default function QRCodeScreen() {
       } catch (error) {
         console.error('Error updating user points:', error.message);
       }
-    } else {
-      alert('Insufficient points. Please select a different menu or earn more points.');
-    }
   };
   
   return (
@@ -123,14 +115,8 @@ const styles = StyleSheet.create({
 
   text1: {
     color: "black",
-    //marginTop: 20,
-    //textAlign: 'left',
     marginLeft: 5,
-    //justifyContent: 'center',
     flexWrap: 'wrap',
     flex: 1,
-    //width: 1
-    //marginRight: 230,
-    //marginBottom: 5,
   },
 });
