@@ -38,13 +38,11 @@ export default class Recyclable extends React.Component {
           }
         );
         console.log(3);
-        // use concepts to show prediction, but will have error for map
         const predictions = response.data.outputs[0]?.data?.concepts;
         console.log(predictions);
         this.setState({ imageUri: photo.uri, predictions: predictions });
       } catch (error) {
         console.log('Object detection error:', error);
-        //this.setState({ errorMessage: 'Error occurred during object detection. Please try again.' });
       } finally {
         this.setState({ isLoading: false }); 
       }
@@ -59,7 +57,6 @@ export default class Recyclable extends React.Component {
     } else {
       return (
         <View style={{ flex: 1 }}>
-          {/*{errorMessage !== '' && <Text>{errorMessage}</Text>}*/}
           <Camera
             style={{ flex: 1 }}
             type={this.state.type}
@@ -91,13 +88,11 @@ export default class Recyclable extends React.Component {
               >
               {isLoading 
               ? (<Text style={{
-                        //backgroundColor: "#c7dede", 
                         borderRadius: 10, 
                         fontSize: 18, 
                         color: 'black' 
                       }}>Loading...</Text>) 
               : (<Text style={{ 
-                        //backgroundColor: "#D9D9D6",
                         borderRadius: 10, 
                         fontSize: 18, 
                         color: 'black' 
@@ -111,68 +106,19 @@ export default class Recyclable extends React.Component {
       );
     }
   };
-  // renderImageView = () => {
-  //   const { imageUri, predictions, errorMessage } = this.state;
 
-  //   // if (errorMessage !== '') {
-  //   //   return (
-  //   //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //   //       {/*<Text>{errorMessage}</Text>*/}
-  //   //     </View>
-  //   //   );
-  //   // }
-  //     // Sort the predictions by probability in descending order
-  //   const sortedPredictions = predictions.sort((a, b) => b.value - a.value);
-
-  //   // Take only the top 3 predictions
-  //   const top3Predictions = sortedPredictions.slice(0, 3);
-
-  //   return (
-  //     <View style={{ flex: 1 }}>
-  //       <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
-  //       {/* Display the name and probability of the top 3 predictions */}
-      
-  //     <View style={{ alignItems: 'center', backgroundColor: 'white', padding: 15 }}>
-  //       {top3Predictions.map((prediction, index) => (
-  //         <View key={index} style={{ marginBottom: 10, justifyContent: 'center', }}>
-  //           <Text style={{ fontSize: 18 }}>{prediction.name}</Text>
-  //           <Text style={{ fontSize: 14, color: 'gray' }}>Probability: {prediction.value}</Text>
-  //         </View>
-  //       ))}
-  //     </View>
-  //       <Button
-  //         style={{ 
-  //                 alignSelf: 'center',
-  //                 justifyContent: 'center',
-  //                 alignItems: 'center',
-  //                 // paddingVertical: 15,
-  //                 // marginBottom: 20,
-  //                 //borderRadius: 10,
-  //                 //width: 200,
-  //                 //backgroundColor: '#d9d9d6',
-  //                 padding: 15 }}
-  //         onPress={() => this.setState({ imageUri: null })}
-  //       >
-  //         <Text style={{ 
-  //                 fontSize: 18, 
-  //                 color: 'black' }}>Retake Photo</Text>
-  //       </Button>
-  //     </View>
-  //   );
-  // };
   renderImageView = () => {
     const { imageUri, predictions, errorMessage } = this.state;
   
     const colorMap = {
       'recyclable': 'green',
       'non-recyclable': 'red',
-      // Add more colors and corresponding predictions if needed
     };
   
     // Sort the predictions by probability in descending order
     const sortedPredictions = predictions.sort((a, b) => b.value - a.value);
   
-    // Take only the top 2 predictions
+    // Take only the top 3 predictions
     const top3Predictions = sortedPredictions.slice(0, 2);
   
     return (

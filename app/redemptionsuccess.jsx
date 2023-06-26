@@ -30,24 +30,15 @@ export default function RedemptionSuccess() {
             color: "black",
             marginTop: 20,
             textAlign: 'center',
-            //marginRight: 255,
             fontSize: 25,
             marginBottom: 0,
-            //flexGrow: 1,
-            //flexDirection: 'row',
         },
 
         text1: {
             color: "black",
-            //marginTop: 20,
-            //textAlign: 'left',
             marginLeft: 5,
-            //justifyContent: 'center',
             flexWrap: 'wrap',
             flex: 1,
-            //width: 1
-            //marginRight: 230,
-            //marginBottom: 5,
         },
 
         title: {

@@ -3,14 +3,12 @@ import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
 import { Link } from 'expo-router';
-// import * as ImagePicker from 'expo-image-picker';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [username, setUsername] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
-    // const [friends, setFriends] = useState([]);
     const navigation = useNavigation();
 
     useFocusEffect(
@@ -68,45 +66,10 @@ export default function HomeScreen() {
             } catch (error) {
               console.error('Error fetching username and profile picture:', error.message);
             }
-          };          
-    
-          // const fetchUsernameAndProfilePicture = async () => {
-          //   try {
-          //     const { data: { user } } = await supabase.auth.getUser();
-    
-          //     const { data, error } = await supabase
-          //       .from('users')
-          //       .select('email, profile')
-          //       .eq('id', user.id)
-          //       .single();
-    
-          //     if (error) {
-          //       console.error('Error fetching username and profile picture1:', error.message);
-          //       return;
-          //     }
-    
-          //     setUsername(data.email);
-          //     setProfilePicture(data.profile);
-          //   } catch (error) {
-          //     console.error('Error fetching username and profile picture:', error.message);
-          //   }
-          // };
-          // const fetchFriends = async () => {
-          //   const { data: { user } } = await supabase.auth.getUser()
-          //   if (user) {
-          //       const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
-          //       if (error) {
-          //       console.error(error);
-          //       } else {
-          //       console.log(data);
-          //       setFriends(data);
-          //       }
-          //   }
-          // };
+          };      
     
           fetchRemainingPoints();
           fetchUsernameAndProfilePicture();
-          // fetchFriends();
         }, [])
     );
     
@@ -147,36 +110,10 @@ export default function HomeScreen() {
       fetchRemainingPoints();
     }, []); // Run this effect only once, on component mount
 
-      
-    // useEffect(() => {
-    //   // Fetch friends list from Supabase
-    //   const fetchFriends = async () => {
-    //      const { data: { user } } = await supabase.auth.getUser()
-    //     if (user) {
-    //         const { data, error } = await supabase.from('friendships').select('*').eq('user_id', user.id);
-    //         if (error) {
-    //         console.error(error);
-    //         } else {
-    //         console.log(data);
-    //         setFriends(data);
-    //         }
-    //     }
-    //   };
-      
-    //   fetchFriends();
-    // }, []);
-        
-    // const renderFriendItem = ({ item }) => (
-    //   <View style={styles.friendItem}>
-    //     <Text style={styles.friendName}>{item.friend_name}</Text>
-    //   </View>
-    // );
-
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
             padding: 50,
         },
@@ -186,19 +123,14 @@ export default function HomeScreen() {
             backgroundColor: "white",
             width: '75%',
             borderRadius: 5
-            //textAlign: 'center',
-            //justifyContent: 'center',
-            //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
         },
         button: {
             borderColor: "black",
             alignItems: 'center',
-            //justifyContent: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
             marginBottom: 10,
-            //marginRight: 200,
             borderRadius: 10,
             
         },
@@ -223,33 +155,6 @@ export default function HomeScreen() {
             marginRight: 255,
             marginBottom: 5,
         },
-
-        // friendsList: {
-        //     //marginTop: 10,
-        //     flexDirection: 'row',
-        // //alignItems: 'center',
-        // //justifyContent: 'space-between',
-        // //backgroundColor: '#c7dede',
-        // borderRadius: 30,
-        // height: 95,
-        //   },
-        //   friendItem: {
-        //     borderBottomWidth: 1,
-        //     borderBottomColor: 'gray',
-        //     paddingVertical: 10,
-        //     paddingHorizontal: 100,
-        //     //backgroundColor: '#c7dede',
-        //   },
-        //   friendName: {
-        //     fontSize: 16,
-        //     fontWeight: 'bold',
-        //     backgroundColor: '#c7dede',
-        //     width: 100,
-        //   },
-        //   friendStatus: {
-        //     marginTop: 5,
-        //     color: 'gray',
-        //   },
           usernameContainer: {
             flexDirection: 'row',
             alignItems: 'center',
@@ -299,14 +204,6 @@ export default function HomeScreen() {
         />
       </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
-            {/* <Text style={{marginVertical:20, fontSize:16}}>My friends</Text>
-            <FlatList
-                data={friends}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={renderFriendItem}
-                style={styles.friendsList}
-                horizontal={false}
-            /> */}
             <Button style = {styles.button}>
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
             </Button>

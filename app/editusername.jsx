@@ -27,7 +27,7 @@ export default function editusername() {
       width: "25%",
       marginTop: 20,
       borderRadius: 10,
-      color: "black", // Set the button text color to black
+      color: "black", 
     },
     text1: {
       color: "black",

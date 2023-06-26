@@ -163,9 +163,6 @@ const LeaderboardScreen = () => {
         isFriendAdded: friendIds.has(item.user_id), // Check if the friend is added
       }));
 
-    // Use the fetched leaderboardData in your React Native component
-    //   console.log(fetchedData);
-
       // Store the fetched leaderboardData in component state
       setLeaderboardData(rankedData);
     } catch (error) {
@@ -264,9 +261,6 @@ const styles = StyleSheet.create({
     width: 350,
     backgroundColor: 'lightgrey',
     borderRadius: 20,
-    // borderTopLeftRadius: 20,
-    // borderBottomLeftRadius: 20,
-    // borderBottomRightRadius: 20,
     marginBottom: 10,
   },
   itemText: {
@@ -284,9 +278,9 @@ const styles = StyleSheet.create({
   },
   itemTextContainer: {
     flex: 1,
-    justifyContent: 'space-between', // Aligns items vertically
-    flexDirection: 'row', // Aligns items horizontally
-    alignItems: 'center', // Centers items vertically
+    justifyContent: 'space-between', 
+    flexDirection: 'row', 
+    alignItems: 'center', 
   },
   profilePicture: {
     width: 60,

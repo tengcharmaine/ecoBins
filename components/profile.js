@@ -2,9 +2,6 @@ import { View, StyleSheet, Image } from 'react-native';
 import { supabase } from '../lib/supabase';
 import React, { useEffect, useState, useCallback, Component } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
-// import { Link } from 'expo-router';
-// import * as ImagePicker from 'expo-image-picker';
-// import { useNavigation, useFocusEffect } from '@react-navigation/native';
 
 export default class HomeScreen extends Component {
     constructor(props) {
@@ -89,7 +86,6 @@ export default class HomeScreen extends Component {
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
             padding: 50,
         },
@@ -99,19 +95,14 @@ export default class HomeScreen extends Component {
             backgroundColor: "white",
             width: '75%',
             borderRadius: 5
-            //textAlign: 'center',
-            //justifyContent: 'center',
-            //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
         },
         button: {
             borderColor: "black",
             alignItems: 'center',
-            //justifyContent: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
             marginBottom: 10,
-            //marginRight: 200,
             borderRadius: 10,
             
         },
@@ -186,7 +177,6 @@ export default class HomeScreen extends Component {
       </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
             <Button style = {styles.button}>Logout
-                {/* <Link style={styles.text1} href='/Logout'>Logout</Link> */}
             </Button>
         </View>
     );

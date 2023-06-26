@@ -10,7 +10,6 @@ export default function editprofilepic() {
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
         },
         input: {
@@ -19,19 +18,14 @@ export default function editprofilepic() {
             backgroundColor: "white",
             width: '75%',
             borderRadius: 5
-            //textAlign: 'center',
-            //justifyContent: 'center',
-            //flex: 1, justifyContent: 'center', width: '75%', alignContent: 'center',
         },
         button: {
             borderColor: "black",
             alignItems: 'center',
-            //justifyContent: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
             marginBottom: 10,
-            //marginRight: 200,
             borderRadius: 10,
             
         },
@@ -96,7 +90,6 @@ export default function editprofilepic() {
         
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, 
                                                                  allowsEditing: true});
-        //setShowButton(false);
         if (!result.canceled) {
             setImage(result.assets[0].uri);
             setShowButton(false);

@@ -127,9 +127,6 @@ const FriendRankingsScreen = () => {
         width: 350,
         backgroundColor: 'lightgrey',
         borderRadius: 20,
-        // borderTopLeftRadius: 20,
-        // borderBottomLeftRadius: 20,
-        // borderBottomRightRadius: 20,
         marginBottom: 10,
       },
       itemText: {
@@ -148,9 +145,9 @@ const FriendRankingsScreen = () => {
       itemTextContainer: {
         flex: 1,
         marginLeft: 10,
-        justifyContent: 'space-between', // Aligns items vertically
-        flexDirection: 'row', // Aligns items horizontally
-        alignItems: 'center', // Centers items vertically
+        justifyContent: 'space-between',
+        flexDirection: 'row', 
+        alignItems: 'center', 
       },
       profilePicture: {
         width: 60,

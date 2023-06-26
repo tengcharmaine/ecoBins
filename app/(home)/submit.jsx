@@ -17,13 +17,6 @@ export default function SubmitScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [remainingPoints1, setRemainingPoints1] = useState(0);
 
-    // useFocusEffect(
-    //     React.useCallback(() => {
-    //         // Reset the image state when the screen is focused
-    //         setImage(null);
-    //         setShowButton(true);
-    //     }, [])
-    // );
     useFocusEffect(
         React.useCallback(() => {
             // Reload the screen when it is focused
@@ -42,7 +35,6 @@ export default function SubmitScreen() {
         
         let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, 
                                                                  allowsEditing: true});
-        //setShowButton(false);
         if (!result.canceled) {
             setImage(result.assets[0].uri);
             setShowButton(false);
@@ -50,8 +42,6 @@ export default function SubmitScreen() {
         
     }
     
-    // useEffect(() => {
-        // Fetch the user's score or remaining points from Supabase or any other data source
         const fetchRemainingPoints = async () => {
         try {
             const { data: { user } } = await supabase.auth.getUser()
@@ -84,10 +74,7 @@ export default function SubmitScreen() {
         };
 
         fetchRemainingPoints();
-    // }, []); // Run this effect only once, on component mount
 
-    // useEffect(() => {
-        // Fetch the user's score or remaining points from Supabase or any other data source
         const fetchRemainingPoints1 = async () => {
         try {
             const { data: { user } } = await supabase.auth.getUser()
@@ -119,9 +106,6 @@ export default function SubmitScreen() {
             console.error('Error fetching user points2:', error.message);
         }
         };
-
-        // fetchRemainingPoints1();
-    // }, []); // Run this effect only once, on component mount
     
     const handleSubmit = async () => {
         setErrMsg('');
@@ -194,14 +178,12 @@ export default function SubmitScreen() {
             return;
         }
         setLoading(false);
-        //router.push('/');
     }
 
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'flex-start',
             alignItems: 'center',
         },
         input: {

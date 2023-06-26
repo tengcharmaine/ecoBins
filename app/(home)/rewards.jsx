@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1, 
         justifyContent: 'center',  
-        // alignItems: 'center',
         padding: 20,
     },
 
@@ -93,7 +92,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         backgroundColor: 'lightgrey',
         width: '25%',
-        //marginRight: 200,
         borderRadius: 30,
         height: 40,
     },
@@ -110,10 +108,8 @@ const styles = StyleSheet.create({
     buttonPressed: {
         borderColor: "black",
         alignItems: 'center',
-        //justifyContent: 'center',
         backgroundColor: 'grey',
         width: '25%',
-        //marginRight: 200,
         borderRadius: 30,
     },
 
@@ -330,33 +326,9 @@ export function SelectionScreen({ route }) {
     }, []);
   
     const handleConfirmation = async () => {
-    // const selectedMenuPoints = Object.values(buttonPressed).filter(
-    //   (pressed, index) => pressed && index < 3
-    // ).length * 20; // Assuming each menu has 20 points
     console.log(3);
     if (remainingPoints >= 20) {
-      // Deduct points and proceed with redemption
-      // try {
-        // const { data: { user } } = await supabase.auth.getUser()
-        // console.log(4);
-        // if (user) {
-        //   console.log(user);
-        //   const { data, error } = await supabase
-        //     .from('redemption')
-        //     .update({ score: remainingPoints - 20 })
-        //     .eq('username', user.id)
-        //     .single();
-        //   if (error) {
-        //     console.error('Error updating user points:', error.message);
-        //     return;
-        //   }
-        // setRemainingPoints(user.score);
-          // console.log(user.score);
           router.push('QRcode');
-      //   }
-      // } catch (error) {
-      //   console.error('Error updating user points:', error.message);
-      // }
     } else {
       alert('Insufficient points. Please select a different menu or earn more points.');
     }

@@ -2,7 +2,6 @@ import React, { Component, useState } from "react";
 import { supabase } from "../lib/supabase";
 import { StyleSheet, View } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
-// import { useNavigation } from '@react-navigation/native';
 
 export default class Register extends Component {
     constructor(props) {
