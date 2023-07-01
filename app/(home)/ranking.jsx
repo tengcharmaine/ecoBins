@@ -186,8 +186,8 @@ const LeaderboardScreen = () => {
   };
 
   const renderUsername = (userName) => {
-    if (userName.length > 8) {
-      return `${userName.substring(0, 8)}...`;
+    if (userName.length > 7) {
+      return `${userName.substring(0, 7)}...`;
     }
     return userName;
   };
