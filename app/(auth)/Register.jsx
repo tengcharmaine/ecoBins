@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View, Alert } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
+import { StyleSheet, View, Alert, TouchableOpacity } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -14,20 +14,20 @@ export default function Register() {
     const [emailErrMsg, setEmailErrMsg] = useState('');
     const [passwordErrMsg, setPasswordErrMsg] = useState('');
     const [showEmailCheck, setShowEmailCheck] = useState(false);
+    const [passwordVisible, setPasswordVisible] = useState(false);
+
 
     const handleSubmit = async () => {
         setErrMsg('');
         setEmailErrMsg('');
-        if (email == '') {
-            setEmailErrMsg("Email cannot be empty")
+        if (email === '' && password === '') {
+            setEmailErrMsg("Email cannot be empty");
+            setPasswordErrMsg("Password cannot be empty");
             return;
-        }
-        setPasswordErrMsg('');
-        if (password == '') {
-            setPasswordErrMsg("Password cannot be empty")
+          } else if (password === '') {
+            setPasswordErrMsg("Password cannot be empty");
             return;
-        }
-        if (!isPasswordValid(password)) {
+          } else if (!isPasswordValid(password)) {
             setPasswordErrMsg('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
             return;
         }
@@ -55,6 +55,10 @@ export default function Register() {
         );
     };
 
+    const togglePasswordVisibility = () => {
+        setPasswordVisible(!passwordVisible);
+    }
+
     const isPasswordValid = (password) => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
         const minLength = 8;
@@ -78,6 +82,10 @@ export default function Register() {
             borderWidth: 1,
             backgroundColor: "white",
             width: '75%',
+            borderRadius: 5
+        },
+        passwordInput: {
+            backgroundColor: "white",
             borderRadius: 5
         },
         button: {
@@ -118,6 +126,12 @@ export default function Register() {
             marginBottom: 5,
             textAlign: 'center'
         },
+        passwordIcon: {
+            position: 'absolute',
+            right: 10,
+            top: '30%',
+            transform: [{ translateY: -12 }],
+          },
         
     });
 
@@ -140,15 +154,28 @@ export default function Register() {
                     {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
         
                     <Text style= {styles.text2}>Password</Text>
-                    <TextInput
-                        secureTextEntry
-                        placeholder="Password"
-                        placeholderTextColor={"#dfd8dc"}
-                        style={styles.input}
-                        autoCapitalize='none'
-                        textContentType='password'
-                        value={password}
-                        onChangeText={setPassword} />
+                    <View style={styles.input}>
+                        <TextInput
+                            secureTextEntry={!passwordVisible}
+                            placeholder="Password"
+                            placeholderTextColor={"#dfd8dc"}
+                            style={styles.passwordInput}
+                            autoCapitalize='none'
+                            textContentType='password'
+                            value={password}
+                            onChangeText={setPassword}
+                        />
+                        <TouchableOpacity
+                            style={styles.passwordIcon}
+                            onPress={togglePasswordVisibility}
+                        >
+                        <IconButton
+                            icon={passwordVisible ? "eye-off" : "eye"}
+                            color="#000"
+                            size={20}
+                        />
+                        </TouchableOpacity>
+                    </View>
                     {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
         
                     <Button style = {styles.button} onPress={handleSubmit}>

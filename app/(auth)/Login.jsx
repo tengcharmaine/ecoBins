@@ -1,10 +1,9 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
-import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
+import { Text, TextInput, Button, ActivityIndicator, IconButton } from "react-native-paper";
 import { Link, useFocusEffect } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-// import * as Google from "expo-auth-session/providers/google";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -13,6 +12,8 @@ export default function LoginPage() {
   const [errMsg, setErrMsg] = useState('');
   const [emailErrMsg, setEmailErrMsg] = useState('');
   const [passwordErrMsg, setPasswordErrMsg] = useState('');
+  const [passwordVisible, setPasswordVisible] = useState(false);
+
 
   const handleSubmit = async () => {
     setErrMsg('');
@@ -35,45 +36,11 @@ export default function LoginPage() {
     }
   };
 
-  // const [req, _res, promptAsync] = Google.useAuthRequest({
-  //   expoClientId: '',
-  //   iosClientId: '',
-  //   androidClientId: ''
-  // })
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  }
 
-  // const handleGoogleSignIn = async () => {
-  //   promptAsync({
-  //       url: `https://modwjtelabjhmmhchteg.supabase.co/auth/v1/authorize?provider=google`,
-
-  //   }).then(async (res) => {
-  //       // After we got refresh token with the response, we can send it to supabase to sign-in the user
-  //       const { user, session, error } = await supabase.auth.signIn({
-  //           refreshToken: res.params.refresh_token,
-  //       });
-  //       console.log({ user, session, error });
-  //   });
-    // try {
-    //     setLoading(true);
-    //     console.log(1);
-    //     const { data, error } = await supabase.auth.signInWithOAuth({
-    //         provider: 'google',
-    //     });
-    //     console.log(2);
-    //     if (error) {
-    //         setErrMsg(error.message);
-    //         return;
-    //     }
-
-    //     navigation.navigate('Login');
-    // } catch (error) {
-    //     setErrMsg("An error occurred during Google Sign-In.");
-    //     console.log(error);
-    // } finally {
-    //     setLoading(false);
-    // }
-// };
-
-const styles = StyleSheet.create({
+  const styles = StyleSheet.create({
   container: {
       flex: 1, 
   },
@@ -114,6 +81,10 @@ const styles = StyleSheet.create({
       marginRight: 255,
       marginBottom: 5,
   },
+  passwordInput: {
+    backgroundColor: "white",
+    borderRadius: 5
+  },
 
   error: {
       color: "red",
@@ -125,7 +96,13 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       marginTop: '30%', 
       marginBottom: 30, 
-  }
+  },
+  passwordIcon: {
+    position: 'absolute',
+    right: 10,
+    top: '30%',
+    transform: [{ translateY: -12 }],
+  },
 });
 
   useFocusEffect(
@@ -159,23 +136,33 @@ const styles = StyleSheet.create({
             {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
 
             <Text style= {styles.text1}>Password</Text>
-            <TextInput
-                secureTextEntry
-                style={styles.input}
-                placeholder='Password'
-                placeholderTextColor={"#dfd8dc"}
-                autoCapitalize='none'
-                textContentType='password'
-                value={password}
-                onChangeText={setPassword} />
+            <View style={styles.input}>
+                <TextInput
+                    secureTextEntry={!passwordVisible}
+                    placeholder="Password"
+                    placeholderTextColor={"#dfd8dc"}
+                    style={styles.passwordInput}
+                    autoCapitalize='none'
+                    textContentType='password'
+                    value={password}
+                    onChangeText={setPassword}
+                />
+                <TouchableOpacity
+                    style={styles.passwordIcon}
+                    onPress={togglePasswordVisibility}
+                >
+                <IconButton
+                    icon={passwordVisible ? "eye-off" : "eye"}
+                    color="#000"
+                    size={20}
+                />
+                </TouchableOpacity>
+            </View>
             {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
 
             <Button style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Login </Text>
             </Button>
-            {/* <Button style={styles.text2} onPress={handleGoogleSignIn}>
-                <Text style={styles.text1}>Sign in with Google</Text>
-            </Button>   */}
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
             <Link href="/Register">
