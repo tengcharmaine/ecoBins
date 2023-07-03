@@ -3,6 +3,8 @@ import { supabase } from "../../lib/supabase";
 import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 
 export default function Register() {
     const navigation = useNavigation();
@@ -58,8 +60,13 @@ export default function Register() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
+            justifyContent: 'center', 
+        },
+        innerContainer: {
+            justifyContent: 'center',
             alignItems: 'center',
+            marginTop: '10%', // Adjust the margin as needed
+            marginBottom: 30, 
         },
         input: {
             borderColor: "black",
@@ -109,7 +116,11 @@ export default function Register() {
     });
 
     return (
-        <View style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}>
+        <View style={styles.innerContainer}>
             <Text style= {styles.title}> Registration </Text>
             <Text style= {styles.text1}>Email</Text>
             <TextInput
@@ -141,5 +152,6 @@ export default function Register() {
             {loading && <ActivityIndicator />}
             {showEmailCheck && showVerificationAlert()}
         </View>
+    </KeyboardAwareScrollView>
     );
 }

@@ -1,8 +1,9 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image,} from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import * as Google from "expo-auth-session/providers/google";
   
 
@@ -77,8 +78,6 @@ export default function LoginPage() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
-            alignItems: 'center',
         },
         input: {
             borderColor: "black",
@@ -122,14 +121,25 @@ export default function LoginPage() {
             color: "red",
             marginTop: 4,
             marginBottom: 5,
+        },
+        innerContainer: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '30%', // Adjust the margin as needed
+            marginBottom: 30, 
         }
         
     });
 
     return (
-        <View style= {styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+    >
+        <View style= {styles.innerContainer}>
             <Image source={require('./../../images/finalicon.jpeg')}
-                   style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
+                   style={{height: '35%', width: '50%', borderRadius: 60, marginBottom: 20}}></Image>
             <Text style= {styles.text3}>Email</Text>
             <TextInput
                 placeholder='Email'
@@ -166,6 +176,8 @@ export default function LoginPage() {
                     <Text>First time user? Register here.</Text>
                 </Button>
             </Link>
-        </View>
+        </View>    
+    </KeyboardAwareScrollView>
+
     )
 }
