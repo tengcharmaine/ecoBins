@@ -1,4 +1,4 @@
-import { Text, Button } from "react-native-paper"
+import { Text, Button, IconButton } from "react-native-paper"
 import { StyleSheet, View, Image } from "react-native";
 import { useNavigation, useFocusEffect } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
@@ -24,6 +24,16 @@ export default function editprofilepic() {
             alignItems: 'center',
             backgroundColor: "#c7dede",
             width: '25%',
+            marginTop: 20,
+            marginBottom: 10,
+            borderRadius: 10,
+            
+        },
+        defaultButton: {
+            borderColor: "black",
+            alignItems: 'center',
+            backgroundColor: "#c7dede",
+            width: '40%',
             marginTop: 20,
             marginBottom: 10,
             borderRadius: 10,
@@ -85,17 +95,42 @@ export default function editprofilepic() {
             setShowButton(true);
         }, [])
     );
+
+    const resetToDefault = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        const { data, error } = await supabase
+                    .from('users')
+                    .update({ profile: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2c/Default_pfp.svg/1200px-Default_pfp.svg.png' })
+                    .eq('id', user.id)
+                    .single();
+        navigation.goBack();
+
+    };
     
     const handleAddImage = async () => {
-        
-        let result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ImagePicker.MediaTypeOptions.Images, 
-                                                                 allowsEditing: true});
-        if (!result.canceled) {
-            setImage(result.assets[0].uri);
-            setShowButton(false);
-        }
-    }
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.Images,
+                allowsEditing: true,
+                quality: 1,
+                base64: true,
+                exif: true,
+            });
+            if (!result.canceled) {
+                if (result.assets[0].uri) {
+                    setImage(result.assets[0].uri);
+                } else if (result.base64) {
+                    setImage(`data:image/jpeg;base64,${result.base64}`);
+                }
+                setShowButton(false);
+            }
+    };
+    
 
+    const deleteImage = () => {
+        setImage(null);
+        setShowButton(true);
+    };
+    
     const saveImage = async () => {
         if (image) {
             try {
@@ -125,7 +160,16 @@ export default function editprofilepic() {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Change profile picture</Text>
-            {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
+            {image && (<View>
+                <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />
+                <IconButton
+                    icon="delete"
+                    size={30}
+                    color="black"
+                    onPress={deleteImage}
+                    style={{ position: 'absolute', top: 0, right: 0 }}
+                />
+            </View>)}
             {showButton && (
                 <Button onPress={handleAddImage} style={styles.button2}>
                     <Text style={styles.text}>Choose new profile picture</Text>
@@ -134,6 +178,9 @@ export default function editprofilepic() {
             {error !== null && <Text style={styles.error}>{error}</Text>}
             <Button style={styles.button} onPress={saveImage}>
                 <Text style={styles.text}>Confirm</Text>
+            </Button>
+            <Button style={styles.defaultButton} onPress={resetToDefault}>
+                <Text style={styles.text}>Reset to Default</Text>
             </Button>
             <Button style={styles.button} onPress={() => navigation.goBack()}>
                 <Text style={styles.text}>Cancel</Text>
