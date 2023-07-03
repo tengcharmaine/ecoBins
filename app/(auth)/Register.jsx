@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default function Register() {
     const navigation = useNavigation();
@@ -12,6 +13,7 @@ export default function Register() {
     const [errMsg, setErrMsg] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState('');
     const [passwordErrMsg, setPasswordErrMsg] = useState('');
+    const [showEmailCheck, setShowEmailCheck] = useState(false);
 
     const handleSubmit = async () => {
         setErrMsg('');
@@ -25,6 +27,10 @@ export default function Register() {
             setPasswordErrMsg("Password cannot be empty")
             return;
         }
+        if (!isPasswordValid(password)) {
+            setPasswordErrMsg('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
+            return;
+        }
         setLoading(true);
         const { error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
@@ -32,15 +38,40 @@ export default function Register() {
             setErrMsg(error.message);
             return;
         }
+        console.log(email)
+
+        setShowEmailCheck(true); // Show the "Check your email" message
 
         navigation.navigate('Login');
     }
 
+    const showVerificationAlert = () => {
+        Alert.alert(
+            'Email Verification',
+            'Please check your email for the verification link.',
+            [
+                { text: 'OK' },
+            ]
+        );
+    };
+
+    const isPasswordValid = (password) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+        const minLength = 8;
+    
+        return password.length >= minLength && passwordRegex.test(password);
+    };
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
+            justifyContent: 'center', 
+        },
+        innerContainer: {
+            justifyContent: 'center',
             alignItems: 'center',
+            marginTop: '10%', 
+            marginBottom: 30, 
         },
         input: {
             borderColor: "black",
@@ -85,41 +116,48 @@ export default function Register() {
             color: "red",
             marginTop: 4,
             marginBottom: 5,
+            textAlign: 'center'
         },
         
     });
 
     return (
-        <View style={styles.container}>
-            <Text style= {styles.title}> Registration </Text>
-            <Text style= {styles.text1}>Email</Text>
-            <TextInput
-                autoCapitalize='none'
-                placeholder="Email"
-                placeholderTextColor={"#dfd8dc"}
-                style={styles.input}
-                textContentType='emailAddress'
-                value={email}
-                onChangeText={setEmail} />
-            {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
-
-            <Text style= {styles.text2}>Password</Text>
-            <TextInput
-                secureTextEntry
-                placeholder="Password"
-                placeholderTextColor={"#dfd8dc"}
-                style={styles.input}
-                autoCapitalize='none'
-                textContentType='password'
-                value={password}
-                onChangeText={setPassword} />
-            {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
-
-            <Button style = {styles.button} onPress={handleSubmit}>
-                <Text style={styles.text1}> Enter </Text>
-            </Button>            
-            {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
-            {loading && <ActivityIndicator />}
-        </View>
-    );
+        <KeyboardAwareScrollView
+              contentContainerStyle={styles.container}
+              resetScrollToCoords={{ x: 0, y: 0 }}
+              scrollEnabled={true}>
+                <View style={styles.innerContainer}>
+                    <Text style= {styles.title}> Registration </Text>
+                    <Text style= {styles.text1}>Email</Text>
+                    <TextInput
+                        autoCapitalize='none'
+                        placeholder="Email"
+                        placeholderTextColor={"#dfd8dc"}
+                        style={styles.input}
+                        textContentType='emailAddress'
+                        value={email}
+                        onChangeText={setEmail} />
+                    {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
+        
+                    <Text style= {styles.text2}>Password</Text>
+                    <TextInput
+                        secureTextEntry
+                        placeholder="Password"
+                        placeholderTextColor={"#dfd8dc"}
+                        style={styles.input}
+                        autoCapitalize='none'
+                        textContentType='password'
+                        value={password}
+                        onChangeText={setPassword} />
+                    {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
+        
+                    <Button style = {styles.button} onPress={handleSubmit}>
+                        <Text style={styles.text1}> Enter </Text>
+                    </Button>          
+                    {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
+                    {loading && <ActivityIndicator />}
+                    {showEmailCheck && showVerificationAlert()}
+                </View>
+            </KeyboardAwareScrollView>
+            );
 }
