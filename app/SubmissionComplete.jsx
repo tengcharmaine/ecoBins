@@ -30,7 +30,6 @@ export default function SubmissionComplete() {
             color: "black",
             marginTop: 20,
             fontSize: 25,
-            marginBottom: 0,
         },
 
         text1: {
@@ -38,6 +37,11 @@ export default function SubmissionComplete() {
             marginLeft: 5,
             flexWrap: 'wrap',
             flex: 1,
+        },
+        text2: {
+            color: "black",
+            marginTop: 20,
+            fontSize: 20,
         },
 
         title: {
@@ -59,6 +63,7 @@ export default function SubmissionComplete() {
             <Image source={{uri: "https://media0.giphy.com/media/DyQrKMpqkAhNHZ1iWe/giphy.gif?cid=ecf05e47bdzn0x5gumv2v08hecawsy486c2dzd9blc87s8tg&ep=v1_gifs_search&rid=giphy.gif&ct=g" }}
                    style={{height: '30%', width: '60%', borderRadius: 60}}></Image>            
             <Text style={styles.text}>Your submission is successfull!</Text>
+            <Text style={styles.text2}>+1 point for redemption</Text>
             <Button style = {styles.button}>
                 <Link style={styles.text1}
                         href='/submit'>Submit another</Link>
