@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import { Text, Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { useAuth } from "../../contexts/auth";
@@ -7,6 +7,13 @@ import { useRouter, Link, useFocusEffect } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import Pick from '../pick';
 
+console.warn = (message) => {
+    if (message.includes('Key "cancelled" in the image picker result is deprecated')) {
+      return;
+    }
+    console.warn(message);
+  };
+  
 export default function SubmitScreen() {
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(null);
@@ -41,7 +48,7 @@ export default function SubmitScreen() {
         }
         
     }
-    
+
         const fetchRemainingPoints = async () => {
         try {
             const { data: { user } } = await supabase.auth.getUser()
@@ -254,6 +261,7 @@ export default function SubmitScreen() {
         },
         
     });
+
     return (
         <View style={styles.container}>
              <Text style={styles.text2}>Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!</Text>
