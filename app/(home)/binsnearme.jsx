@@ -70,18 +70,18 @@ export default class App extends React.Component {
     return dist;
   };
 
-  handleMyLocationPress = () => {
-    const { currentLocation } = this.state;
+  // handleMyLocationPress = () => {
+  //   const { currentLocation } = this.state;
   
-    if (currentLocation) {
-      this.mapRef.animateToRegion({
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
-    }
-  };
+  //   if (currentLocation) {
+  //     this.mapRef.animateToRegion({
+  //       latitude: currentLocation.latitude,
+  //       longitude: currentLocation.longitude,
+  //       latitudeDelta: 0.0922,
+  //       longitudeDelta: 0.0421,
+  //     });
+  //   }
+  // };
 
   render() {
     const { currentLocation, nearestMarker } = this.state;
@@ -94,7 +94,8 @@ export default class App extends React.Component {
             provider={PROVIDER_GOOGLE}
             showsUserLocation
             ref={(ref) => (this.mapRef = ref)}
-            // showsMyLocationButton={true}
+            showsMyLocationButton={true}
+            mapPadding={{right: 10, bottom: 100, left: 10}}
             initialRegion={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
@@ -113,12 +114,12 @@ export default class App extends React.Component {
                 description={marker.description}
               />
             ))}
-             <TouchableOpacity
+             {/* <TouchableOpacity
               style={styles.myLocationButton}
               onPress={this.handleMyLocationPress}
             >
               <Text style={styles.myLocationButtonText}>My Location</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </MapView>
         ) : (
           <Text>Loading...</Text>
@@ -265,6 +266,7 @@ const styles = StyleSheet.create({
   },
   nearestMarkerDescription: {
     marginTop: 5,
+    textAlign: 'center'
   },
   myLocationButton: {
     position: 'absolute',
