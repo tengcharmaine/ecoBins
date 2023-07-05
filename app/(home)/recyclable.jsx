@@ -111,22 +111,33 @@ export default class Recyclable extends React.Component {
     const { imageUri, predictions, errorMessage } = this.state;
   
     const colorMap = {
-      'recyclable': 'green',
+      recyclable: 'green',
       'non-recyclable': 'red',
     };
   
     // Sort the predictions by probability in descending order
     const sortedPredictions = predictions.sort((a, b) => b.value - a.value);
   
-    // Take only the top 3 predictions
-    const top3Predictions = sortedPredictions.slice(0, 2);
+    // Check if the top prediction is non-recyclable
+    const isNonRecyclableTopPrediction =
+      sortedPredictions.length > 0 && sortedPredictions[0].name.toLowerCase() === 'non-recyclable';
+  
+    // Prepare the predictions to be displayed
+    let displayPredictions;
+    if (isNonRecyclableTopPrediction) {
+      // If non-recyclable is the top prediction, show only that prediction
+      displayPredictions = [sortedPredictions[0]];
+    } else {
+      // If any other prediction is the top, show the top 2 predictions
+      displayPredictions = sortedPredictions.slice(0, 2);
+    }
   
     return (
       <View style={{ flex: 1 }}>
         <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
-        {/* Display the name and probability of the top 3 predictions */}
+        {/* Display the name and probability of the predictions */}
         <View style={{ alignItems: 'center', padding: 15 }}>
-          {top3Predictions.map((prediction, index) => (
+          {displayPredictions.map((prediction, index) => (
             <View
               key={index}
               style={{
@@ -143,7 +154,7 @@ export default class Recyclable extends React.Component {
           ))}
         </View>
         <Button
-          style={{ alignSelf: 'center', borderColor: 'black', borderWidth: 3, marginBottom: 10,}}
+          style={{ alignSelf: 'center', borderColor: 'black', borderWidth: 3, marginBottom: 10 }}
           onPress={() => this.setState({ imageUri: null })}
         >
           <Text style={{ fontSize: 18, color: 'black' }}>Retake Photo</Text>
@@ -151,6 +162,7 @@ export default class Recyclable extends React.Component {
       </View>
     );
   };
+  
   
   render() {
     const { imageUri } = this.state;
