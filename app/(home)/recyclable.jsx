@@ -26,7 +26,7 @@ export default class Recyclable extends React.Component {
         const photo = await this.camera.takePictureAsync({ base64: true });
         console.log(2);
         const response = await axios.post(
-          'https://api.clarifai.com/v2/models/recyclable/versions/953cbb4abda44213915e63e2428a4270/outputs',
+          'https://api.clarifai.com/v2/models/recyclable/versions/084a2de044de4129abc2ef67a0cb009e/outputs',
           {
             inputs: [{ data: { image: { base64: photo.base64 } } }],
           },
