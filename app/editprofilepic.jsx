@@ -130,33 +130,62 @@ export default function editprofilepic() {
         setImage(null);
         setShowButton(true);
     };
-    
+  
     const saveImage = async () => {
         if (image) {
-            try {
-                const { data: { user } } = await supabase.auth.getUser();
-        
-                // Update the user's profile picture in the Supabase table
-                const { data, error } = await supabase
-                    .from('users')
-                    .update({ profile: image })
-                    .eq('id', user.id)
-                    .single();
-        
-                if (error) {
-                    setError('Error updating profile picture: ' + error.message);
-                    return;
-                }
-        
-                console.log('Profile picture updated successfully!');
-                navigation.goBack();
-            } catch (error) {
-                setError('Error updating profile picture: ' + error.message);
+          try {
+            const { data: { user } } = await supabase.auth.getUser();
+            console.log('User ID:', user.id);
+      
+            // Upload the image file to Supabase storage
+            const { data: uploadedData, error: uploadError } = await supabase.storage
+              .from('profilepic')
+              .upload(`${new Date().getTime()}`, { uri: image, type: 'jpg', name: 'name.jpg' });
+      
+            if (uploadError) {
+              setError('Error uploading profile picture: ' + uploadError.message);
+              return;
             }
+      
+            console.log(uploadedData);
+
+            // Get the public URL of the uploaded image
+            const { data: publicUrl, error: getUrlError } = await supabase.storage
+              .from('profilepic')
+              .getPublicUrl(uploadedData.path);
+            
+            if (getUrlError) {
+              setError('Error retrieving public URL: ' + getUrlError.message);
+              return;
+            }
+      
+            const uploadedImage = publicUrl;
+            console.log(publicUrl);
+      
+            // Update the user's profile picture URL in the users table
+            const { data: updateUserData, error: updateUserError } = await supabase
+              .from('users')
+              .update({ profile: uploadedImage.publicUrl })
+              .eq('id', user.id)
+              .single();
+      
+            if (updateUserError) {
+              setError('Error updating user profile picture: ' + updateUserError.message);
+              return;
+            }
+      
+            console.log('Profile picture updated successfully!');
+            navigation.goBack();
+            
+          } catch (error) {
+            setError('Error updating profile picture: ' + error.message);
+          }
         } else {
-            setError('No image selected. Please choose a profile picture.');
+          setError('No image selected. Please choose a profile picture.');
         }
-    };
+      };
+      
+      
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Change profile picture</Text>
