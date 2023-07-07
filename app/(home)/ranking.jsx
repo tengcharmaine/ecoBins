@@ -16,6 +16,7 @@ const LeaderboardScreen = () => {
   const [yourUserId, setYourUserId] = useState(null); 
   const [selectedUserName, setSelectedUserName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeRankingType, setActiveRankingType] = useState('global');
 
   const addFriend = async (friend) => {
     try {
@@ -172,9 +173,16 @@ const LeaderboardScreen = () => {
   
   const reloadScreen = useCallback(() => {
     fetchLeaderboardData();
+    setActiveRankingType('global');
   }, []);
 
-  const navigateToFriendRankings = () => {
+  const navigateToGlobalRanking = () => {
+    setActiveRankingType('global');
+    navigation.navigate('ranking');
+  };
+
+  const navigateToFriendsRanking = () => {
+    setActiveRankingType('friends');
     navigation.navigate('friendsRanking');
   };
 
@@ -195,9 +203,26 @@ const LeaderboardScreen = () => {
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Leaderboard</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={navigateToFriendRankings}>
-          <Text style={styles.buttonText}>View Friend Rankings</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        activeRankingType === 'global' && styles.activeButton,
+      ]}
+      onPress={navigateToGlobalRanking}
+    >
+      <Text style={styles.buttonText}>Global</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        activeRankingType === 'friends' && styles.activeButton,
+      ]}
+      onPress={navigateToFriendsRanking}
+    >
+      <Text style={styles.buttonText}>Friends</Text>
+    </TouchableOpacity>
+  </View>
         <FlatList
         data={leaderboardData}
         renderItem={({ item }) => (
@@ -241,6 +266,21 @@ const LeaderboardScreen = () => {
 const styles = StyleSheet.create({
   buttonContainer: {
     flex: 0,
+    flexDirection: 'row',
+    marginBottom: 15,
+  },
+  button: {
+    marginRight: 10,
+    marginLeft: 10,
+    width: 150,
+    height: 50,
+    borderColor: 'black',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  activeButton: {
+    backgroundColor: '#29AB87',
+    borderRadius: 10,
   },
   container1: {
     flexDirection: 'column',
@@ -301,11 +341,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   buttonText: {
-    color: 'grey',
-    fontWeight: 'bold',
-    borderColor: 'black',
-    borderWidth: 1,
-    borderRadius: 10,
+    color: 'black',
+    textAlign: 'center',
+    marginTop: 15,
+    fontSize: 15,
   },
   image: {
     height: 25,

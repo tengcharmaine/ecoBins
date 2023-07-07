@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState} from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation } from '@react-navigation/native';
@@ -8,7 +8,9 @@ const FriendRankingsScreen = () => {
     const [friendRankings, setRankings] = useState([]);
     const [selectedUserName, setSelectedUserName] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [activeRankingType, setActiveRankingType] = useState('friends');
     const navigation = useNavigation();
+
     useEffect(() => {
       const fetchFriendsData = async () => {
         await fetchFriends();
@@ -19,6 +21,8 @@ const FriendRankingsScreen = () => {
       // Fetch data every time the screen is focused
       const unsubscribe = navigation.addListener('focus', fetchFriendsData);
   
+      setActiveRankingType('friends');
+
       return unsubscribe;
     }, []);
 
@@ -55,8 +59,14 @@ const FriendRankingsScreen = () => {
         }
       };
       
-      const navigateToRankings = () => {
-        navigation.navigate('leaderBoard');
+      const navigateToGlobalRanking = () => {
+        setActiveRankingType('global');
+        navigation.goBack();
+      };
+    
+      const navigateToFriendsRanking = () => {
+        setActiveRankingType('friends');
+        navigation.navigate('friendsRanking');
       };
   
       const toggleModal = (userName) => {
@@ -74,9 +84,26 @@ const FriendRankingsScreen = () => {
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Friend Rankings</Text>
-        <TouchableOpacity style={styles.buttonContainer} onPress={navigateToRankings}>
-          <Text style={styles.buttonText}>View Global Rankings</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        activeRankingType === 'global' && styles.activeButton,
+      ]}
+      onPress={navigateToGlobalRanking}
+    >
+      <Text style={styles.buttonText}>Global</Text>
+    </TouchableOpacity>
+    <TouchableOpacity
+      style={[
+        styles.button,
+        activeRankingType === 'friends' && styles.activeButton,
+      ]}
+      onPress={navigateToFriendsRanking}
+    >
+      <Text style={styles.buttonText}>Friends</Text>
+    </TouchableOpacity>
+  </View>
       <FlatList
           data={friendRankings}
           renderItem={({ item }) => (
@@ -106,8 +133,23 @@ const FriendRankingsScreen = () => {
   
   const styles = StyleSheet.create({
     buttonContainer: {
-        flex: 0,
-      },
+      flex: 0,
+      flexDirection: 'row',
+      marginBottom: 15,
+    },
+    button: {
+      marginRight: 10,
+      marginLeft: 10,
+      width: 150,
+      height: 50,
+      borderColor: 'black',
+      borderWidth: 1,
+      borderRadius: 10,
+    },
+    activeButton: {
+      backgroundColor: '#29AB87',
+      borderRadius: 10,
+    },
       container1: {
         flexDirection: 'column',
         alignItems: 'center',
@@ -168,11 +210,10 @@ const FriendRankingsScreen = () => {
         borderRadius: 5,
       },
       buttonText: {
-        color: 'grey',
-        fontWeight: 'bold',
-        borderColor: 'black',
-        borderWidth: 1,
-        borderRadius: 10,
+        color: 'black',
+        textAlign: 'center',
+        fontSize: 15,
+        marginTop: 15,
       },
       image: {
         height: 25,
