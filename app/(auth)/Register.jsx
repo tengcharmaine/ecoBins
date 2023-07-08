@@ -32,12 +32,16 @@ export default function Register() {
             return;
         }
         setLoading(true);
-        const { error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabase.auth.signUp({ email, password });
         setLoading(false);
         if (error) {
             setErrMsg(error.message);
             return;
-        }
+        }  else if (data.user?.identities?.length === 0) {
+            setErrMsg('User has already registered');
+            return;
+        } 
+
         console.log(email)
 
         setShowEmailCheck(true); // Show the "Check your email" message
