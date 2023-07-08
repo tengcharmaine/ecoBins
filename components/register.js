@@ -101,18 +101,18 @@ export default class Register extends Component {
         <View style={styles.container}>
             <Text style= {styles.title}> Registration </Text>
             <Text style= {styles.text1}>Email</Text>
-            {/* <TextInput
+            <TextInput
                 autoCapitalize='none'
                 placeholder="Email"
                 placeholderTextColor={"#dfd8dc"}
                 style={styles.input}
                 textContentType='emailAddress'
                 value={email}
-                onChangeText={email => this.setState({ email })} /> */}
+                onChangeText={email => this.setState({ email })} />
             {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
 
             <Text style= {styles.text2}>Password</Text>
-            {/* <TextInput
+            <TextInput
                 secureTextEntry
                 placeholder="Password"
                 placeholderTextColor={"#dfd8dc"}
@@ -120,7 +120,7 @@ export default class Register extends Component {
                 autoCapitalize='none'
                 textContentType='password'
                 value={password}
-                onChangeText={password => this.setState({ password })} /> */}
+                onChangeText={password => this.setState({ password })} />
             {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
 
             <Button style = {styles.button} onPress={this.handleSubmit}>

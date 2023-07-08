@@ -1,8 +1,17 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import Register from '../components/register';
+import { act } from 'react-dom/test-utils';
+
 
 describe('Register', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
   test('renders correctly', () => {
     const tree = renderer.create(<Register />).toJSON();
     
@@ -16,6 +25,11 @@ describe('Register', () => {
 
     // Simulate form submission without entering any values
     instance.handleSubmit();
+
+    act(() => {
+      // Advance timers manually
+      jest.advanceTimersByTime(1000); // Advances timers by 1 second
+    });
 
     // Check if the error messages are displayed
     expect(instance.state.emailErrMsg).toBe('Email cannot be empty');

@@ -95,7 +95,7 @@ export default class LoginPage extends Component {
     return (
       <View style={styles.container}>
         <Text style={styles.text3}>Email</Text>
-        {/* <TextInput
+        <TextInput
           placeholder='Email'
           placeholderTextColor={"#dfd8dc"}
           style={styles.input}
@@ -103,11 +103,11 @@ export default class LoginPage extends Component {
           textContentType='emailAddress'
           value={email}
           onChangeText={email => this.setState({ email })}
-        /> */}
+        />
         {emailErrMsg !== "" && <Text style={styles.error}>{emailErrMsg}</Text>}
 
         <Text style={styles.text1}>Password</Text>
-        {/* <TextInput
+        <TextInput
           secureTextEntry
           style={styles.input}
           placeholder='Password'
@@ -116,7 +116,7 @@ export default class LoginPage extends Component {
           textContentType='password'
           value={password}
           onChangeText={password => this.setState({ password })}
-        /> */}
+        />
         {passwordErrMsg !== "" && <Text style={styles.error}>{passwordErrMsg}</Text>}
 
         <Button style={styles.button} onPress={this.handleSubmit}>

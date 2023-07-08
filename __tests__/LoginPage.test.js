@@ -3,8 +3,18 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import LoginPage from '../components/login';
+import { act } from 'react-dom/test-utils';
+
 
 describe('LoginPage', () => {
+  beforeEach(() => {
+    jest.useFakeTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   test('renders correctly', () => {
     const tree = renderer.create(<LoginPage />).toJSON();
     
@@ -19,42 +29,52 @@ describe('LoginPage', () => {
     // Simulate form submission without entering any values
     instance.handleSubmit();
 
+    act(() => {
+      // Advance timers manually
+      jest.advanceTimersByTime(1000); // Advances timers by 1 second
+    });
+
     // Check if the error messages are displayed
     expect(instance.state.emailErrMsg).toBe('Email cannot be empty');
     expect(instance.state.passwordErrMsg).toBe('Password cannot be empty');
   });
 
-  // test('handles login failure', async () => {
-  //   const mockSignInWithPassword = jest.fn(() =>
-  //     Promise.reject(new Error('Invalid email or password'))
-  //   );
+  test('handles login failure', async () => {
+    const mockSignInWithPassword = jest.fn(() =>
+      Promise.reject(new Error('Invalid email or password'))
+    );
 
-  //   const component = renderer.create(<LoginPage />);
-  //   const instance = component.getInstance();
+    const component = renderer.create(<LoginPage />);
+    const instance = component.getInstance();
 
-  //   // Mock the signInWithPassword function with a failed response
-  //   instance.handleSubmit = jest.fn(() => {
-  //     instance.setState({ loading: true });
+    // Mock the signInWithPassword function with a failed response
+    instance.handleSubmit = jest.fn(() => {
+      instance.setState({ loading: true });
 
-  //     return mockSignInWithPassword()
-  //       .then(() => {
-  //         instance.setState({ loading: false });
-  //       })
-  //       .catch((error) => {
-  //         instance.setState({ loading: false, errMsg: error.message });
-  //       });
-  //   });
+      return mockSignInWithPassword()
+        .then(() => {
+          instance.setState({ loading: false });
+        })
+        .catch((error) => {
+          instance.setState({ loading: false, errMsg: error.message });
+        });
+    });
 
-  //   // Set the email and password fields
-  //   instance.setState({ email: 'invalid@example.com', password: 'wrongpassword' });
+    // Set the email and password fields
+    instance.setState({ email: 'invalid@example.com', password: 'wrongpassword' });
 
-  //   // Trigger the form submission
-  //   await instance.handleSubmit();
+    // Trigger the form submission
+    await instance.handleSubmit();
 
-  //   // Check if the loading state is reset
-  //   expect(instance.state.loading).toBe(false);
+    act(() => {
+    // Advance timers manually
+    jest.advanceTimersByTime(1000); // Advances timers by 1 second
+    });
 
-  //   // Check if the error message is set
-  //   expect(instance.state.errMsg).toBe('Invalid email or password');
-  // });
+    // Check if the loading state is reset
+    expect(instance.state.loading).toBe(false);
+
+    // Check if the error message is set
+    expect(instance.state.errMsg).toBe('Invalid email or password');
+  });
 });
