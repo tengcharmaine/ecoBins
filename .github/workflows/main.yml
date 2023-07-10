@@ -26,3 +26,7 @@ jobs:
 
       - name: Run tests
         run: npm test -- -u
+        
+      - name: Run danger
+        run: npx danger ci
+        env: GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
