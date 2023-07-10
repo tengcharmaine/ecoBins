@@ -1,8 +1,9 @@
 import { Text, Button } from "react-native-paper";
 import { StyleSheet, View, Image } from "react-native";
-import { Link } from "expo-router";
+import { Link, useNavigation } from "expo-router";
 
 export default function RedemptionSuccess() {
+    const navigation= useNavigation();
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -22,9 +23,15 @@ export default function RedemptionSuccess() {
             backgroundColor: "#c7dede",
             width: '40%',
             marginTop: 20,
-            marginBottom: 10,
             borderRadius: 10,
-            
+        },
+        button1: {
+            borderColor: "black",
+            alignItems: 'center',
+            backgroundColor: "#c7dede",
+            width: '50%',
+            marginTop: 20,
+            borderRadius: 10,
         },
         text: {
             color: "black",
@@ -54,15 +61,26 @@ export default function RedemptionSuccess() {
         },
         
     });
-    
+
+    const handlegorewards = () => {
+        navigation.navigate('Rewards');
+    };
+
+    const handleGoBack = () => {
+        navigation.navigate('Rewards');
+        navigation.navigate('Rewards');
+    };
+      
     return (
         <View style={styles.container}>
             <Image source={{uri: "https://media4.giphy.com/media/12uXi1GXBibALC/giphy.gif?cid=ecf05e47a619ods1d589dxd1t03ukj56ssxnu0h63pqrd7vj&ep=v1_gifs_search&rid=giphy.gif&ct=g" }}
                    style={{height: '25%', width: '75%', borderRadius: 60}}></Image>            
             <Text style={styles.text}>Your redemption is successfull! Enjoy your food!</Text>
-            <Button style = {styles.button}>
-                <Link style={styles.text1}
-                        href='/rewards'>Redeem another</Link>
+            <Button style = {styles.button} onPress={handlegorewards}>
+                <Text style={styles.text1}>Redeem another</Text>
+            </Button>
+            <Button style = {styles.button1} onPress={handleGoBack}>
+                <Text style={styles.text1}>Back to stalls catalogue</Text>
             </Button>
         </View>
     )
