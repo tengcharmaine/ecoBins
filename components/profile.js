@@ -167,7 +167,7 @@ export default class HomeScreen extends Component {
                 /> */}
         </View>
         <View style={styles.usernameContainer}>
-        <Text style={styles.usernameText}>Welcome, {username}!</Text>
+        <Text style={styles.usernameText} testID="welcome-text" >Welcome, {username}!</Text>
         {/* <IconButton
           icon="pencil"
           color="black"

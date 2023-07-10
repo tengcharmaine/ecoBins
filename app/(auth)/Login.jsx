@@ -4,6 +4,8 @@ import { Text, TextInput, Button, ActivityIndicator, IconButton } from "react-na
 import { Link, useFocusEffect } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useNavigation } from '@react-navigation/native';
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +16,8 @@ export default function LoginPage() {
   const [passwordErrMsg, setPasswordErrMsg] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
 
+
+  const navigation = useNavigation();
 
   const handleSubmit = async () => {
     setErrMsg('');
@@ -165,11 +169,16 @@ export default function LoginPage() {
             </Button>
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
-            <Link href="/Register">
+            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Button style = {styles.text2}>
                     <Text>First time user? Register here.</Text>
                 </Button>
-            </Link>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('PasswordRecovery')}>
+                <Button style = {styles.text2}>
+                    <Text>Forgot password? Click here.</Text>
+                </Button>
+            </TouchableOpacity>
         </View>    
     </KeyboardAwareScrollView>
   );

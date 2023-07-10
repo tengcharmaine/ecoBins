@@ -67,8 +67,8 @@ describe('LoginPage', () => {
     await instance.handleSubmit();
 
     act(() => {
-    // Advance timers manually
-    jest.advanceTimersByTime(1000); // Advances timers by 1 second
+      // Advance timers manually
+      jest.advanceTimersByTime(1000); // Advances timers by 1 second
     });
 
     // Check if the loading state is reset
