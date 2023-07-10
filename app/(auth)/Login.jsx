@@ -1,8 +1,11 @@
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image,} from "react-native";
 import { useState } from "react";
 import { Text, TextInput, Button, ActivityIndicator } from "react-native-paper";
 import { Link } from "expo-router";
 import { supabase } from "../../lib/supabase";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import * as Google from "expo-auth-session/providers/google";
+  
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -33,11 +36,48 @@ export default function LoginPage() {
         }
     }
 
+    const [req, _res, promptAsync] = Google.useAuthRequest({
+        expoClientId: '',
+        iosClientId: '',
+        androidClientId: ''
+    })
+
+    const handleGoogleSignIn = async () => {
+        promptAsync({
+            url: `https://modwjtelabjhmmhchteg.supabase.co/auth/v1/authorize?provider=google`,
+ 
+        }).then(async (res) => {
+            // After we got refresh token with the response, we can send it to supabase to sign-in the user
+            const { user, session, error } = await supabase.auth.signIn({
+                refreshToken: res.params.refresh_token,
+            });
+            console.log({ user, session, error });
+        });
+        // try {
+        //     setLoading(true);
+        //     console.log(1);
+        //     const { data, error } = await supabase.auth.signInWithOAuth({
+        //         provider: 'google',
+        //     });
+        //     console.log(2);
+        //     if (error) {
+        //         setErrMsg(error.message);
+        //         return;
+        //     }
+
+        //     navigation.navigate('Login');
+        // } catch (error) {
+        //     setErrMsg("An error occurred during Google Sign-In.");
+        //     console.log(error);
+        // } finally {
+        //     setLoading(false);
+        // }
+    };
+
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
-            alignItems: 'center',
         },
         input: {
             borderColor: "black",
@@ -81,14 +121,25 @@ export default function LoginPage() {
             color: "red",
             marginTop: 4,
             marginBottom: 5,
+        },
+        innerContainer: {
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: '30%', // Adjust the margin as needed
+            marginBottom: 30, 
         }
         
     });
 
     return (
-        <View style= {styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}
+    >
+        <View style= {styles.innerContainer}>
             <Image source={require('./../../images/finalicon.jpeg')}
-                   style={{height: '30%', width: '50%', borderRadius: 60}}></Image>
+                   style={{height: '35%', width: '50%', borderRadius: 60, marginBottom: 20}}></Image>
             <Text style= {styles.text3}>Email</Text>
             <TextInput
                 placeholder='Email'
@@ -115,7 +166,9 @@ export default function LoginPage() {
             <Button style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Login </Text>
             </Button>
-            
+            <Button style={styles.text} onPress={handleGoogleSignIn}>
+                <Text style={styles.text1}>Sign in with Google</Text>
+            </Button>  
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
             <Link href="/Register">
@@ -123,6 +176,8 @@ export default function LoginPage() {
                     <Text>First time user? Register here.</Text>
                 </Button>
             </Link>
-        </View>
+        </View>    
+    </KeyboardAwareScrollView>
+
     )
 }

@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Alert } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+
 
 export default function Register() {
     const navigation = useNavigation();
@@ -12,6 +14,9 @@ export default function Register() {
     const [errMsg, setErrMsg] = useState('');
     const [emailErrMsg, setEmailErrMsg] = useState('');
     const [passwordErrMsg, setPasswordErrMsg] = useState('');
+    const [showEmailCheck, setShowEmailCheck] = useState(false);
+
+    
 
     const handleSubmit = async () => {
         setErrMsg('');
@@ -25,22 +30,43 @@ export default function Register() {
             setPasswordErrMsg("Password cannot be empty")
             return;
         }
+    
         setLoading(true);
         const { error } = await supabase.auth.signUp({ email, password });
+        setEmail(email);
         setLoading(false);
         if (error) {
             setErrMsg(error.message);
             return;
         }
+        console.log(email)
 
+        setShowEmailCheck(true); // Show the "Check your email" message
+   
         navigation.navigate('Login');
-    }
+    };
 
+
+
+    const showVerificationAlert = () => {
+                Alert.alert(
+                    'Email Verification',
+                    'Please check your email for the verification link.',
+                    [
+                        { text: 'OK' },
+                    ]
+                );
+            };
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
+            justifyContent: 'center', 
+        },
+        innerContainer: {
+            justifyContent: 'center',
             alignItems: 'center',
+            marginTop: '10%', // Adjust the margin as needed
+            marginBottom: 30, 
         },
         input: {
             borderColor: "black",
@@ -90,7 +116,11 @@ export default function Register() {
     });
 
     return (
-        <View style={styles.container}>
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}>
+        <View style={styles.innerContainer}>
             <Text style= {styles.title}> Registration </Text>
             <Text style= {styles.text1}>Email</Text>
             <TextInput
@@ -117,9 +147,11 @@ export default function Register() {
 
             <Button style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Enter </Text>
-            </Button>            
+            </Button>          
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
+            {showEmailCheck && showVerificationAlert()}
         </View>
+    </KeyboardAwareScrollView>
     );
 }
