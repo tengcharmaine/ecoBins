@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Link, useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
@@ -164,8 +164,10 @@ const styles = StyleSheet.create({
     },
 });
 
-export function RewardsScreen() {
+export function RewardsScreen({route}) {
     const navigation = useNavigation();
+
+    console.log(route.name);
     
     const handleSelectFood = (foodId) => {
         navigation.navigate('Select', { foodId });
@@ -251,6 +253,8 @@ export function SelectionScreen({ route }) {
       menu2: false,
       menu3: false
     });
+
+    console.log(route.name);
   
     const handleButtonPress = (menu) => {
       setButtonPressed((prevButtonPressed) => ({
