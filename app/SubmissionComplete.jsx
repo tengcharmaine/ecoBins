@@ -20,9 +20,8 @@ export default function SubmissionComplete() {
             borderColor: "black",
             alignItems: 'center',
             backgroundColor: "#c7dede",
-            width: '40%',
+            width: '35%',
             marginTop: 20,
-            marginBottom: 10,
             borderRadius: 10,
             
         },
@@ -67,6 +66,10 @@ export default function SubmissionComplete() {
             <Button style = {styles.button}>
                 <Link style={styles.text1}
                         href='/submit'>Submit another</Link>
+            </Button>
+            <Button style={styles.button}>
+                <Link style={styles.text1}
+                        href='/rewards'>Redeem here!</Link>
             </Button>
         </View>
     )
