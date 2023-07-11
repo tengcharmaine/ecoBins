@@ -3,13 +3,19 @@ import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
 import { Link } from 'expo-router';
+import * as Linking from 'expo-linking';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import PasswordUpdate from '../PasswordUpdate';
 
 export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [username, setUsername] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
     const navigation = useNavigation();
+    const [users, setUsers] = useState(null);
+    const [userId, setUserId] = useState(null);
+
+    //const deepLink = Linking.createURL('/reset-password');
 
     useFocusEffect(
         useCallback(() => {
@@ -78,8 +84,9 @@ export default function HomeScreen() {
       const fetchRemainingPoints = async () => {
         try {
           const { data: { user } } = await supabase.auth.getUser()
-  
-          console.log(user);
+          setUsers(user);
+          setUserId(user.id);
+          console.log(user.id);
           if (user) {
             const { data, error } = await supabase
             .from('ranking')
@@ -110,6 +117,20 @@ export default function HomeScreen() {
       fetchRemainingPoints();
     }, []); // Run this effect only once, on component mount
 
+    const handleResetPassword = async () => {
+      try {
+        const deepLink = Linking.createURL('/reset-password');
+        const resetPasswordLink = `${deepLink}?userId=${userId}`;
+        await supabase.auth.resetPasswordForEmail(username, {
+          redirectTo: PasswordUpdate,
+        });
+        //navigation.navigate(PasswordUpdate);
+        console.log(resetPasswordLink);
+      } catch (error) {
+        console.error('Error sending password reset email:', error.message);
+      }
+    };
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -134,6 +155,16 @@ export default function HomeScreen() {
             borderRadius: 10,
             
         },
+        resetButton: {
+          borderColor: "black",
+          alignItems: 'center',
+          backgroundColor: "#c7dede",
+          width: '50%',
+          marginTop: 20,
+          marginBottom: 10,
+          borderRadius: 10,
+          
+      },
 
         text1: {
             color: "black",
@@ -206,6 +237,9 @@ export default function HomeScreen() {
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
             <Button style = {styles.button}>
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
+            </Button>
+            <Button style={styles.resetButton} onPress={handleResetPassword}>
+              <Text style={{ color: 'black' }}>Reset Password</Text>
             </Button>
         </View>
     );
