@@ -32,7 +32,7 @@ const LeaderboardScreen = () => {
       // Prompt the user for confirmation
       Alert.alert(
         'Add Friend',
-        `Are you sure you want to add ${friend.user_name} to your friends?`,
+        `Are you sure you want to send ${friend.user_name} a friend request?`,
         [
           {
             text: 'Cancel',
@@ -43,26 +43,30 @@ const LeaderboardScreen = () => {
             style: 'default',
             onPress: async () => {
               const { data, error } = await supabase
-                .from('friendships')
-                .insert([
-                  { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
-                  { user_id: friend.user_id, friend_id: user.id, friend_name: userEmail }]);
+                .from('friendrequest')
+                .insert([{ user_id: user.id, friend_id: friend.user_id, status: 'pending' },
+                { user_id: friend.user_id, friend_id: user.id, status: 'incoming' }] );
+              // const { data, error } = await supabase
+              //   .from('friendships')
+              //   .insert([
+              //     { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
+              //     { user_id: friend.user_id, friend_id: user.id, friend_name: userEmail }]);
           
-              if (error) {
-                console.error('Error adding friend1:', error);
-                return;
-              }
+              // if (error) {
+              //   console.error('Error adding friend1:', error);
+              //   return;
+              // }
 
-              // Find the index of the friend in the leaderboardData
-              const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-              if (friendIndex !== -1) {
-                // Create a copy of the leaderboardData array
-                const updatedData = [...leaderboardData];
-                // Update the 'isFriendAdded' property of the friend in the copied array
-                updatedData[friendIndex].isFriendAdded = true;
-                // Update the leaderboardData state with the copied array
-                setLeaderboardData(updatedData);
-              }
+              // // Find the index of the friend in the leaderboardData
+              // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
+              // if (friendIndex !== -1) {
+              //   // Create a copy of the leaderboardData array
+              //   const updatedData = [...leaderboardData];
+              //   // Update the 'isFriendAdded' property of the friend in the copied array
+              //   updatedData[friendIndex].isFriendAdded = true;
+              //   // Update the leaderboardData state with the copied array
+              //   setLeaderboardData(updatedData);
+              // }
             },
           },
         ],
@@ -104,16 +108,16 @@ const LeaderboardScreen = () => {
                 return;
               }
 
-              // Find the index of the friend in the leaderboardData
-              const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-              if (friendIndex !== -1) {
-                // Create a copy of the leaderboardData array
-                const updatedData = [...leaderboardData];
-                // Update the 'isFriendAdded' property of the friend in the copied array
-                updatedData[friendIndex].isFriendAdded = false;
-                // Update the leaderboardData state with the copied array
-                setLeaderboardData(updatedData);
-              }
+              // // Find the index of the friend in the leaderboardData
+              // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
+              // if (friendIndex !== -1) {
+              //   // Create a copy of the leaderboardData array
+              //   const updatedData = [...leaderboardData];
+              //   // Update the 'isFriendAdded' property of the friend in the copied array
+              //   updatedData[friendIndex].isFriendAdded = false;
+              //   // Update the leaderboardData state with the copied array
+              //   setLeaderboardData(updatedData);
+              // }
             },
           },
         ],
@@ -126,7 +130,34 @@ const LeaderboardScreen = () => {
   
   useEffect(() => {
     fetchLeaderboardData();
+
+  //    // Subscribe to real-time updates on friendships table
+  //    const subscription = supabase
+  //    .from('friendships')
+  //    .on('INSERT', handleFriendshipChange)
+  //    .on('UPDATE', handleFriendshipChange)
+  //    .on('DELETE', handleFriendshipChange)
+  //    .subscribe();
+
+  //  // Clean up the subscription when the component unmounts
+  //  return () => subscription.unsubscribe();
   }, []);
+
+  const handleFriendshipChange = (payload) => {
+    const updatedFriendId = payload.new.friend_id;
+    setLeaderboardData((prevData) =>
+      prevData.map((item) => {
+        if (item.user_id === updatedFriendId) {
+          return {
+            ...item,
+            isFriendAdded: true,
+          };
+        }
+        return item;
+      })
+    );
+  };
+
 
 
   const fetchLeaderboardData = async () => {
@@ -365,10 +396,22 @@ const styles = StyleSheet.create({
 
 const LeaderboardStackScreen = () => {
   return (
-    <LeaderboardStack.Navigator screenOptions={{ headerShown: false }}>
-      <LeaderboardStack.Screen name="leaderBoard" component={LeaderboardScreen} />
-      <LeaderboardStack.Screen name="friendsRanking" component={FriendRankingsScreen} />
-    </LeaderboardStack.Navigator>
+    <LeaderboardStack.Navigator>
+    <LeaderboardStack.Screen
+      name="leaderBoard"
+      component={LeaderboardScreen}
+      options={{ headerShown: false }}
+    />
+    <LeaderboardStack.Screen
+      name="friendsRanking"
+      component={FriendRankingsScreen}
+      options={{ headerShown: false }}
+    />
+  </LeaderboardStack.Navigator>
+    // <LeaderboardStack.Navigator screenOptions={{ headerShown: false }}>
+    //   <LeaderboardStack.Screen name="leaderBoard" component={LeaderboardScreen} />
+    //   <LeaderboardStack.Screen name="friendsRanking" component={FriendRankingsScreen} />
+    // </LeaderboardStack.Navigator>
   );
 };
 

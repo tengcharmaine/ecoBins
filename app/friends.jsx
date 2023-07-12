@@ -7,6 +7,8 @@ import Modal from 'react-native-modal';
 
 const Friends = () => {
     const [friendRankings, setRankings] = useState([]);
+    const [friendRequests, setFriendRequests] = useState([]);
+    const [incomingFriendRequests, setIncomingFriendRequests] = useState([]);
     const [selectedUserName, setSelectedUserName] = useState('');
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [activeRankingType, setActiveRankingType] = useState('friends');
@@ -17,6 +19,9 @@ const Friends = () => {
     useEffect(() => {
       const fetchFriendsData = async () => {
         await fetchFriends();
+        await fetchFriendRequests();
+        await fetchIncomingFriendRequests();
+        
       };
   
       fetchFriendsData();
@@ -68,6 +73,77 @@ const Friends = () => {
     // Perform additional logic based on the selected tab if needed
   };
 
+  const fetchFriendRequests = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: friendRequestsData, error } = await supabase
+        .from('friendrequest')
+        .select('user_id, friend_id')
+        .eq('status', 'pending')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        const friendIds = friendRequestsData.map((friend) => friend.friend_id);
+      
+            const { data: requestData, error: requestError } = await supabase
+              .from('ranking')
+              .select('profile, user_name, score, user_id')
+              .in('user_id', friendIds)
+              .order('score', { ascending: false });
+      
+            if (requestError) {
+              console.error(requestError);
+            } else {
+              console.log(requestData);
+              // Update state with the rankings data
+              setFriendRequests(requestData.map((item, index) => ({
+                ...item,
+                rank: index + 1, // Assign a rank to each item in the rankings data
+              })));
+              console.log(friendRequests);
+            }
+        
+      }
+    }
+  };
+
+  const fetchIncomingFriendRequests = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: incomingFriendRequestsData, error } = await supabase
+        .from('friendrequest')
+        .select('user_id, friend_id')
+        .eq('status', 'incoming')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        const friendIds = incomingFriendRequestsData.map((friend) => friend.friend_id);
+      
+            const { data: requestData, error: requestError } = await supabase
+              .from('ranking')
+              .select('profile, user_name, score, user_id')
+              .in('user_id', friendIds)
+              .order('score', { ascending: false });
+      
+            if (requestError) {
+              console.error(requestError);
+            } else {
+              console.log(requestData);
+              // Update state with the rankings data
+              setIncomingFriendRequests(requestData.map((item, index) => ({
+                ...item,
+                rank: index + 1, // Assign a rank to each item in the rankings data
+              })));
+              console.log(incomingFriendRequests);
+            }
+        
+      }
+    }
+  };
       const toggleModal = (userName) => {
         setSelectedUserName(userName);
         setIsModalVisible(!isModalVisible);
@@ -80,13 +156,93 @@ const Friends = () => {
         return userName;
       };
 
+      const acceptFriendRequest = async (request) => {
+        const { data: { user } } = await supabase.auth.getUser();
+
+        const { data: userData, error: userTableError } = await supabase
+        .from('users')
+        .select('email')
+        .eq('id', user.id)
+        .single();
+
+        const userEmail = userData.email;  
+
+        try {
+          console.log(request);
+          console.log(user);
+          const { error } = await supabase
+            .from('friendships')
+            .insert([{ user_id: user.id, friend_id: request.user_id, friend_name: request.user_name }, 
+              { user_id: request.user_id, friend_id: user.id, friend_name: userEmail }]);
+      
+          if (error) {
+            console.error('Error accepting friend request:', error);
+          } else {
+            // // Remove the accepted request from the incomingFriendRequests state
+            // setIncomingFriendRequests((prevRequests) => prevRequests.filter((r) => r.id !== request.id));
+            // // Add the accepted request to the acceptedRequests state
+            // setAcceptedRequests((prevRequests) => [...prevRequests, request.id]);
+          
+              const { error } = await supabase
+                .from('friendrequest')
+                .delete()
+                .eq('user_id', user.id);
+
+                const { error1 } = await supabase
+                .from('friendrequest')
+                .delete()
+                .eq('user_id', friendData.id);
+          }
+        } catch (error) {
+          console.error('Error accepting friend request:', error);
+        }
+      };
+
+      const rejectFriendRequest = async (request) => {
+        try {
+          const { error } = await supabase
+                .from('friendrequest')
+                .delete()
+                .eq('user_id', user.id);
+
+          const { error1 } = await supabase
+                .from('friendrequest')
+                .delete()
+                .eq('user_id', request.user_id);
+      
+          if (error) {
+            console.error('Error rejecting friend request:', error);
+          } //else {
+          //   // Remove the rejected request from the incomingFriendRequests state
+          //   setIncomingFriendRequests((prevRequests) => prevRequests.filter((r) => r.id !== request.id));
+          //   // Add the rejected request to the rejectedRequests state
+          //   setRejectedRequests((prevRequests) => [...prevRequests, request.id]);
+          // }
+        } catch (error) {
+          console.error('Error rejecting friend request:', error);
+        }
+      };
+
       const renderContent = () => {
         if (activeTab === 'pending') {
           // Render pending friend requests content
           return (
             <View>
               <Text>Pending Friend Requests</Text>
-              {/* Add your logic to render pending friend requests */}
+              <View>
+              <FlatList
+                data={friendRequests}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+                    <View style={styles.itemContainer}>
+                      <Text style={styles.itemText}>{item.user_name}</Text>
+                      {/* Add your UI components for pending friend requests */}
+                    </View>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            </View>
             </View>
           );
         } else if (activeTab === 'incoming') {
@@ -94,7 +250,26 @@ const Friends = () => {
           return (
             <View>
               <Text>Incoming Friend Requests</Text>
-              {/* Add your logic to render incoming friend requests */}
+              <View>
+              <FlatList
+                data={incomingFriendRequests}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+                    <View style={styles.itemContainer}>
+                      <Text style={styles.itemText}>{item.user_name}</Text>
+                      <TouchableOpacity onPress={() => acceptFriendRequest(item)}>
+                        <Image source={require('../images/check.png')} style={styles.icon} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={() => rejectFriendRequest(item)}>
+                        <Image source={require('../images/cross.png')} style={styles.icon} />
+                      </TouchableOpacity>
+                      {/* Add your UI components for pending friend requests */}
+                    </View>
+                  </TouchableOpacity>
+                )}
+                keyExtractor={(item, index) => index.toString()}
+              />
+            </View>
             </View>
           );
         } else {
@@ -118,7 +293,6 @@ const Friends = () => {
                             </TouchableOpacity>
                             </View>
                         </View>
-                        {/* <Text style={styles.itemText1}>{item.score}</Text> */}
                     </View>
                     )}
                 />
@@ -137,54 +311,6 @@ const Friends = () => {
         }
       };
 
-//     return (
-//       <View style={styles.container}>
-//         <Text style={styles.title}>Friend Rankings</Text>
-//         <View style={styles.buttonContainer}>
-//     <TouchableOpacity
-//       style={[
-//         styles.button,
-//         activeRankingType === 'global' && styles.activeButton,
-//       ]}
-//     //   onPress={navigateToGlobalRanking}
-//     >
-//       <Text style={styles.buttonText}>Global</Text>
-//     </TouchableOpacity>
-//     <TouchableOpacity
-//       style={[
-//         styles.button,
-//         activeRankingType === 'friends' && styles.activeButton,
-//       ]}
-//     //   onPress={navigateToFriendsRanking}
-//     >
-//       <Text style={styles.buttonText}>Friends</Text>
-//     </TouchableOpacity>
-//   </View>
-//       <FlatList
-//           data={friendRankings}
-//           renderItem={({ item }) => (
-//             <View style={styles.itemContainer}>
-//             <Text style={styles.itemText}>{item.rank}</Text>
-//             <Image source={{ uri: item.profile }} style={styles.profilePicture} />
-//             <View style={styles.itemTextContainer}>
-//               <View style = {styles.container1}>
-//                 <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
-//                   <Text style={styles.itemText}>{renderUsername(item.user_name)}</Text>
-//                 </TouchableOpacity>
-//                 </View>
-//               </View>
-//               <Text style={styles.itemText1}>{item.score}</Text>
-//           </View>
-//           )}
-//       />
-//       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
-//         <View style={styles.modalContainer}>
-//           <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
-//           <Button title="Close" onPress={toggleModal} />
-//         </View>
-//       </Modal>
-//     </View>
-//     );
 return (
     <View style={styles.container}>
       <View style={styles.tabContainer}>
@@ -236,6 +362,12 @@ return (
         paddingVertical: 10,
         borderBottomWidth: 2,
         borderBottomColor: 'lightgray',
+      },
+      icon: {
+        width: 24,
+        height: 24,
+        marginLeft: 10,
+        marginRight: 10,
       },
       activeTabButton: {
         borderBottomColor: 'blue',
