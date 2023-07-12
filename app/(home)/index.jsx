@@ -4,8 +4,31 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons } from '@expo/vector-icons';
+import Friends from '../friends';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function HomeScreen() {
+const Stack = createStackNavigator();
+
+const FriendsStack = () => {
+  return (
+    
+    <Stack.Navigator
+      screenOptions={{
+        headerStyle: {backgroundColor : '#c7dede',},
+        headerShown: false
+    }}>
+      <Stack.Screen name="Home" component={HomeScreen} />
+      {/* <Stack.Screen name="IncomingRequests" component={IncomingRequestsScreen} />
+      <Stack.Screen name="PendingRequests" component={PendingRequestsScreen} /> */}
+      <Stack.Screen name="MyFriends" component={Friends} />
+    </Stack.Navigator>
+    
+  );
+};
+
+function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [username, setUsername] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
@@ -163,6 +186,11 @@ export default function HomeScreen() {
           usernameText: {
             fontSize: 16,
           },
+          friendsIcon: {
+            position: 'absolute',
+            top: 10,
+            left: 10,
+          },
           profilePicture: {
             width: 170,
             height: 170,
@@ -207,6 +235,15 @@ export default function HomeScreen() {
             <Button style = {styles.button}>
                 <Link style={styles.text1} href='/Logout'>Logout</Link>
             </Button>
+            <Ionicons
+              name="people-outline"
+              size={25}
+              color="black"
+              style={styles.friendsIcon}
+              onPress={() => navigation.navigate('friends')}
+            />
         </View>
     );
 }
+
+export default FriendsStack;
