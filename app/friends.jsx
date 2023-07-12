@@ -280,9 +280,6 @@ const Friends = () => {
               renderItem={({ item }) => (
                 <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
                   <View style={styles.itemContainer}>
-                  <FlatList
-                    data={friendRankings}
-                    renderItem={({ item }) => (
                         <View style={styles.itemContainer}>
                         <Text style={styles.itemText}>{item.rank}</Text>
                         <Image source={{ uri: item.profile }} style={styles.profilePicture} />
@@ -294,8 +291,7 @@ const Friends = () => {
                             </View>
                         </View>
                     </View>
-                    )}
-                />
+                    
                 <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
                     <View style={styles.modalContainer}>
                     <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
