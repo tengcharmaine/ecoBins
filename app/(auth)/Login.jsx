@@ -174,11 +174,11 @@ export default function LoginPage() {
                     <Text>First time user? Register here.</Text>
                 </Button>
             </TouchableOpacity>
-            <TouchableOpacity onPress={() => navigation.navigate('PasswordRecovery')}>
+            {/* <TouchableOpacity onPress={() => navigation.navigate('PasswordRecovery')}>
                 <Button style = {styles.text2}>
                     <Text>Forgot password? Click here.</Text>
                 </Button>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>    
     </KeyboardAwareScrollView>
   );

@@ -13,7 +13,7 @@ import { supabase } from "../../lib/supabase";
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 //import OTPScreen from './otp';
 import PasswordUpdate from '../PasswordUpdate';
-import PasswordRecovery from './PasswordRecovery';
+// import PasswordRecovery from './PasswordRecovery';
 
 const Stack = createStackNavigator();
 const linking = {
