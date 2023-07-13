@@ -20,8 +20,6 @@ const FriendsStack = () => {
         headerShown: false
     }}>
       <Stack.Screen name="Home" component={HomeScreen} />
-      {/* <Stack.Screen name="IncomingRequests" component={IncomingRequestsScreen} />
-      <Stack.Screen name="PendingRequests" component={PendingRequestsScreen} /> */}
       <Stack.Screen name="MyFriends" component={Friends} />
     </Stack.Navigator>
     
