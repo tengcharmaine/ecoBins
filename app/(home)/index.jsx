@@ -1,6 +1,6 @@
-import { View, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet, Image, Animated, TouchableOpacity } from 'react-native';
 import { supabase } from '../../lib/supabase';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
@@ -31,6 +31,56 @@ function HomeScreen() {
     const [username, setUsername] = useState(null);
     const [profilePicture, setProfilePicture] = useState(null);
     const navigation = useNavigation();
+    const [users, setUsers] = useState(null);
+    const [userId, setUserId] = useState(null);
+    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+    const settingsAnim = useRef(new Animated.Value(-300)).current;
+
+    const SettingsScreen = ({ onClose }) => {
+      const handleResetPassword = async () => {
+        navigation.navigate('PasswordUpdate');
+      };
+  
+      const handleGoBack = () => {
+        onClose();
+      };
+  
+      return (
+        <View style={styles.settingsContainer}>
+          <Text style={styles.settingsTitle}>Settings</Text>
+          <View style={styles.buttonContainer}>
+            <Button style={styles.button1} onPress={handleResetPassword}>
+              <Text style={styles.buttonText}>Reset Password</Text>
+            </Button>
+            <Button style={styles.button1}>
+              <Link style={styles.buttonText} href="/Logout">
+                Logout
+              </Link>
+            </Button>
+          </View>
+          <TouchableOpacity onPress={handleGoBack} style={styles.closeButton}>
+            <Ionicons name="close" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      );
+    };
+  
+    const handleSettingsPress = () => {
+      setIsSettingsOpen(true);
+      Animated.spring(settingsAnim, {
+        toValue: 0,
+        useNativeDriver: false,
+      }).start();
+    };
+  
+    const handleCloseSettings = () => {
+      Animated.spring(settingsAnim, {
+        toValue: -300,
+        useNativeDriver: false,
+      }).start(() => {
+        setIsSettingsOpen(false);
+      });
+    };
 
     useFocusEffect(
         useCallback(() => {
@@ -155,7 +205,18 @@ function HomeScreen() {
             borderRadius: 10,
             
         },
-
+        button1: {
+          borderColor: "black",
+          alignItems: 'center',
+          backgroundColor: "#c7dede",
+          width: '60%',
+          marginTop: 20,
+          marginBottom: 10,
+          borderRadius: 10,
+      },
+      buttonText: {
+        color: 'black'
+      },
         text1: {
             color: "black",
             marginTop: 20,
@@ -200,7 +261,40 @@ function HomeScreen() {
               right: 0,
               backgroundColor: 'white',
               borderRadius: 20,
-            },      
+            },    
+            settingsContainer: {
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: '100%',
+              height: '150%',
+              backgroundColor: '#fff',
+              padding: 20,
+              elevation: 4,
+              zIndex: 999,
+            },
+            settingsTitle: {
+              fontSize: 24,
+              fontWeight: 'bold',
+              marginBottom: 20,
+            },
+            buttonContainer: {
+              flex: 1,
+              // justifyContent: 'center',
+            },
+            closeButton: {
+              position: 'absolute',
+              top: 10,
+              right: 10,
+            },
+            settingsButtonWrapper: {
+              position: 'absolute',
+              top: 10,
+              right: 10,
+            },
+            settingsButton: {
+              padding: 10,
+            },
     });
 
     return (
@@ -230,9 +324,17 @@ function HomeScreen() {
         />
       </View>
             <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
-            <Button style = {styles.button}>
-                <Link style={styles.text1} href='/Logout'>Logout</Link>
-            </Button>
+            <View style={styles.settingsButtonWrapper}>
+        <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+          <Ionicons name="settings" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+      {isSettingsOpen && (
+        <Animated.View style={[styles.settingsContainer, { right: settingsAnim }]}>
+          <SettingsScreen onClose={handleCloseSettings} />
+        </Animated.View>
+      )}
+    {/* </View> */}
             <Ionicons
               name="people-outline"
               size={25}
