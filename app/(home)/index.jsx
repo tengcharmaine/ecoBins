@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Animated, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Image, Animated, TouchableOpacity, FlatList } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
@@ -7,6 +7,7 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Friends from '../friends';
+import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
@@ -181,6 +182,25 @@ function HomeScreen() {
       fetchRemainingPoints();
     }, []); // Run this effect only once, on component mount
 
+    const activities = [
+      { title: 'Activity 1', link: 'https://example.com/activity1' },
+      { title: 'Activity 2', link: 'https://example.com/activity2' },
+      { title: 'Activity 3', link: 'https://example.com/activity3' },
+    ];
+
+
+    const renderActivityButtons = () => {
+      return activities.map((activity, index) => (
+        <RectButton
+          key={index}
+          style={styles.activityButton}
+          onPress={() => Linking.openURL(activity.link)}
+        >
+          <Text style={styles.activityButtonText}>{activity.title}</Text>
+        </RectButton>
+      ));
+    };
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -295,9 +315,44 @@ function HomeScreen() {
             settingsButton: {
               padding: 10,
             },
+            activityButton: {
+              width: '75%',
+              //height: 50,
+              backgroundColor: '#c7dede',
+              borderRadius: 5,
+              justifyContent: 'center',
+              alignItems: 'center',
+              marginHorizontal: 10,
+            },
+            activityButtonText: {
+              color: 'black',
+              fontSize: 16,
+            },  
+            scrollViewContent: {
+              flexGrow: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+              paddingBottom: 20,
+            },
+            activitiesHeading: {
+              fontSize: 16,
+              fontFamily: 'Thonburi-Bold',
+              fontWeight: 'bold',
+              marginTop: 20,
+            },
+            activityContainer: {
+              maxHeight: 150,
+              marginVertical: 20,
+            },
+            activityContent: {
+              justifyContent: 'center',
+              alignItems: 'center',
+            },    
+
     });
 
     return (
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         <View style={styles.container}>
             <View style={styles.profilePictureContainer}>
             {profilePicture ? (
@@ -343,6 +398,11 @@ function HomeScreen() {
               onPress={() => navigation.navigate('friends')}
             />
         </View>
+        <FlatList style={styles.activityContainer}  horizontal>
+        {renderActivityButtons()}
+      </FlatList>
+      {/* </View> */}
+      </ScrollView>
     );
 }
 
