@@ -1,16 +1,16 @@
 import { View, StyleSheet, Image, Animated, TouchableOpacity, FlatList, ImageBackground, Dimensions  } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Text, Button, IconButton } from 'react-native-paper';
+import { Text, Button, } from 'react-native-paper';
 import { Link } from 'expo-router';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
 import Friends from '../friends';
+import { Linking } from 'react-native';
 import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SubmitScreen from './submit';
-import { ShadowStyleIOS } from 'react-native';
 
 
 const Stack = createStackNavigator();
@@ -211,21 +211,24 @@ function HomeScreen() {
     }, []); // Run this effect only once, on component mount
 
     const activities = [
-      { title: 'Activity 1', link: 'https://example.com/activity1' },
-      { title: 'Activity 2', link: 'https://example.com/activity2' },
-      { title: 'Activity 3', link: 'https://example.com/activity3' },
+      { title: 'Join as a volunteer', link: 'https://www.nparks.gov.sg/partner-us/volunteer', source: require('../../images/volunteer.avif') },
+      { title: 'Latest eco-events', link: 'https://secondsguru.com/calendar/', source: require('../../images/events.jpg') },
+      { title: 'One million trees movement', link: 'https://www.nparks.gov.sg/treessg/one-million-trees-movement', source: require('../../images/trees.jpg') },
+      
     ];
 
 
     const renderActivityButton = ({ item }) => (
-      
-      <TouchableOpacity
-        style={styles.activityButton}
-        onPress={() => Linking.openURL(item.link)}
-      >
-      <Text style={styles.activityButtonText}>{item.title}</Text>
-      </TouchableOpacity>
- 
+      <ImageBackground source={item.source} style={styles.backgroundImage}>
+        <TouchableOpacity
+          style={styles.activityButton}
+          onPress={() => Linking.openURL(item.link)}
+        >
+          
+            <Text style={styles.activityButtonText}>{item.title}</Text>
+          
+        </TouchableOpacity>
+      </ImageBackground>
   
     );
 
@@ -400,20 +403,23 @@ function HomeScreen() {
             },
             activityContainer: {
               marginVertical: 10,
-              marginLeft: 20
+              marginLeft: 20,
+              marginRight: 20,
+              marginBottom: 30
             },
             activityButton: {
-              width: 200,
+              width: 250,
               height: 200,
-              backgroundColor: '#c7dede',
-              borderRadius: 5,
-              justifyContent: 'center',
-              alignItems: 'center',
-              marginRight: 10,
+              justifyContent: 'flex-start',
+              alignItems: 'flex-start',
             },
             activityButtonText: {
               color: 'black',
               fontSize: 16,
+              backgroundColor: "white",
+              borderRadius: 10,
+              paddingHorizontal: 8,
+              paddingVertical: 4,
             },
             motivationalBox: {
               flexDirection: 'row',
