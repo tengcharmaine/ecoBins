@@ -120,6 +120,9 @@ function CustomTabBar({ state, descriptors, navigation }) {
 return (
       <Tab.Navigator
         tabBar={(props) => <CustomTabBar {...props} />}
+        screenOptions={{
+          headerShown: false
+      }}
       >
             <Tab.Screen name="index" component={FriendsStack} options={{ title: "Profile"}} />
             {/* <Tab.Screen name="submit" component={SubmitScreen} options={{ title: "Submit" }} /> */}

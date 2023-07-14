@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Friends from '../friends';
 import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import SubmitScreen from './submit';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const FriendsStack = () => {
     }}>
       <Stack.Screen name="Home" component={HomeScreen} />
       <Stack.Screen name="MyFriends" component={Friends} />
+      <Stack.Screen name="Submit" component={SubmitScreen} />
     </Stack.Navigator>
     
   );
@@ -189,24 +191,59 @@ function HomeScreen() {
     ];
 
 
-    const renderActivityButtons = () => {
-      return activities.map((activity, index) => (
-        <RectButton
-          key={index}
-          style={styles.activityButton}
-          onPress={() => Linking.openURL(activity.link)}
-        >
-          <Text style={styles.activityButtonText}>{activity.title}</Text>
-        </RectButton>
-      ));
+    const renderActivityButton = ({ item }) => (
+    <RectButton
+      style={styles.activityButton}
+      onPress={() => Linking.openURL(item.link)}
+    >
+      <Text style={styles.activityButtonText}>{item.title}</Text>
+    </RectButton>
+  );
+
+
+    const renderMotivationalBox = () => {
+      return (
+        <View style={styles.motivationalBox}>
+          <View style={styles.quoteContainer}>
+            <Text style={styles.quoteText}>
+              "Your future is created by what you do today, not tomorrow."
+            </Text>
+          </View>
+          <Image
+            source={require('../../images/garden.png')}
+            style={styles.motivationalImage}
+          />
+        </View>
+      );
+    };
+
+    const renderRemainingPoints = () => {
+      return (
+          <View style={styles.pointsContainer}>
+            <View style={styles.quoteContainer}>
+              <Text style={styles.pointsText}>
+                {remainingPoints} points
+              </Text>
+            </View>
+          </View>
+      );
+    };
+
+    const handleNavigateToFriends = () => {
+      navigation.navigate('MyFriends');
+    };
+
+    const handleNavigateToSubmit = () => {
+      navigation.navigate('Submit');
     };
 
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            justifyContent: 'center',  
+            marginTop: 60,
+            //justifyContent: 'center',  
             alignItems: 'center',
-            padding: 50,
+            //padding: 50,
         },
         input: {
             borderColor: "black",
@@ -259,11 +296,16 @@ function HomeScreen() {
         },
           usernameContainer: {
             flexDirection: 'row',
-            alignItems: 'center',
-            marginVertical: 20,
+            alignItems: 'flex-start',
+            justifyContent: 'flex-start',
+            //marginTop: 10,
+            marginRight: 20,
           },
           usernameText: {
-            fontSize: 16,
+            fontSize: 30,
+            textAlign: 'left',
+            marginRight: 5,
+            fontFamily: "Optima"
           },
           friendsIcon: {
             position: 'absolute',
@@ -315,93 +357,156 @@ function HomeScreen() {
             settingsButton: {
               padding: 10,
             },
+             activitiesHeading: {
+              fontSize: 16,
+              fontWeight: 'bold',
+              marginTop: 20,
+              marginBottom: 10,
+            },
+            activityContainer: {
+              marginVertical: 10,
+              marginLeft: 20
+            },
             activityButton: {
-              width: '75%',
-              //height: 50,
+              width: 200,
+              height: 200,
               backgroundColor: '#c7dede',
               borderRadius: 5,
               justifyContent: 'center',
               alignItems: 'center',
-              marginHorizontal: 10,
+              marginRight: 10,
             },
             activityButtonText: {
               color: 'black',
               fontSize: 16,
-            },  
-            scrollViewContent: {
-              flexGrow: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-              paddingBottom: 20,
             },
-            activitiesHeading: {
-              fontSize: 16,
-              fontFamily: 'Thonburi-Bold',
-              fontWeight: 'bold',
+            motivationalBox: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#CBD6E2',
+              padding: 20,
+              width: '90%',
+              borderRadius: 10,
               marginTop: 20,
             },
-            activityContainer: {
-              maxHeight: 150,
-              marginVertical: 20,
+            quoteContainer: {
+              flex: 1
             },
-            activityContent: {
-              justifyContent: 'center',
-              alignItems: 'center',
+            quoteText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              marginRight: 20,
+            },
+            motivationalImage: {
+              width: 100,
+              height: 100,
+              resizeMode: 'contain',
             },    
+            pointsContainer: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              backgroundColor: '#CBD6E2',
+              borderRadius: 10,
+              height: 40,
+              marginBottom: 20
+            },
+            pointsText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+            },
+            friendsButton: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#CBD6E2',
+              width: '100%',
+              height: 190,
+              borderRadius: 10,
+            },
+            friendsButtonText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+            },
+            submitButton: {
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#CBD6E2',
+              width: '40%',
+              borderRadius: 10,
+              marginRight: 30,
+              height: 250
+            },
+            submitButtonText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+            },
+            submitPointsContainer: {
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignItems: 'flex-start',
+              padding: 20,
+
+            },
+            pointsFriendsContainer: {
+              flexDirection: 'column',
+              alignItems: 'center',
+              flex: 1
+            },
 
     });
 
     return (
       <ScrollView contentContainerStyle={styles.scrollViewContent}>
-        <View style={styles.container}>
-            <View style={styles.profilePictureContainer}>
-            {profilePicture ? (
-            <Image source={{ uri: profilePicture }} style={styles.profilePicture} />
-            ) : (
-            <Text>No profile picture found</Text>
-            )}
 
-            <IconButton
-                icon="pencil"
-                size={25}
-                color="black"
-                style={styles.editProfilePictureIcon}
-                onPress={() => navigation.navigate('editprofilepic')}
-                />
-        </View>
+      <View style={styles.container}>
         <View style={styles.usernameContainer}>
-        <Text style={styles.usernameText}>Welcome, {username}!</Text>
-        <IconButton
-          icon="pencil"
-          color="black"
-          size={20}
-          onPress={() => navigation.navigate('editusername')}
-        />
+          <Text style={styles.usernameText}>Welcome,</Text>
+        </View>
+        <Text style={styles.usernameText}>{username}!</Text>
+        {renderMotivationalBox()}
+
+      <View style={styles.submitPointsContainer}>
+          <TouchableOpacity onPress={handleNavigateToSubmit} style={styles.submitButton}>
+            <Text style={styles.submitButtonText}>Submit</Text>
+          </TouchableOpacity>
+          <View style={styles.pointsFriendsContainer}>
+          {renderRemainingPoints()}
+            <TouchableOpacity onPress={handleNavigateToFriends} style={styles.friendsButton}>
+              <Text style={styles.friendsButtonText}>Friends</Text>
+            </TouchableOpacity>
+          </View>
       </View>
-            <Text style={{fontSize:16}}>You have {remainingPoints} points accumulated so far.</Text>
-            <View style={styles.settingsButtonWrapper}>
-        <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-          <Ionicons name="settings" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+          
+        {/* settings icon */}
+        <View style={styles.settingsButtonWrapper}>
+          <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+            <Ionicons name="settings" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
       {isSettingsOpen && (
         <Animated.View style={[styles.settingsContainer, { right: settingsAnim }]}>
           <SettingsScreen onClose={handleCloseSettings} />
         </Animated.View>
-      )}
-    {/* </View> */}
-            <Ionicons
-              name="people-outline"
-              size={25}
-              color="black"
-              style={styles.friendsIcon}
-              onPress={() => navigation.navigate('friends')}
-            />
+      )}   
         </View>
-        <FlatList style={styles.activityContainer}  horizontal>
-        {renderActivityButtons()}
-      </FlatList>
-      {/* </View> */}
+
+        <View style={styles.activityContainer}>
+          <Text style={styles.activitiesHeading}>Activities</Text>
+          <FlatList
+            data={activities}
+            renderItem={renderActivityButton}
+            keyExtractor={(item, index) => index.toString()}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+        </View>
+
       </ScrollView>
     );
 }
