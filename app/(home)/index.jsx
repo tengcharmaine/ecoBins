@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, Animated, TouchableOpacity, FlatList } from 'react-native';
+import { View, StyleSheet, Image, Animated, TouchableOpacity, FlatList, ImageBackground, Dimensions  } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Text, Button, IconButton } from 'react-native-paper';
@@ -10,6 +10,8 @@ import Friends from '../friends';
 import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import SubmitScreen from './submit';
+import { ShadowStyleIOS } from 'react-native';
+
 
 const Stack = createStackNavigator();
 
@@ -38,6 +40,30 @@ function HomeScreen() {
     const [userId, setUserId] = useState(null);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const settingsAnim = useRef(new Animated.Value(-300)).current;
+    const scrollAnim = useRef(new Animated.Value(0)).current;
+
+    const windowHeight = Dimensions.get('window').height;
+
+    // Calculate the interpolated font size based on scroll position
+    const fontSizeInterpolation = scrollAnim.interpolate({
+      inputRange: [0, windowHeight / 2], // Adjust the range as needed
+      outputRange: [30, 20], // Adjust the font sizes as needed
+      extrapolate: 'clamp',
+    });
+
+    // Calculate the interpolated font size based on scroll position
+    const userFontSizeInterpolation = scrollAnim.interpolate({
+      inputRange: [0, windowHeight / 2], // Adjust the range as needed
+      outputRange: [30, 20], // Adjust the font sizes as needed
+      extrapolate: 'clamp',
+    });
+
+    // Calculate the interpolated margin top based on scroll position
+    const marginTopInterpolation = scrollAnim.interpolate({
+      inputRange: [0, windowHeight / 3 ], // Adjust the range as needed
+      outputRange: [0, 250], // Adjust the margins as needed
+      extrapolate: 'clamp',
+    });
 
     const SettingsScreen = ({ onClose }) => {
       const handleResetPassword = async () => {
@@ -192,13 +218,16 @@ function HomeScreen() {
 
 
     const renderActivityButton = ({ item }) => (
-    <RectButton
-      style={styles.activityButton}
-      onPress={() => Linking.openURL(item.link)}
-    >
+      
+      <TouchableOpacity
+        style={styles.activityButton}
+        onPress={() => Linking.openURL(item.link)}
+      >
       <Text style={styles.activityButtonText}>{item.title}</Text>
-    </RectButton>
-  );
+      </TouchableOpacity>
+ 
+  
+    );
 
 
     const renderMotivationalBox = () => {
@@ -240,9 +269,9 @@ function HomeScreen() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            marginTop: 60,
+            marginTop: 70,
             //justifyContent: 'center',  
-            alignItems: 'center',
+            //alignItems: 'center',
             //padding: 50,
         },
         input: {
@@ -295,16 +324,22 @@ function HomeScreen() {
             marginBottom: 5,
         },
           usernameContainer: {
-            flexDirection: 'row',
+            flexDirection: 'column',
             alignItems: 'flex-start',
             justifyContent: 'flex-start',
             //marginTop: 10,
             marginRight: 20,
           },
+          welcomeText: {
+            fontSize: 50,
+            textAlign: 'left',
+            marginLeft: 20,
+            fontFamily: "Optima"
+          },
           usernameText: {
             fontSize: 30,
             textAlign: 'left',
-            marginRight: 5,
+            marginLeft: 20,
             fontFamily: "Optima"
           },
           friendsIcon: {
@@ -451,6 +486,7 @@ function HomeScreen() {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               padding: 20,
+              marginTop: '80%',
 
             },
             pointsFriendsContainer: {
@@ -458,18 +494,49 @@ function HomeScreen() {
               alignItems: 'center',
               flex: 1
             },
+            backgroundImage: {
+              flex: 1,
+              resizeMode: 'cover', // Optional: Adjust the image resize mode as needed
+            },
+            backgroundContainer: {
+              flex: 1,
+            },
 
     });
 
     return (
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
-
+    <View style={styles.backgroundContainer}>
+      <ImageBackground
+          source={require('../../images/scenery2.jpg')}
+          style={styles.backgroundImage}
+        >
+      <Animated.ScrollView contentContainerStyle={styles.scrollViewContent}
+       onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollAnim } } }], { useNativeDriver: true})}
+       scrollEventThrottle={16}>
+        
       <View style={styles.container}>
-        <View style={styles.usernameContainer}>
-          <Text style={styles.usernameText}>Welcome,</Text>
-        </View>
-        <Text style={styles.usernameText}>{username}!</Text>
-        {renderMotivationalBox()}
+        {/* <View style={styles.usernameContainer}>
+          <Text style={styles.welcomeText}>Welcome,</Text>
+        </View> */}
+        <Animated.View style={[
+          styles.usernameContainer,
+          { transform: [{ translateY: marginTopInterpolation }] },
+        ]}>
+              <Animated.Text style={[
+                styles.welcomeText,
+                { transform: [{ translateY: fontSizeInterpolation }] },
+              ]}>
+              Welcome,
+              </Animated.Text>
+              <Animated.Text style={[
+                styles.usernameText,
+                { transform: [{ translateY: userFontSizeInterpolation }] },
+              ]}> 
+              {username}!
+              </Animated.Text>
+        </Animated.View>
+        
+        {/* {renderMotivationalBox()} */}
 
       <View style={styles.submitPointsContainer}>
           <TouchableOpacity onPress={handleNavigateToSubmit} style={styles.submitButton}>
@@ -506,8 +573,10 @@ function HomeScreen() {
             showsHorizontalScrollIndicator={false}
           />
         </View>
-
-      </ScrollView>
+     
+      </Animated.ScrollView>
+       </ImageBackground>
+      </View>
     );
 }
 

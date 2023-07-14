@@ -75,8 +75,8 @@ function CustomTabBar({ state, descriptors, navigation }) {
                 break;
             }
 
-        const iconSize = isFocused ? 30 : 25;
-        const iconColor = isFocused ? "white" : "black";
+        const iconSize = isFocused ? 25 : 30;
+        const iconColor = isFocused ? "white" : "grey";
 
         const tabScaleValue = isFocused ? tabScale : 1;
 
@@ -98,7 +98,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
                   paddingVertical: 5,
                   marginHorizontal: 5,
                   marginBottom: 20,
-                  width: tabName == "REWARDS" && isFocused ? 110 : (isFocused ? 90 : 50),
+                  width: tabName == "REWARDS" && isFocused ? 110 : (isFocused ? 80 : 50),
                   height: 50,
                 }}
               >
