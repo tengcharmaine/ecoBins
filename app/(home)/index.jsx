@@ -219,7 +219,8 @@ function HomeScreen() {
 
 
     const renderActivityButton = ({ item }) => (
-      <ImageBackground source={item.source} style={styles.backgroundImage}>
+      <ImageBackground source={item.source} style={styles.backgroundImage
+      && { marginRight: 20, borderRadius: 20, overflow: "hidden"}}>
         <TouchableOpacity
           style={styles.activityButton}
           onPress={() => Linking.openURL(item.link)}
