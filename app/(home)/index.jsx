@@ -47,14 +47,14 @@ function HomeScreen() {
     // Calculate the interpolated font size based on scroll position
     const fontSizeInterpolation = scrollAnim.interpolate({
       inputRange: [0, windowHeight / 2], // Adjust the range as needed
-      outputRange: [30, 20], // Adjust the font sizes as needed
+      outputRange: [20, 50], // Adjust the font sizes as needed
       extrapolate: 'clamp',
     });
 
     // Calculate the interpolated font size based on scroll position
     const userFontSizeInterpolation = scrollAnim.interpolate({
       inputRange: [0, windowHeight / 2], // Adjust the range as needed
-      outputRange: [30, 20], // Adjust the font sizes as needed
+      outputRange: [20, 50], // Adjust the font sizes as needed
       extrapolate: 'clamp',
     });
 
@@ -257,6 +257,9 @@ function HomeScreen() {
               <Text style={styles.pointsText}>
                 {remainingPoints} points
               </Text>
+              <Text style={styles.pointsBottomText}>
+                accumulated so far
+              </Text>
             </View>
           </View>
       );
@@ -449,21 +452,29 @@ function HomeScreen() {
             pointsContainer: {
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               borderRadius: 10,
-              height: 40,
+              height: 60,
               marginBottom: 20
             },
             pointsText: {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+            },
+            pointsBottomText: {
+              fontSize: 15,
+              //fontWeight: 'bold',
+              textAlign: 'center',
+              marginTop: 5,
+              color: "white",
             },
             friendsButton: {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               width: '100%',
               height: 190,
               borderRadius: 10,
@@ -472,28 +483,39 @@ function HomeScreen() {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+              marginTop: 'auto',
             },
             submitButton: {
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               width: '40%',
               borderRadius: 10,
               marginRight: 30,
-              height: 250
+              height: 270
             },
             submitButtonText: {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+              marginTop: 'auto',
+            },
+            recyclingText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: "white",
+              marginTop: 10
             },
             submitPointsContainer: {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               padding: 20,
-              marginTop: '80%',
+              marginTop: '75%',
 
             },
             pointsFriendsContainer: {
@@ -508,7 +530,13 @@ function HomeScreen() {
             backgroundContainer: {
               flex: 1,
             },
-
+            image: {
+              width: 80,
+              height: 150,
+              marginBottom: 10,
+              resizeMode: 'contain',
+            },
+            
     });
 
     return (
@@ -547,12 +575,15 @@ function HomeScreen() {
 
       <View style={styles.submitPointsContainer}>
           <TouchableOpacity onPress={handleNavigateToSubmit} style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>Submit</Text>
+            <Text style={styles.recyclingText}>Recycling an item?</Text>
+            <Image source={require('../../images/repurpose.png')} style={styles.image} />
+            <Text style={styles.submitButtonText}>Submit here</Text>
+            <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 10}} />
           </TouchableOpacity>
           <View style={styles.pointsFriendsContainer}>
           {renderRemainingPoints()}
             <TouchableOpacity onPress={handleNavigateToFriends} style={styles.friendsButton}>
-              <Text style={styles.friendsButtonText}>Friends</Text>
+              <Text style={styles.friendsButtonText}>My friends</Text>
             </TouchableOpacity>
           </View>
       </View>
