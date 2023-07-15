@@ -375,7 +375,7 @@ export default function HomeScreen() {
               color: "white",
             },
             friendsButton: {
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
               backgroundColor: '#355C7D',
@@ -388,7 +388,9 @@ export default function HomeScreen() {
               fontWeight: 'bold',
               textAlign: 'center',
               color: "white",
-              marginTop: 'auto',
+              marginBottom: 'auto',
+              marginTop: 15,
+              marginRight: 5,
             },
             submitButton: {
               flexDirection: 'column',
@@ -412,7 +414,7 @@ export default function HomeScreen() {
               fontWeight: 'bold',
               textAlign: 'center',
               color: "white",
-              marginTop: 10
+              marginTop: 15,
             },
             submitPointsContainer: {
               flexDirection: 'row',
@@ -427,6 +429,10 @@ export default function HomeScreen() {
               alignItems: 'center',
               flex: 1
             },
+            friendsArrowContainer: {
+              flexDirection: 'row',
+              alignItems: 'center',
+            },
             backgroundImage: {
               flex: 1,
               resizeMode: 'cover', // Optional: Adjust the image resize mode as needed
@@ -435,9 +441,15 @@ export default function HomeScreen() {
               flex: 1,
             },
             image: {
-              width: 80,
-              height: 150,
+              width: 100,
+              height: 160,
               marginBottom: 10,
+              resizeMode: 'contain',
+            },
+            friendsImage: {
+              width: 110,
+              height: 140,
+              //marginBottom: 30,
               resizeMode: 'contain',
             },
             
@@ -454,19 +466,26 @@ export default function HomeScreen() {
        scrollEventThrottle={16}>
         
       <View style={styles.container}>
-        {/* <View style={styles.usernameContainer}>
-          <Text style={styles.welcomeText}>Welcome,</Text>
-        </View> */}
         <Animated.View style={[
           styles.usernameContainer,
           { transform: [{ translateY: marginTopInterpolation }] },
         ]}>
+          <Animated.View style={[
+          styles.settingsButtonWrapper,
+          { transform: [{ translateY: fontSizeInterpolation }] },
+          ]}>
+            <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+              <Ionicons name="settings" size={24} color="black" />
+            </TouchableOpacity>
+          </Animated.View>
+
               <Animated.Text style={[
                 styles.welcomeText,
                 { transform: [{ translateY: fontSizeInterpolation }] },
               ]}>
               Welcome,
               </Animated.Text>
+
               <Animated.Text style={[
                 styles.usernameText,
                 { transform: [{ translateY: userFontSizeInterpolation }] },
@@ -487,17 +506,20 @@ export default function HomeScreen() {
           <View style={styles.pointsFriendsContainer}>
           {renderRemainingPoints()}
             <TouchableOpacity onPress={handleNavigateToFriends} style={styles.friendsButton}>
-              <Text style={styles.friendsButtonText}>My friends</Text>
+              <View style={styles.friendsArrowContainer}>
+                <Text style={styles.friendsButtonText}>My friends</Text>
+                <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 'auto', marginTop: 13}} />
+              </View>
+              <Image
+                source={require('../../images/planet.png')} 
+                style={styles.friendsImage}
+              />
             </TouchableOpacity>
           </View>
       </View>
           
         {/* settings icon */}
-        <View style={styles.settingsButtonWrapper}>
-          <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-            <Ionicons name="settings" size={24} color="black" />
-          </TouchableOpacity>
-        </View>  
+         
         </View>
 
         <View style={styles.activityContainer}>

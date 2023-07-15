@@ -72,6 +72,7 @@ const foodcataloguedata = [
 
 const styles = StyleSheet.create({
     container: {
+        marginTop: 5,
         flex: 1, 
         justifyContent: 'center',  
         padding: 20,
