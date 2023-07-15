@@ -1,45 +1,20 @@
 import { View, StyleSheet, Image, Animated, TouchableOpacity, FlatList, ImageBackground, Dimensions  } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import React, { useEffect, useState, useCallback, useRef } from 'react';
-import { Text, Button, } from 'react-native-paper';
-import { Link } from 'expo-router';
+import { Text, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import Friends from '../friends';
 import { Linking } from 'react-native';
 import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import SubmitScreen from './submit';
 
-
-const Stack = createStackNavigator();
-
-const FriendsStack = () => {
-  return (
-    
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: {backgroundColor : '#c7dede',},
-        headerShown: false
-    }}>
-      <Stack.Screen name="Home" component={HomeScreen} />
-      <Stack.Screen name="MyFriends" component={Friends} />
-      <Stack.Screen name="Submit" component={SubmitScreen} />
-    </Stack.Navigator>
-    
-  );
-};
-
-function HomeScreen() {
+export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
     const [username, setUsername] = useState(null);
-    const [profilePicture, setProfilePicture] = useState(null);
     const navigation = useNavigation();
     const [users, setUsers] = useState(null);
     const [userId, setUserId] = useState(null);
-    const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const settingsAnim = useRef(new Animated.Value(-300)).current;
     const scrollAnim = useRef(new Animated.Value(0)).current;
 
     const windowHeight = Dimensions.get('window').height;
@@ -65,50 +40,8 @@ function HomeScreen() {
       extrapolate: 'clamp',
     });
 
-    const SettingsScreen = ({ onClose }) => {
-      const handleResetPassword = async () => {
-        navigation.navigate('PasswordUpdate');
-      };
-  
-      const handleGoBack = () => {
-        onClose();
-      };
-  
-      return (
-        <View style={styles.settingsContainer}>
-          <Text style={styles.settingsTitle}>Settings</Text>
-          <View style={styles.buttonContainer}>
-            <Button style={styles.button1} onPress={handleResetPassword}>
-              <Text style={styles.buttonText}>Reset Password</Text>
-            </Button>
-            <Button style={styles.button1}>
-              <Link style={styles.buttonText} href="/Logout">
-                Logout
-              </Link>
-            </Button>
-          </View>
-          <TouchableOpacity onPress={handleGoBack} style={styles.closeButton}>
-            <Ionicons name="close" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      );
-    };
-  
     const handleSettingsPress = () => {
-      setIsSettingsOpen(true);
-      Animated.spring(settingsAnim, {
-        toValue: 0,
-        useNativeDriver: false,
-      }).start();
-    };
-  
-    const handleCloseSettings = () => {
-      Animated.spring(settingsAnim, {
-        toValue: -300,
-        useNativeDriver: false,
-      }).start(() => {
-        setIsSettingsOpen(false);
-      });
+      navigation.navigate('settings');
     };
 
     useFocusEffect(
@@ -142,34 +75,33 @@ function HomeScreen() {
             }
           };
 
-          const fetchUsernameAndProfilePicture = async () => {
+          const fetchUsername = async () => {
             try {
               const { data: { user } } = await supabase.auth.getUser();
           
               if (user && user.id) { // Add a check for user and user.id
                 const { data, error } = await supabase
                   .from('users')
-                  .select('email, profile')
+                  .select('email')
                   .eq('id', user.id)
                   .single();
           
                 if (error) {
-                  console.error('Error fetching username and profile picture1:', error.message);
+                  console.error('Error fetching username1:', error.message);
                   return;
                 }
           
                 setUsername(data.email);
-                setProfilePicture(data.profile);
               } else {
                 console.log('User object or user.id is null');
               }
             } catch (error) {
-              console.error('Error fetching username and profile picture:', error.message);
+              console.error('Error fetching username:', error.message);
             }
           };      
     
           fetchRemainingPoints();
-          fetchUsernameAndProfilePicture();
+          fetchUsername();
         }, [])
     );
     
@@ -266,11 +198,11 @@ function HomeScreen() {
     };
 
     const handleNavigateToFriends = () => {
-      navigation.navigate('MyFriends');
+      navigation.navigate('friends');
     };
 
     const handleNavigateToSubmit = () => {
-      navigation.navigate('Submit');
+      navigation.navigate('submit');
     };
 
     const styles = StyleSheet.create({
@@ -353,35 +285,7 @@ function HomeScreen() {
             position: 'absolute',
             top: 10,
             left: 10,
-          },
-          profilePicture: {
-            width: 170,
-            height: 170,
-            borderRadius: 100,
-          },
-          editProfilePictureIcon: {
-              position: 'absolute',
-              bottom: 0,
-              right: 0,
-              backgroundColor: 'white',
-              borderRadius: 20,
-            },    
-            settingsContainer: {
-              position: 'absolute',
-              top: 0,
-              right: 0,
-              width: '100%',
-              height: '150%',
-              backgroundColor: '#fff',
-              padding: 20,
-              elevation: 4,
-              zIndex: 999,
-            },
-            settingsTitle: {
-              fontSize: 24,
-              fontWeight: 'bold',
-              marginBottom: 20,
-            },
+          },  
             buttonContainer: {
               flex: 1,
               // justifyContent: 'center',
@@ -593,12 +497,7 @@ function HomeScreen() {
           <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
             <Ionicons name="settings" size={24} color="black" />
           </TouchableOpacity>
-        </View>
-      {isSettingsOpen && (
-        <Animated.View style={[styles.settingsContainer, { right: settingsAnim }]}>
-          <SettingsScreen onClose={handleCloseSettings} />
-        </Animated.View>
-      )}   
+        </View>  
         </View>
 
         <View style={styles.activityContainer}>
@@ -617,5 +516,3 @@ function HomeScreen() {
       </View>
     );
 }
-
-export default FriendsStack;

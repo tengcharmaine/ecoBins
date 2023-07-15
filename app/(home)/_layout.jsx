@@ -3,8 +3,7 @@ import { View, Image, Text, Animated, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
-import FriendsStack from ".";
-import SubmitScreen from "./submit";
+import HomeScreen from "./index";
 import BinsScreen from "./binsnearme";
 import Recyclable from "./recyclable";
 import Movement from "./rewards";
@@ -12,7 +11,7 @@ import LeaderboardStackScreen from "./ranking";
 
 const Tab = createBottomTabNavigator();
 
-export default function HomeScreen() {
+export default function Screen() {
 
 function CustomTabBar({ state, descriptors, navigation }) {
   const [selectedTab, setSelectedTab] = useState(state.index);
@@ -124,8 +123,7 @@ return (
           headerShown: false
       }}
       >
-            <Tab.Screen name="index" component={FriendsStack} options={{ title: "Profile"}} />
-            {/* <Tab.Screen name="submit" component={SubmitScreen} options={{ title: "Submit" }} /> */}
+            <Tab.Screen name="index" component={HomeScreen} options={{ title: "Profile"}} />
             <Tab.Screen name="binsnearme" component={BinsScreen} options={{ title: "Bins Near Me" }} />
             <Tab.Screen name="recyclable" component={Recyclable} options={{ title: "Recyclable?" }} />
             <Tab.Screen name="rewards" component={Movement} options={{ title: "Rewards"}} />

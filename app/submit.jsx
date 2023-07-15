@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, StyleSheet } from "react-native";
+import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Button, ActivityIndicator } from "react-native-paper";
-import { supabase } from "../../lib/supabase";
-import { useAuth } from "../../contexts/auth";
+import { supabase } from "../lib/supabase";
+import { useAuth } from "../contexts/auth";
 import { useRouter, Link, useFocusEffect } from "expo-router";
+import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
-import Pick from '../pick';
+import Pick from './pick';
+import { Ionicons } from '@expo/vector-icons';
 
 console.warn = (message) => {
     if (message.includes('Key "cancelled" in the image picker result is deprecated')) {
@@ -187,11 +189,18 @@ export default function SubmitScreen() {
         setLoading(false);
     }
 
+    const navigation = useNavigation();
+
+    const goBack = () => {
+        navigation.navigate('index');
+    }
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
             alignItems: 'center',
+            marginTop: 20
         },
         input: {
             borderColor: "black",
@@ -206,6 +215,15 @@ export default function SubmitScreen() {
             backgroundColor: "#c7dede",
             width: '25%',
             marginTop: 20,
+            marginBottom: 10,
+            marginLeft: 10,
+            borderRadius: 10,
+        },
+        button1: {
+            borderColor: "black",
+            alignItems: 'center',
+            backgroundColor: "#c7dede",
+            width: '25%',
             marginBottom: 10,
             marginLeft: 10,
             borderRadius: 10,
@@ -240,11 +258,12 @@ export default function SubmitScreen() {
         },
         text2: {
             color: "black",
-            marginTop: 10,
+            marginTop: 40,
             marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
             width: '70%',
+            marginHorizontal: 15,
         },
         title: {
             color: "black",
@@ -259,13 +278,31 @@ export default function SubmitScreen() {
             marginTop: 4,
             marginBottom: 5,
         },
-        
+        backButton: {
+            padding: 10,
+            borderRadius: 10,
+          },
+          header: {
+            flexDirection: 'row',
+            alignItems: 'center',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            paddingHorizontal: 20,
+          },
     });
 
     return (
         <View style={styles.container}>
-             <Text style={styles.text2}>Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!</Text>
-             
+            <View style={styles.header}>
+        <TouchableOpacity onPress={goBack} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
+        <Text style={styles.text2}>
+          Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!
+        </Text>
+      </View>
              {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
              {showButton && <Button onPress={handleAddImage}
                      style={styles.button2}>

@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 30,
-        marginTop: 20,
+        marginTop: 50,
         alignSelf: 'center',
     },
 });
