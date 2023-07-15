@@ -364,6 +364,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     justifyContent: 'center',
+    marginTop: 50
   },
   addButton: {
     backgroundColor: 'blue',
