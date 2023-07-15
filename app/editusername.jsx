@@ -1,10 +1,12 @@
 import { Text, Button, TextInput } from "react-native-paper";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { Link } from "expo-router";
 import { useNavigation } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { Ionicons } from '@expo/vector-icons';
+
 
 export default function editusername() {
   const styles = StyleSheet.create({
@@ -46,6 +48,12 @@ export default function editusername() {
     errorText: {
       color: "red",
       marginTop: 10,
+    },
+    backButton: {
+      position: 'absolute',
+      top: 60,
+      left: 20,
+      zIndex: 1,
     },
   });
 
@@ -93,8 +101,15 @@ export default function editusername() {
     }
   };
 
+  const goBack = () => {
+    navigation.navigate('settings');
+  }
+
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={goBack} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       <Text style={styles.title}>Change username</Text>
       <TextInput
         autoCapitalize="none"
@@ -108,9 +123,6 @@ export default function editusername() {
       {error && <Text style={styles.errorText}>{error}</Text>}
       <Button style={styles.button} onPress={saveUsername}>
         <Text style={styles.text1}>Confirm</Text>
-      </Button>
-      <Button style={styles.button} onPress={() => navigation.goBack()}>
-        <Text style={styles.text1}>Cancel</Text>
       </Button>
     </View>
   );

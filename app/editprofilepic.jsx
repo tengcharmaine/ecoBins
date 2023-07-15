@@ -1,9 +1,10 @@
 import { Text, Button, IconButton } from "react-native-paper"
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import { useNavigation, useFocusEffect } from "expo-router";
 import * as ImagePicker from 'expo-image-picker';
 import React, { useState } from "react";
 import { supabase } from "../lib/supabase";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function editprofilepic() {
     const styles = StyleSheet.create({
@@ -80,7 +81,14 @@ export default function editprofilepic() {
 
         error: {
             color: "red",
-        }
+        },
+
+        backButton: {
+            position: 'absolute',
+            top: 60,
+            left: 20,
+            zIndex: 1,
+        },
     });
 
     const [image, setImage] = useState(null);
@@ -185,9 +193,15 @@ export default function editprofilepic() {
         }
       };
       
+      const goBack = () => {
+        navigation.navigate('settings');
+      }
       
     return (
         <View style={styles.container}>
+            <TouchableOpacity onPress={goBack} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={24} color="black" />
+            </TouchableOpacity>
             <Text style={styles.title}>Change profile picture</Text>
             {image && (<View>
                 <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />
@@ -210,9 +224,6 @@ export default function editprofilepic() {
             </Button>
             <Button style={styles.defaultButton} onPress={resetToDefault}>
                 <Text style={styles.text}>Reset to Default</Text>
-            </Button>
-            <Button style={styles.button} onPress={() => navigation.goBack()}>
-                <Text style={styles.text}>Cancel</Text>
             </Button>
         </View> 
     );

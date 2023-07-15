@@ -4,6 +4,7 @@ import { Text, TextInput, ActivityIndicator, Button, IconButton } from 'react-na
 import { supabase } from "../lib/supabase";
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Ionicons } from '@expo/vector-icons';
 
 import * as ExpoLinking from 'expo-linking'; // Import ExpoLinking from the 'expo-linking' package
 import { useURL } from 'expo-linking'; // Import the useURL hook from 'expo-linking'
@@ -51,6 +52,10 @@ export default function PasswordUpdate() {
       return;
     }
   };
+
+  const goBack = () => {
+    navigation.navigate('settings');
+  }
 
   const styles = StyleSheet.create({
     container: {
@@ -121,6 +126,12 @@ export default function PasswordUpdate() {
       top: '30%',
       transform: [{ translateY: -12 }],
     },
+    backButton: {
+      position: 'absolute',
+      top: 60,
+      left: 20,
+      zIndex: 1,
+  },
   });
 
   return (
@@ -129,6 +140,9 @@ export default function PasswordUpdate() {
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
     >
+    <TouchableOpacity onPress={goBack} style={styles.backButton}>
+      <Ionicons name="arrow-back" size={24} color="black" />
+    </TouchableOpacity>
     <View style= {styles.innerContainer}>
     <Text style= {styles.title}> Reset password </Text>
       <Text style= {styles.text1}>Password</Text>
@@ -156,9 +170,6 @@ export default function PasswordUpdate() {
             </View>
             <Button style = {styles.button} onPress={handlePasswordUpdate}>
                 <Text style={styles.text1}> Update password </Text>
-            </Button>
-            <Button style={styles.button} onPress={handleReturn}>
-              <Text style={styles.text1}> Back </Text>
             </Button>
       {errMsg !== "" && <Text>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
