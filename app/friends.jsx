@@ -204,7 +204,8 @@ const Friends = () => {
             onPress: async () => {
               const { data, error } = await supabase
                 .from('friendrequest')
-                .insert([{ user_id: user.id, friend_id: friend.user_id, status: 'pending' }]);
+                .insert([{ user_id: user.id, friend_id: friend.user_id, status: 'pending' },
+                { user_id: friend.user_id, friend_id: user.id, status: 'incoming' }]);
                 
               if (error) {
                 console.error('Error adding friend:', error);
@@ -401,15 +402,7 @@ const Friends = () => {
           //       // // Add the accepted request to the acceptedRequests state
           //       // setAcceptedRequests((prevRequests) => [...prevRequests, request.id]);
               
-          //         const { error } = await supabase
-          //           .from('friendrequest')
-          //           .delete()
-          //           .eq('user_id', user.id);
-    
-          //           const { error1 } = await supabase
-          //           .from('friendrequest')
-          //           .delete()
-          //           .eq('user_id', friendData.id);
+                  
           //     }
           //   } catch (error) {
           //     console.error('Error accepting friend request:', error);
@@ -455,6 +448,16 @@ const Friends = () => {
               })
             );
               }
+              const { error2 } = await supabase
+                    .from('friendrequest')
+                    .delete()
+                    .eq('user_id', user.id);
+              console.log(request);
+                    const { error1 } = await supabase
+                    .from('friendrequest')
+                    .delete()
+                    .eq('user_id', request.user_id);
+
           } catch (error) {
             console.error('Error accepting friend request:', error);
           }
@@ -590,7 +593,7 @@ const Friends = () => {
                                 <Text style={styles.itemText}>{renderUsername(item.user_name)} {item.user_id === yourUserId && "(You)"}</Text>
                                 </TouchableOpacity>
                                 </View>
-                                {/* {item.user_id !== yourUserId && (
+                                {item.user_id !== yourUserId && (
                                 item.isFriendAdded ? (
                                 <TouchableOpacity onPress={() => removeFriend(item)}>
                                   <Image source={require('../images/delete-user.png')} style={styles.image} />
@@ -605,7 +608,7 @@ const Friends = () => {
                            </TouchableOpacity>
                   )
                   )
-               )} */}
+               )}
                             </View>
                         </View>
                         
