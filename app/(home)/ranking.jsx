@@ -310,7 +310,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   activeButton: {
-    backgroundColor: '#29AB87',
+    backgroundColor: '#CBD6E2',
     borderRadius: 10,
   },
   container1: {

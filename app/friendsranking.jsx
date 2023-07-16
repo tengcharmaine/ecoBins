@@ -147,7 +147,7 @@ const FriendRankingsScreen = () => {
       borderRadius: 10,
     },
     activeButton: {
-      backgroundColor: '#29AB87',
+      backgroundColor: '#CBD6E2',
       borderRadius: 10,
     },
       container1: {
@@ -156,6 +156,7 @@ const FriendRankingsScreen = () => {
         marginVertical: 10,
       },
       container: {
+        marginTop: 50,
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',

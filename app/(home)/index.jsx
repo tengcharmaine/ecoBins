@@ -22,14 +22,14 @@ export default function HomeScreen() {
     // Calculate the interpolated font size based on scroll position
     const fontSizeInterpolation = scrollAnim.interpolate({
       inputRange: [0, windowHeight / 2], // Adjust the range as needed
-      outputRange: [30, 20], // Adjust the font sizes as needed
+      outputRange: [20, 50], // Adjust the font sizes as needed
       extrapolate: 'clamp',
     });
 
     // Calculate the interpolated font size based on scroll position
     const userFontSizeInterpolation = scrollAnim.interpolate({
       inputRange: [0, windowHeight / 2], // Adjust the range as needed
-      outputRange: [30, 20], // Adjust the font sizes as needed
+      outputRange: [20, 50], // Adjust the font sizes as needed
       extrapolate: 'clamp',
     });
 
@@ -188,6 +188,9 @@ export default function HomeScreen() {
             <View style={styles.quoteContainer}>
               <Text style={styles.pointsText}>
                 {remainingPoints} points
+              </Text>
+              <Text style={styles.pointsBottomText}>
+                accumulated so far
               </Text>
             </View>
           </View>
@@ -353,21 +356,29 @@ export default function HomeScreen() {
             pointsContainer: {
               flexDirection: 'row',
               alignItems: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               borderRadius: 10,
-              height: 40,
+              height: 60,
               marginBottom: 20
             },
             pointsText: {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+            },
+            pointsBottomText: {
+              fontSize: 15,
+              //fontWeight: 'bold',
+              textAlign: 'center',
+              marginTop: 5,
+              color: "white",
             },
             friendsButton: {
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               width: '100%',
               height: 190,
               borderRadius: 10,
@@ -376,34 +387,51 @@ export default function HomeScreen() {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+              marginBottom: 'auto',
+              marginTop: 15,
+              marginRight: 5,
             },
             submitButton: {
-              flexDirection: 'row',
+              flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#CBD6E2',
+              backgroundColor: '#355C7D',
               width: '40%',
               borderRadius: 10,
               marginRight: 30,
-              height: 250
+              height: 270
             },
             submitButtonText: {
               fontSize: 18,
               fontWeight: 'bold',
               textAlign: 'center',
+              color: "white",
+              marginTop: 'auto',
+            },
+            recyclingText: {
+              fontSize: 18,
+              fontWeight: 'bold',
+              textAlign: 'center',
+              color: "white",
+              marginTop: 15,
             },
             submitPointsContainer: {
               flexDirection: 'row',
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               padding: 20,
-              marginTop: '80%',
+              marginTop: '75%',
 
             },
             pointsFriendsContainer: {
               flexDirection: 'column',
               alignItems: 'center',
               flex: 1
+            },
+            friendsArrowContainer: {
+              flexDirection: 'row',
+              alignItems: 'center',
             },
             backgroundImage: {
               flex: 1,
@@ -412,7 +440,19 @@ export default function HomeScreen() {
             backgroundContainer: {
               flex: 1,
             },
-
+            image: {
+              width: 100,
+              height: 160,
+              marginBottom: 10,
+              resizeMode: 'contain',
+            },
+            friendsImage: {
+              width: 110,
+              height: 140,
+              //marginBottom: 30,
+              resizeMode: 'contain',
+            },
+            
     });
 
     return (
@@ -426,19 +466,26 @@ export default function HomeScreen() {
        scrollEventThrottle={16}>
         
       <View style={styles.container}>
-        {/* <View style={styles.usernameContainer}>
-          <Text style={styles.welcomeText}>Welcome,</Text>
-        </View> */}
         <Animated.View style={[
           styles.usernameContainer,
           { transform: [{ translateY: marginTopInterpolation }] },
         ]}>
+          <Animated.View style={[
+          styles.settingsButtonWrapper,
+          { transform: [{ translateY: fontSizeInterpolation }] },
+          ]}>
+            <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+              <Ionicons name="settings" size={24} color="black" />
+            </TouchableOpacity>
+          </Animated.View>
+
               <Animated.Text style={[
                 styles.welcomeText,
                 { transform: [{ translateY: fontSizeInterpolation }] },
               ]}>
               Welcome,
               </Animated.Text>
+
               <Animated.Text style={[
                 styles.usernameText,
                 { transform: [{ translateY: userFontSizeInterpolation }] },
@@ -451,22 +498,28 @@ export default function HomeScreen() {
 
       <View style={styles.submitPointsContainer}>
           <TouchableOpacity onPress={handleNavigateToSubmit} style={styles.submitButton}>
-            <Text style={styles.submitButtonText}>Submit</Text>
+            <Text style={styles.recyclingText}>Recycling an item?</Text>
+            <Image source={require('../../images/repurpose.png')} style={styles.image} />
+            <Text style={styles.submitButtonText}>Submit here</Text>
+            <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 10}} />
           </TouchableOpacity>
           <View style={styles.pointsFriendsContainer}>
           {renderRemainingPoints()}
             <TouchableOpacity onPress={handleNavigateToFriends} style={styles.friendsButton}>
-              <Text style={styles.friendsButtonText}>Friends</Text>
+              <View style={styles.friendsArrowContainer}>
+                <Text style={styles.friendsButtonText}>My friends</Text>
+                <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 'auto', marginTop: 13}} />
+              </View>
+              <Image
+                source={require('../../images/planet.png')} 
+                style={styles.friendsImage}
+              />
             </TouchableOpacity>
           </View>
       </View>
           
         {/* settings icon */}
-        <View style={styles.settingsButtonWrapper}>
-          <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-            <Ionicons name="settings" size={24} color="black" />
-          </TouchableOpacity>
-        </View>  
+         
         </View>
 
         <View style={styles.activityContainer}>
