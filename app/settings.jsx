@@ -150,12 +150,14 @@ function SettingsScreen() {
     },
     sectionContainer: {
       marginBottom: 20,
+      
     },
     logoutButton: {
       backgroundColor: '#c7dede',
       paddingVertical: 15,
       borderRadius: 10,
       alignItems: 'center',
+      position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, marginBottom: 30
     },
     logoutButtonText: {
       fontSize: 18,
@@ -243,10 +245,11 @@ function SettingsScreen() {
             </TouchableOpacity>
           </View>
           </View>
+        </ScrollView> 
         <Button mode="contained" style={styles.logoutButton} onPress={() => navigation.navigate('Logout')}>
           <Text style={styles.logoutButtonText}>Logout</Text>
         </Button>
-        </ScrollView>        
+               
       </View>
     </View>
   );

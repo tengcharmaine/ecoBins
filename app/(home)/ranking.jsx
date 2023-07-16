@@ -185,14 +185,28 @@ const LeaderboardScreen = () => {
         return;
       }
 
+      const { data: pendingData, error: pendingError } = await supabase
+        .from('friendrequest')
+        .select('friend_id')
+        .eq('user_id', user.id);
+
+      if (pendingError) {
+        console.error('Error fetching pending friends data:', pendingError);
+        return;
+      }
+
       // Create a Set of friend IDs
       const friendIds = new Set(friendshipData.map(item => item.friend_id));
+
+      // Create a Set of friend IDs
+      const pendingIds = new Set(pendingData.map(item => item.friend_id));
 
       // Add a 'rank' property to each item in the fetched data
       const rankedData = fetchedData.map((item, index) => ({
         ...item,
         rank: index + 1,
         isFriendAdded: friendIds.has(item.user_id), // Check if the friend is added
+        isFriendPending: pendingIds.has(item.user_id)
       }));
 
       // Store the fetched leaderboardData in component state
@@ -272,11 +286,16 @@ const LeaderboardScreen = () => {
                     <Image source={require('../../images/delete-user.png')} style={styles.image} />
                   </TouchableOpacity>
                 ) : (
-                  <TouchableOpacity onPress={() => addFriend(item)}>
-                    <Image source={require('../../images/user-add.png')} style={styles.image} />
-                  </TouchableOpacity>
-                )
-              )}
+                item.isFriendPending ? (
+                    // Change the icon for the friend request when it's pending
+                    <Image source={require('../../images/wall-clock.png')} style={styles.image} />
+                  ) : (
+                    <TouchableOpacity onPress={() => addFriend(item)}>
+                      <Image source={require('../../images/user-add.png')} style={styles.image} />
+                    </TouchableOpacity>
+                  )
+                ))
+              }
             </View>
             <Text style={styles.itemText1}>{item.score}</Text>
           </View>

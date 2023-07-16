@@ -230,24 +230,34 @@ export default function SubmitScreen() {
         },
         button2: {
             borderColor: "black",
-            backgroundColor: "#cccc",
-            width: '75%',
-            height: '40%',
-            marginTop: 20,
+            borderStyle: 'dashed',
+            borderWidth: 1,
+            backgroundColor: "#dedede",
+            width: '80%',
+            height: '45%',
+            marginTop: 60,
             marginLeft: 10,
             borderRadius: 10,
-            position: 'relative',
+            //position: 'relative',
             alignItems: 'center',
             justifyContent: 'center',
-            flexDirection: 'row',
+            flexDirection: 'column',
+        },
+        uploadImage: {
+            width: 90,
+            height: 90,
+            //marginRight: 10,
+            resizeMode: 'contain',
+            //alignSelf: 'center',
         },
         text: {
+            marginTop: 20,
             color: "black",
             marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
-            flex: 1,
-            width: '90%'
+            //flex: 1,
+            width: '70%'
         },
         text1: {
             color: "black",
@@ -286,7 +296,7 @@ export default function SubmitScreen() {
             flexDirection: 'row',
             alignItems: 'center',
             position: 'absolute',
-            top: 0,
+            top: 40,
             left: 0,
             right: 0,
             paddingHorizontal: 20,
@@ -296,24 +306,25 @@ export default function SubmitScreen() {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-        <TouchableOpacity onPress={goBack} style={styles.backButton}>
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-        <Text style={styles.text2}>
-          Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!
-        </Text>
-      </View>
+                <TouchableOpacity onPress={goBack} style={styles.backButton}>
+                <Ionicons name="arrow-back" size={24} color="black" />
+                </TouchableOpacity>
+                {/* <Text style={styles.text2}>
+                Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!
+                </Text> */}
+            </View>
              {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
-             {showButton && <Button onPress={handleAddImage}
-                     style={styles.button2}>
-                        {<Text style={styles.text}>Upload Photo here!</Text>}
-             </Button>}
+             {showButton && <TouchableOpacity onPress={handleAddImage} style={styles.button2}>
+                    <Image source={require("../images/photo.png")} style={styles.uploadImage} />
+                    {<Text style={styles.text}>Upload an image of your recycled item here</Text>}                       
+             </TouchableOpacity>}
              {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
              <Pick />
              <Button onPress={handleSubmit}
                      style={styles.button}>
                 <Text style={styles.text1}
-                      href='/SubmissionComplete'>Submit</Text>
+                      href='/SubmissionComplete'>Submit
+                </Text>
              </Button>
              {loading && <ActivityIndicator />}
          </View>

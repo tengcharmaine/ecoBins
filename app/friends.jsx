@@ -758,6 +758,7 @@ const styles = StyleSheet.create({
             alignItems: 'center',
             justifyContent: 'flex-start',
             padding: 20,
+            marginTop: 10
           },
           itemContainer: {
             flexDirection: 'row',
