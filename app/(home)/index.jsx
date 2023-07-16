@@ -208,10 +208,10 @@ export default function HomeScreen() {
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
-            marginTop: 70,
-            //justifyContent: 'center',  
+            marginTop: 90,
+            justifyContent: 'center',  
             //alignItems: 'center',
-            //padding: 50,
+            //padding: 10,
         },
         input: {
             borderColor: "black",
@@ -295,13 +295,11 @@ export default function HomeScreen() {
               top: 10,
               right: 10,
             },
-            settingsButtonWrapper: {
+            settingsButton: {
+              padding: 10,
               position: 'absolute',
               top: 10,
               right: 10,
-            },
-            settingsButton: {
-              padding: 10,
             },
              activitiesHeading: {
               fontSize: 16,
@@ -316,8 +314,8 @@ export default function HomeScreen() {
               marginBottom: 30
             },
             activityButton: {
-              width: 250,
-              height: 200,
+              width: 100,
+              height: 100,
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
             },
@@ -332,12 +330,12 @@ export default function HomeScreen() {
             motivationalBox: {
               flexDirection: 'row',
               alignItems: 'center',
-              justifyContent: 'center',
+              //justifyContent: 'center',
               backgroundColor: '#CBD6E2',
               padding: 20,
               width: '90%',
               borderRadius: 10,
-              marginTop: 20,
+              //marginTop: 20,
             },
             quoteContainer: {
               flex: 1
@@ -421,7 +419,7 @@ export default function HomeScreen() {
               justifyContent: 'space-between',
               alignItems: 'flex-start',
               padding: 20,
-              marginTop: '75%',
+              //marginTop: '75%',
 
             },
             pointsFriendsContainer: {
@@ -452,6 +450,11 @@ export default function HomeScreen() {
               //marginBottom: 30,
               resizeMode: 'contain',
             },
+            scrollViewContent: {
+              alignItems: 'center',
+              
+              //paddingTop: 200, // Adjust the paddingTop to leave space for the fixed username text
+            },
             
     });
 
@@ -461,40 +464,21 @@ export default function HomeScreen() {
           source={require('../../images/scenery2.jpg')}
           style={styles.backgroundImage}
         >
-      <Animated.ScrollView contentContainerStyle={styles.scrollViewContent}
-       onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollAnim } } }], { useNativeDriver: true})}
-       scrollEventThrottle={16}>
+<View style={styles.container}>
+          
+      <View style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, marginBottom: 15 }}>
+          <Text style={styles.welcomeText}>Welcome,</Text>
+          <Text style={styles.usernameText}>{username}!</Text>
+          <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
+            <Ionicons name="settings" size={24} color="black" />
+          </TouchableOpacity>
+        </View>
         
-      <View style={styles.container}>
-        <Animated.View style={[
-          styles.usernameContainer,
-          { transform: [{ translateY: marginTopInterpolation }] },
-        ]}>
-          <Animated.View style={[
-          styles.settingsButtonWrapper,
-          { transform: [{ translateY: fontSizeInterpolation }] },
-          ]}>
-            <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
-              <Ionicons name="settings" size={24} color="black" />
-            </TouchableOpacity>
-          </Animated.View>
-
-              <Animated.Text style={[
-                styles.welcomeText,
-                { transform: [{ translateY: fontSizeInterpolation }] },
-              ]}>
-              Welcome,
-              </Animated.Text>
-
-              <Animated.Text style={[
-                styles.usernameText,
-                { transform: [{ translateY: userFontSizeInterpolation }] },
-              ]}> 
-              {username}!
-              </Animated.Text>
-        </Animated.View>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}
+       contentInset={{ top: 50, bottom: 0 }}
+       >
         
-        {/* {renderMotivationalBox()} */}
+        {renderMotivationalBox()}
 
       <View style={styles.submitPointsContainer}>
           <TouchableOpacity onPress={handleNavigateToSubmit} style={styles.submitButton}>
@@ -517,10 +501,8 @@ export default function HomeScreen() {
             </TouchableOpacity>
           </View>
       </View>
-          
-        {/* settings icon */}
          
-        </View>
+        
 
         <View style={styles.activityContainer}>
           <Text style={styles.activitiesHeading}>Activities</Text>
@@ -533,7 +515,8 @@ export default function HomeScreen() {
           />
         </View>
      
-      </Animated.ScrollView>
+      </ScrollView>
+      </View>
        </ImageBackground>
       </View>
     );

@@ -89,14 +89,28 @@ const Friends = () => {
         return;
       }
 
+      const { data: pendingData, error: pendingError } = await supabase
+        .from('friendrequest')
+        .select('friend_id')
+        .eq('user_id', user.id);
+
+      if (pendingError) {
+        console.error('Error fetching pending friends data:', pendingError);
+        return;
+      }
+
       // Create a Set of friend IDs
       const friendIds = new Set(friendshipData.map(item => item.friend_id));
+
+      // Create a Set of friend IDs
+      const pendingIds = new Set(pendingData.map(item => item.friend_id));
 
       // Add a 'rank' property to each item in the fetched data
       const rankedData = fetchedData.map((item, index) => ({
         ...item,
         rank: index + 1,
         isFriendAdded: friendIds.has(item.user_id), // Check if the friend is added
+        isFriendPending: pendingIds.has(item.user_id)
       }));
 
       // Store the fetched leaderboardData in component state
@@ -104,21 +118,6 @@ const Friends = () => {
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
     }
-  };
-
-  const handleFriendshipChange = (payload) => {
-    const updatedFriendId = payload.new.friend_id;
-    setRankings((prevData) =>
-      prevData.map((item) => {
-        if (item.user_id === updatedFriendId) {
-          return {
-            ...item,
-            isFriendAdded: true,
-          };
-        }
-        return item;
-      })
-    );
   };
   
   // const addFriend = async (friend) => {
@@ -222,6 +221,8 @@ const Friends = () => {
                       isFriendPending: true,
                     };
                   }
+                  console.log(item);
+                  console.log(item.isFriendPending);
                   return item;
                 })
               );
@@ -444,6 +445,8 @@ const Friends = () => {
                     isFriendPending: false,
                   };
                 }
+                console.log(item);
+                  console.log(item.isFriendPending);
                 return item;
               })
             );
