@@ -311,7 +311,8 @@ export default function HomeScreen() {
               marginVertical: 10,
               marginLeft: 20,
               marginRight: 20,
-              marginBottom: 30
+              marginBottom: 30,
+              height: 300
             },
             activityButton: {
               width: 100,
@@ -321,11 +322,13 @@ export default function HomeScreen() {
             },
             activityButtonText: {
               color: 'black',
-              fontSize: 16,
+              fontSize: 15,
               backgroundColor: "white",
               borderRadius: 10,
               paddingHorizontal: 8,
-              paddingVertical: 4,
+              paddingVertical: 10,
+              width: 100,
+              textAlign: 'center'
             },
             motivationalBox: {
               flexDirection: 'row',
@@ -452,8 +455,6 @@ export default function HomeScreen() {
             },
             scrollViewContent: {
               alignItems: 'center',
-              
-              //paddingTop: 200, // Adjust the paddingTop to leave space for the fixed username text
             },
             
     });
@@ -466,7 +467,7 @@ export default function HomeScreen() {
         >
 <View style={styles.container}>
           
-      <View style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, marginBottom: 15 }}>
+      <View style={{ position: 'fixed', marginBottom: 50}}>
           <Text style={styles.welcomeText}>Welcome,</Text>
           <Text style={styles.usernameText}>{username}!</Text>
           <TouchableOpacity onPress={handleSettingsPress} style={styles.settingsButton}>
@@ -474,9 +475,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
         
-      <ScrollView contentContainerStyle={styles.scrollViewContent}
-       contentInset={{ top: 50, bottom: 0 }}
-       >
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         
         {renderMotivationalBox()}
 

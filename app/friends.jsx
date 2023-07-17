@@ -11,12 +11,13 @@ const Friends = () => {
   const [incomingFriendRequests, setIncomingFriendRequests] = useState([]);
   const [selectedUserName, setSelectedUserName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [activeRankingType, setActiveRankingType] = useState('friends');
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState('friends');
   const [yourUserId, setYourUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [acceptedRequests, setAcceptedRequests] = useState([]);
+  const [isPendingRequestsLoaded, setIsPendingRequestsLoaded] = useState(false);
+  const [isIncomingRequestsLoaded, setIsIncomingRequestsLoaded] = useState(false);
   const isFocused = useIsFocused();
 
   const fetchFriendsData = async () => {
@@ -27,10 +28,24 @@ const Friends = () => {
 
   useEffect(() => {
     if (isFocused) {
-      // Fetch data every time the screen is focused
       fetchFriendsData();
+      fetchFriendRequests();
     }
   }, [isFocused]);
+
+  useEffect(() => {
+    if (activeTab === 'incoming' && !isIncomingRequestsLoaded) {
+      fetchIncomingFriendRequests();
+      setIsIncomingRequestsLoaded(true);
+    }
+  }, [activeTab, isIncomingRequestsLoaded]);
+
+  useEffect(() => {
+    if (activeTab === 'pending' && !isPendingRequestsLoaded) {
+      fetchFriendRequests();
+      setIsPendingRequestsLoaded(true);
+    }
+  }, [activeTab, isPendingRequestsLoaded]);
 
   const handleSearch = (query) => {
     setSearchQuery(query);
@@ -41,29 +56,6 @@ const Friends = () => {
       friend.user_name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  // const fetchFriends = async () => {
-  //   const { data: { user } } = await supabase.auth.getUser();
-  //     setYourUserId(user.id);
-
-  //   if (user) {
-  //     // Fetch data from the 'ranking' table and select all columns
-  //     const { data: rankingsData, error: rankingsError } = await supabase
-  //       .from('ranking')
-  //       .select('*')
-  //       .order('score', { ascending: false });
-
-  //     if (rankingsError) {
-  //       console.error(rankingsError);
-  //     } else {
-  //       console.log(rankingsData);
-  //       // Update state with the rankings data
-  //       setRankings(rankingsData.map((item, index) => ({
-  //         ...item,
-  //         rank: index + 1, // Assign a rank to each item in the rankings data
-  //       })));
-  //     }
-  //   }
-  // };
   const fetchFriends = async () => {
     try {
       const { data: {user} } = await supabase.auth.getUser();
@@ -120,63 +112,6 @@ const Friends = () => {
     }
   };
   
-  // const addFriend = async (friend) => {
-  //   try {
-  //     const { data: { user }, error: userError } = await supabase.auth.getUser()
-     
-  //     const { data: userData, error: userTableError } = await supabase
-  //       .from('users')
-  //       .select('email')
-  //       .eq('id', user.id)
-  //       .single();
-
-  //     const userEmail = userData.email;  
-  //     // Prompt the user for confirmation
-  //     Alert.alert(
-  //       'Add Friend',
-  //       `Are you sure you want to send ${friend.user_name} a friend request?`,
-  //       [
-  //         {
-  //           text: 'Cancel',
-  //           style: 'cancel',
-  //         },
-  //         {
-  //           text: 'Add',
-  //           style: 'default',
-  //           onPress: async () => {
-  //             const { data, error } = await supabase
-  //               .from('friendrequest')
-  //               .insert([{ user_id: user.id, friend_id: friend.user_id, status: 'pending' },
-  //               { user_id: friend.user_id, friend_id: user.id, status: 'incoming' }] );
-  //             // const { data, error } = await supabase
-  //             //   .from('friendships')
-  //             //   .insert([
-  //             //     { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
-  //             //     { user_id: friend.user_id, friend_id: user.id, friend_name: userEmail }]);
-          
-  //             // if (error) {
-  //             //   console.error('Error adding friend1:', error);
-  //             //   return;
-  //             // }
-
-  //             // // Find the index of the friend in the leaderboardData
-  //             // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-  //             // if (friendIndex !== -1) {
-  //             //   // Create a copy of the leaderboardData array
-  //             //   const updatedData = [...leaderboardData];
-  //             //   // Update the 'isFriendAdded' property of the friend in the copied array
-  //             //   updatedData[friendIndex].isFriendAdded = true;
-  //             //   // Update the leaderboardData state with the copied array
-  //             //   setLeaderboardData(updatedData);
-  //             // }
-  //           },
-  //         },
-  //       ],
-  //       { cancelable: false });
-  //   } catch (error) {
-  //     console.error('Error adding friend:', error);
-  //   }
-  // };
   const addFriend = async (friend) => {
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
@@ -375,40 +310,6 @@ const Friends = () => {
             }
             return userName;
           };
-    
-          // const acceptFriendRequest = async (request) => {
-          //   const { data: { user } } = await supabase.auth.getUser();
-    
-          //   const { data: userData, error: userTableError } = await supabase
-          //   .from('users')
-          //   .select('email')
-          //   .eq('id', user.id)
-          //   .single();
-    
-          //   const userEmail = userData.email;  
-    
-          //   try {
-          //     console.log(request);
-          //     console.log(user);
-          //     const { error } = await supabase
-          //       .from('friendships')
-          //       .insert([{ user_id: user.id, friend_id: request.user_id, friend_name: request.user_name }, 
-          //         { user_id: request.user_id, friend_id: user.id, friend_name: userEmail }]);
-          
-          //     if (error) {
-          //       console.error('Error accepting friend request:', error);
-          //     } else {
-          //       // // Remove the accepted request from the incomingFriendRequests state
-          //       // setIncomingFriendRequests((prevRequests) => prevRequests.filter((r) => r.id !== request.id));
-          //       // // Add the accepted request to the acceptedRequests state
-          //       // setAcceptedRequests((prevRequests) => [...prevRequests, request.id]);
-              
-                  
-          //     }
-          //   } catch (error) {
-          //     console.error('Error accepting friend request:', error);
-          //   }
-          // };
 
           const acceptFriendRequest = async (request) => {
             const { data: { user } } = await supabase.auth.getUser();
