@@ -1,7 +1,7 @@
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Text, TextInput, Button, ActivityIndicator, IconButton } from "react-native-paper";
-import { Link, useFocusEffect } from "expo-router";
+import { Link, useFocusEffect, useNavigation } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -13,7 +13,7 @@ export default function LoginPage() {
   const [emailErrMsg, setEmailErrMsg] = useState('');
   const [passwordErrMsg, setPasswordErrMsg] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
-
+  const navigation = useNavigation();
 
   const handleSubmit = async () => {
     setErrMsg('');
@@ -39,6 +39,10 @@ export default function LoginPage() {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   }
+
+  const handleForgetPassword = () => {
+    navigation.navigate('Forget Password');
+  };
 
   const styles = StyleSheet.create({
   container: {
@@ -170,6 +174,9 @@ export default function LoginPage() {
                     <Text>First time user? Register here.</Text>
                 </Button>
             </Link>
+            <Button style = {styles.text2} onPress={handleForgetPassword}>
+              <Text>Forget Password?</Text>
+            </Button>
         </View>    
     </KeyboardAwareScrollView>
   );
