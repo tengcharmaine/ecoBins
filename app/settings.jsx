@@ -115,11 +115,11 @@ function SettingsScreen() {
   };
 
   const handleaboutus = () => {
-
+    navigation.navigate('aboutus');
   };
 
   const handletutorial = () => {
-
+    navigation.navigate('tutorial');
   };
 
   const styles = StyleSheet.create({
