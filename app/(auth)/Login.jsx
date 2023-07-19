@@ -116,7 +116,7 @@ export default function LoginPage() {
       justifyContent: 'center',
       alignItems: 'center',
       alignSelf: 'stretch',
-      marginTop: '30%', 
+      marginTop: '20%', 
       marginBottom: 30, 
   },
   passwordIcon: {
@@ -128,13 +128,17 @@ export default function LoginPage() {
   emailIcon: {
     width: 30,
     height: 30,
-    //marginLeft: 10, // Adjust the margin as needed
     resizeMode: 'contain',
     marginRight: 20,
   },
   emailContainer: {
     flexDirection: 'row',
     alignItems: 'flex-end',
+    marginBottom: 20,
+  },
+  errorContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
     marginBottom: 20,
   },
   passwordContainer: {
@@ -180,6 +184,7 @@ export default function LoginPage() {
             {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
             
             <View style={styles.passwordContainer}>
+            <View style={styles.errorContainer}>
             <View style={styles.emailContainer}>
               <Image
                 source={require('./../../images/lock.png')}
@@ -202,11 +207,12 @@ export default function LoginPage() {
                 <IconButton
                     icon={passwordVisible ? "eye-off" : "eye"}
                     color="#000"
-                    size={20}
+                    size={23}
                 />
                 </TouchableOpacity>
             </View>
             {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
+            </View>
             <TouchableOpacity onPress={handleForgetPassword}>
               <Text style = {styles.text22}>Forget Password?</Text>
             </TouchableOpacity>

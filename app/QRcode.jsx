@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { Link } from 'expo-router';
 import {supabase} from '../lib/supabase';
 import {useRouter} from 'expo-router';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function QRCodeScreen() {
+  const navigation = useNavigation();
   const [remainingPoints, setRemainingPoints] = useState(0);
   const router = useRouter();
   useEffect(() => {
@@ -71,26 +74,39 @@ export default function QRCodeScreen() {
         console.error('Error updating user points:', error.message);
       }
   };
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
   
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleBackButton} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
       <QRCode value={qrCodeValue} size={300} />
       <Button style={styles.button} onPress={handleConfirmation}>
         <Text style={styles.text1}>Confirm Redemption</Text>
-      </Button>
-
-      <Button style = {styles.button1}>
-            <Link style={styles.text1} href='/rewards'>Cancel</Link>
       </Button>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 16,
+    zIndex: 1,
+    padding: 10,
+    borderRadius: 10,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white'
   },
 
   button: {

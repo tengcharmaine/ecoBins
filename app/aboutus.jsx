@@ -25,7 +25,7 @@ export default function AboutUsScreen() {
         Our app aims to encourage users to incorporate recycling into their lifestyle, especially in the NUS campus.
       </Text>
       <Text style={styles.description}>
-        If you have any questions, feedback, or suggestions, please don't hesitate to contact us. 
+        If you have any questions, feedback, or suggestions, please don't hesitate to contact us on telegram. 
       </Text>
       <Text style={styles.contactInfo}>
         Contact Information:
@@ -52,6 +52,7 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'white'
   },
   title: {
     fontSize: 24,

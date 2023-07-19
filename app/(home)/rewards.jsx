@@ -6,6 +6,7 @@ import { Link, useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { BackHandler } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const foodcataloguedata = [
     {
@@ -22,10 +23,10 @@ const foodcataloguedata = [
         id: 2,
         title: 'Japanese',
         description: 'The Deck',
-        image: require('../../images/japanese.avif'),
+        image: require('../../images/sushi.jpeg'),
         points: '(20 Points)',
         menu1: 'Oyako Don',
-        menu2: 'Teriyaki Chicken Don',
+        menu2: 'Sushi',
         menu3: 'Ramen',
     },
     {
@@ -72,7 +73,6 @@ const foodcataloguedata = [
 
 const styles = StyleSheet.create({
     container: {
-        marginTop: 5,
         flex: 1, 
         justifyContent: 'center',  
         padding: 20,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#c7dede',
         borderRadius: 30,
-        height: 95,
+        height: 120,
     },
 
     textContainer: {
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     },
 
     image: {
-        height: 80,
+        height: 85,
         width: 100,
         borderRadius: 30,
         marginRight: 30,
@@ -160,8 +160,16 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         marginBottom: 30,
-        marginTop: 50,
+        marginTop: 70,
         alignSelf: 'center',
+    },
+    backButton: {
+      position: 'absolute',
+      top: 10,
+      left: 16,
+      zIndex: 1,
+      padding: 10,
+      borderRadius: 10,
     },
 });
 
@@ -345,6 +353,9 @@ export function SelectionScreen({ route }) {
         <Text style={styles.text1}>Catalogue:</Text>
   
         <View style={styles.selectcontainer}>
+        <TouchableOpacity onPress={handleBackButton} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
           <View style={styles.itemContainer}>
             <View style={styles.textContainer}>
               <Text style={styles.title}>{selectedFood.title}</Text>
@@ -408,9 +419,6 @@ export function SelectionScreen({ route }) {
               </Text>
             </Button>
           )}
-          <Button style={styles.button1} onPress={() => navigation.goBack()}>
-              <Text style={styles.text1}>Back</Text>
-          </Button>
         </View>
       </View>
     );

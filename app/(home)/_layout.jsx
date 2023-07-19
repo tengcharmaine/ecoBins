@@ -51,7 +51,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
             let tabName = "";
             switch (route.name) {
               case "index":
-                iconName = isFocused ? "account-circle" : "account-circle-outline";
+                iconName = isFocused ? "home" : "home-outline";
                 tabName = "HOME";
                 break;
               case "binsnearme":

@@ -1,19 +1,33 @@
 import React, { useState } from "react";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation} from '@react-navigation/native';
 
 export default function ForgetPasswordScreen() {
   const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [emailErrMsg, setEmailErrMsg] = useState('');
   const [otp, setOtp] = useState('');
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [error, setError] = useState(null);
+  const navigation = useNavigation();
 
   const handleSendEmail = async () => {
+    setEmailErrMsg('');
     setError(null);
+    
     try {
+      if (email === '' ) {
+            setEmailErrMsg("Email cannot be empty");
+            return;
+          } 
+
+      setLoading(true);
       const { error } = await supabase.auth.signInWithOtp({email: email});
+      setLoading(false);
+
       if (error) {
         setError(error.message);
       } else {
@@ -27,9 +41,11 @@ export default function ForgetPasswordScreen() {
   const handleVerifyOTP = async () => {
     setError(null);
     try {
-      console.log('here');
+      setLoading(true);
       // Use the token as the OTP for password reset
       const { error } = await supabase.auth.verifyOtp({ email: email, token: otp, type: 'email' });
+      setLoading(false);
+
       if (error) {
         setError(error.message);
       } 
@@ -38,13 +54,19 @@ export default function ForgetPasswordScreen() {
     }
   };
   
+  const handleGoBack = () => {
+    navigation.navigate('Login');
+  };
 
   return (
     <View style={styles.container}>
       
-
       {!isEmailSent ? (
         <>
+        
+        <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <View style= {styles.innerContainer}>
         <Text style={styles.title}>Forget Password</Text>
         <View style= {styles.emailContainer}>
@@ -62,20 +84,30 @@ export default function ForgetPasswordScreen() {
             onChangeText={setEmail}
           />
         </View>
-          {/* email err msg */}
+        {emailErrMsg !== "" && <Text style= {styles.errorText}>{emailErrMsg}</Text>}
+
           <TouchableOpacity style={styles.button} onPress={handleSendEmail}>
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
           {error && <Text style={styles.errorText}>{error}</Text>}
+          {loading && <ActivityIndicator />}
           </View>
         </>
       ) : (
         <>
+        <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <View style= {styles.innerContainer1}>
-
         <Text style={styles.title1}>Enter OTP</Text>
-          <Text style={styles.subtitle}>An 6 digit code has been sent to</Text>
-          <Text style={styles.subtitle}>{email}</Text>
+        <Text style={styles.subtitle}>An 6 digit code has been sent to</Text>
+        <Text style={styles.subtitle}>{email}</Text>
+        <View style= {styles.emailContainer}>
+          <Image
+              source={require('./../../images/otp.png')}
+              style={styles.otpIcon}
+            />
+          
           <TextInput
             autoCapitalize="none"
             placeholder="Enter OTP"
@@ -84,10 +116,12 @@ export default function ForgetPasswordScreen() {
             value={otp}
             onChangeText={setOtp}
           />
+          </View>
           <TouchableOpacity style={styles.button} onPress={handleVerifyOTP}>
             <Text style={styles.buttonText}>Verify OTP</Text>
           </TouchableOpacity>
           {error && <Text style={styles.errorText}>{error}</Text>}
+          {loading && <ActivityIndicator />}
           </View>
         </>
       )}    
@@ -97,21 +131,27 @@ export default function ForgetPasswordScreen() {
 }
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'left',
+    top: -220,
+    left: 16,
+    zIndex: 1,
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'left'
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
-
   },
   innerContainer1: {
     justifyContent: 'center',
     alignItems: 'flex-start',
   },
-  backButton: {
-    position: 'absolute',
-    top: 60,
-    left: 20,
-    zIndex: 1,
+  innerContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logo: {
     height: '35%',
@@ -126,7 +166,7 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 34,
       textAlign: 'left',
-      marginRight: 70,
+      marginRight: 50,
       marginBottom: 15,
   },
   title1: {
@@ -142,6 +182,7 @@ const styles = StyleSheet.create({
   subtitle: {
     color: "black",
     fontSize: 16,
+    alignItems: 'flex-start',
     textAlign: 'left',
     //marginBottom: 20,
   },
@@ -155,7 +196,7 @@ const styles = StyleSheet.create({
   },
   button: {
     borderColor: "black",
-    alignItems: 'center',
+    alignSelf: 'center',
     justifyContent: 'center',
     backgroundColor: "#c7dede",
     width: 320,
@@ -184,12 +225,16 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
-    marginTop: 10,
   },
   emailIcon: {
     width: 30,
     height: 30,
-    //marginLeft: 10, // Adjust the margin as needed
+    resizeMode: 'contain',
+    marginRight: 20,
+  },
+  otpIcon: {
+    width: 45,
+    height: 45,
     resizeMode: 'contain',
     marginRight: 20,
   },

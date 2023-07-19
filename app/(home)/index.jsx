@@ -175,7 +175,7 @@ export default function HomeScreen() {
             </Text>
           </View>
           <Image
-            source={require('../../images/garden.png')}
+            source={require('../../images/environment.png')}
             style={styles.motivationalImage}
           />
         </View>
@@ -209,7 +209,7 @@ export default function HomeScreen() {
         container: {
             flex: 1, 
             marginTop: 90,
-            justifyContent: 'center',  
+            justifyContent: 'center',
             //alignItems: 'center',
             //padding: 10,
         },
@@ -273,12 +273,14 @@ export default function HomeScreen() {
             fontSize: 50,
             textAlign: 'left',
             marginLeft: 20,
-            fontFamily: "Optima"
+            fontWeight: 'bold'
+            // fontFamily: "Optima"
           },
           usernameText: {
             fontSize: 30,
             textAlign: 'left',
             marginLeft: 20,
+            // fontWeight: 'thin'
             fontFamily: "Optima"
           },
           friendsIcon: {
@@ -461,10 +463,10 @@ export default function HomeScreen() {
 
     return (
     <View style={styles.backgroundContainer}>
-      <ImageBackground
+      {/* <ImageBackground
           source={require('../../images/scenery2.jpg')}
           style={styles.backgroundImage}
-        >
+        > */}
 <View style={styles.container}>
           
       <View style={{ position: 'fixed', marginBottom: 50}}>
@@ -490,8 +492,8 @@ export default function HomeScreen() {
           {renderRemainingPoints()}
             <TouchableOpacity onPress={handleNavigateToFriends} style={styles.friendsButton}>
               <View style={styles.friendsArrowContainer}>
-                <Text style={styles.friendsButtonText}>My friends</Text>
-                <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 'auto', marginTop: 13}} />
+                <Text style={styles.friendsButtonText}>Find your {'\n'} friends here</Text>
+                <Ionicons name="arrow-forward" size={24} color="white" style= {{marginBottom: 'auto', marginTop: 20}} />
               </View>
               <Image
                 source={require('../../images/planet.png')} 
@@ -516,7 +518,7 @@ export default function HomeScreen() {
      
       </ScrollView>
       </View>
-       </ImageBackground>
+       {/* </ImageBackground> */}
       </View>
     );
 }

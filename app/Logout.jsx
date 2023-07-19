@@ -9,6 +9,7 @@ export default function LogoutScreen() {
             flex: 1, 
             justifyContent: 'center',  
             alignItems: 'center',
+            backgroundColor: 'white'
         },
         button: {
             borderColor: "black",

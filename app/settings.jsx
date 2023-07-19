@@ -136,13 +136,19 @@ function SettingsScreen() {
       marginTop: 30,
     },
     backButton: {
+      position: 'absolute',
+      top: 40,
+      left: 10,
+      zIndex: 1,
       padding: 10,
       borderRadius: 10,
     },
     headerTitle: {
-      fontSize: 24,
+      fontSize: 30,
       fontWeight: 'bold',
-      marginLeft: -20,
+      // alignSelf: 'center',
+      marginLeft: 115,
+      marginTop: 30
     },
     content: {
       flex: 1,
