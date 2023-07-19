@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View, Alert, TouchableOpacity } from "react-native";
+import { StyleSheet, View, Alert, TouchableOpacity, Image } from "react-native";
 import { Text, TextInput, ActivityIndicator, Button, IconButton } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -82,11 +82,11 @@ export default function Register() {
             marginBottom: 30, 
         },
         input: {
-            borderColor: "black",
+            borderColor: "white",
             borderWidth: 1,
+            borderBottomColor: "grey",
             backgroundColor: "white",
             width: '75%',
-            borderRadius: 5
         },
         passwordInput: {
             backgroundColor: "white",
@@ -95,19 +95,20 @@ export default function Register() {
         button: {
             borderColor: "black",
             alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: "#c7dede",
-            width: '25%',
+            width: '85%',
+            height: 60,
             marginTop: 20,
             marginBottom: 10,
-            borderRadius: 10,
+            borderRadius: 20,
             
         },
         text1: {
             color: "black",
-            marginTop: 20,
-            textAlign: 'left',
-            marginRight: 255,
-            marginBottom: 5,
+            fontWeight: 'bold',
+            fontSize: 19,
+            textAlign: 'center',
         },
 
         text2: {
@@ -120,9 +121,13 @@ export default function Register() {
 
         title: {
             color: "black",
-            fontSize: 20,
-            marginBottom: 20, 
-            fontWeight: "bold",
+            marginTop: 20,
+            justifyContent: 'center',
+            fontWeight: 'bold',
+            fontSize: 34,
+            textAlign: 'left',
+            marginRight: 160,
+            marginBottom: 15,
         },
         error: {
             color: "red",
@@ -136,6 +141,18 @@ export default function Register() {
             top: '30%',
             transform: [{ translateY: -12 }],
           },
+          emailIcon: {
+            width: 30,
+            height: 30,
+            //marginLeft: 10, // Adjust the margin as needed
+            resizeMode: 'contain',
+            marginRight: 20,
+          },
+          emailContainer: {
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            marginBottom: 20,
+          },
         
     });
 
@@ -146,7 +163,12 @@ export default function Register() {
               scrollEnabled={true}>
                 <View style={styles.innerContainer}>
                     <Text style= {styles.title}> Registration </Text>
-                    <Text style= {styles.text1}>Email</Text>
+                    <View style= {styles.emailContainer}>
+                        <Image
+                            source={require('./../../images/envelope-open.png')}
+                            style={styles.emailIcon}
+                        />
+                    {/* <Text style= {styles.text1}>Email</Text> */}
                     <TextInput
                         autoCapitalize='none'
                         placeholder="Email"
@@ -155,15 +177,21 @@ export default function Register() {
                         textContentType='emailAddress'
                         value={email}
                         onChangeText={setEmail} />
+                    </View>
                     {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
         
-                    <Text style= {styles.text2}>Password</Text>
-                    <View style={styles.input}>
+                    <View style={styles.emailContainer}>
+                        <Image
+                            source={require('./../../images/lock.png')}
+                            style={styles.emailIcon}
+                        />
+                    {/* <Text style= {styles.text2}>Password</Text> */}
+                    {/* <View style={styles.input}> */}
                         <TextInput
                             secureTextEntry={!passwordVisible}
                             placeholder="Password"
                             placeholderTextColor={"#dfd8dc"}
-                            style={styles.passwordInput}
+                            style={styles.input}
                             autoCapitalize='none'
                             textContentType='password'
                             value={password}
@@ -179,12 +207,13 @@ export default function Register() {
                             size={20}
                         />
                         </TouchableOpacity>
+                    {/* </View> */}
                     </View>
                     {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
         
-                    <Button style = {styles.button} onPress={handleSubmit}>
-                        <Text style={styles.text1}> Enter </Text>
-                    </Button>          
+                    <TouchableOpacity style = {styles.button} onPress={handleSubmit}>
+                        <Text style={styles.text1}> Continue </Text>
+                    </TouchableOpacity>          
                     {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
                     {loading && <ActivityIndicator />}
                     {showEmailCheck && showVerificationAlert()}

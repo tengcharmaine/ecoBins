@@ -44,46 +44,63 @@ export default function LoginPage() {
     navigation.navigate('Forget Password');
   };
 
+  const handleRegister = () => {
+    navigation.navigate('Register');
+  };
+
   const styles = StyleSheet.create({
   container: {
       flex: 1, 
   },
   input: {
-      borderColor: "black",
+      borderColor: "white",
       borderWidth: 1,
+      borderBottomColor: "grey",
       backgroundColor: "white",
       width: '75%',
-      borderRadius: 5
+      //borderRadius: 5
   },
   button: {
       borderColor: "black",
       alignItems: 'center',
+      justifyContent: 'center',
       backgroundColor: "#c7dede",
-      width: '25%',
+      width: '85%',
+      height: 60,
       marginTop: 20,
       marginBottom: 10,
-      borderRadius: 10,
+      borderRadius: 20,
       
   },
   text1: {
       color: "black",
-      marginTop: 20,
-      textAlign: 'left',
-      marginRight: 230,
-      marginBottom: 5,
+      fontWeight: 'bold',
+      fontSize: 19,
+      textAlign: 'center',
   },
 
   text2: {
       color: "black",
-      textAlign: "left",
+      textAlign: "center",
+      fontSize: 16,
+      marginTop: 10,
   },
+  text22: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 14,
+    marginBottom: 10
+},
 
   text3: {
       color: "black",
       marginTop: 20,
+      justifyContent: 'center',
+      fontWeight: 'bold',
+      fontSize: 34,
       textAlign: 'left',
       marginRight: 255,
-      marginBottom: 5,
+      marginBottom: 15,
   },
   passwordInput: {
     backgroundColor: "white",
@@ -98,6 +115,7 @@ export default function LoginPage() {
   innerContainer: {
       justifyContent: 'center',
       alignItems: 'center',
+      alignSelf: 'stretch',
       marginTop: '30%', 
       marginBottom: 30, 
   },
@@ -107,6 +125,22 @@ export default function LoginPage() {
     top: '30%',
     transform: [{ translateY: -12 }],
   },
+  emailIcon: {
+    width: 30,
+    height: 30,
+    //marginLeft: 10, // Adjust the margin as needed
+    resizeMode: 'contain',
+    marginRight: 20,
+  },
+  emailContainer: {
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    marginBottom: 20,
+  },
+  passwordContainer: {
+    flexDirection: 'column',
+    alignItems: 'flex-end',
+  }
 });
 
   useFocusEffect(
@@ -127,25 +161,35 @@ export default function LoginPage() {
     >
         <View style= {styles.innerContainer}>
             <Image source={require('./../../images/finalicon.jpeg')}
-                   style={{height: '35%', width: '50%', borderRadius: 60, marginBottom: 20}}></Image>
-            <Text style= {styles.text3}>Email</Text>
-            <TextInput
-                placeholder='Email'
-                placeholderTextColor={"#dfd8dc"}
-                style={styles.input}
-                autoCapitalize='none'
-                textContentType='emailAddress'
-                value={email}
-                onChangeText={setEmail} />
+                   style={{height: '38%', width: '60%', borderRadius: 60, marginBottom: 20}}></Image>
+            <Text style= {styles.text3}>Login</Text>
+            <View style= {styles.emailContainer}>
+              <Image
+                source={require('./../../images/envelope-open.png')}
+                style={styles.emailIcon}
+              />
+              <TextInput
+                  placeholder='Email'
+                  placeholderTextColor={"#dfd8dc"}
+                  style={styles.input}
+                  autoCapitalize='none'
+                  textContentType='emailAddress'
+                  value={email}
+                  onChangeText={setEmail} />
+            </View>
             {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
-
-            <Text style= {styles.text1}>Password</Text>
-            <View style={styles.input}>
+            
+            <View style={styles.passwordContainer}>
+            <View style={styles.emailContainer}>
+              <Image
+                source={require('./../../images/lock.png')}
+                style={styles.emailIcon}
+              />
                 <TextInput
                     secureTextEntry={!passwordVisible}
                     placeholder="Password"
                     placeholderTextColor={"#dfd8dc"}
-                    style={styles.passwordInput}
+                    style={styles.input}
                     autoCapitalize='none'
                     textContentType='password'
                     value={password}
@@ -163,20 +207,19 @@ export default function LoginPage() {
                 </TouchableOpacity>
             </View>
             {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
-
-            <Button style = {styles.button} onPress={handleSubmit}>
+            <TouchableOpacity onPress={handleForgetPassword}>
+              <Text style = {styles.text22}>Forget Password?</Text>
+            </TouchableOpacity>
+            </View>
+            <TouchableOpacity style = {styles.button} onPress={handleSubmit}>
                 <Text style={styles.text1}> Login </Text>
-            </Button>
+            </TouchableOpacity>
             {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
             {loading && <ActivityIndicator />}
-            <Link href="/Register">
-                <Button style = {styles.text2}>
-                    <Text>First time user? Register here.</Text>
-                </Button>
-            </Link>
-            <Button style = {styles.text2} onPress={handleForgetPassword}>
-              <Text>Forget Password?</Text>
-            </Button>
+            <TouchableOpacity onPress={handleRegister}>
+                <Text style = {styles.text2}>First time user? Register here.</Text>
+            </TouchableOpacity>
+            
         </View>    
     </KeyboardAwareScrollView>
   );

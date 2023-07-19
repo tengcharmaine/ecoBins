@@ -11,10 +11,11 @@ const Stack = createNativeStackNavigator();
 export default function AuthRoot() {
   return (
       <SafeAreaProvider>
-        <Stack.Navigator
+        <Stack.Navigator   
           initialRouteName="Login"
           screenOptions={{
-            headerStyle: {backgroundColor : '#c7dede',}
+            headerShown: false,
+            contentStyle: { backgroundColor: 'white' } 
           }}
         >
           <Stack.Screen name="Register" component={Register} />

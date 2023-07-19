@@ -312,11 +312,11 @@ export default function HomeScreen() {
               marginLeft: 20,
               marginRight: 20,
               marginBottom: 30,
-              height: 300
+              height: 200
             },
             activityButton: {
-              width: 100,
-              height: 100,
+              width: 250,
+              //height: 80,
               justifyContent: 'flex-start',
               alignItems: 'flex-start',
             },
@@ -327,7 +327,7 @@ export default function HomeScreen() {
               borderRadius: 10,
               paddingHorizontal: 8,
               paddingVertical: 10,
-              width: 100,
+              //width: 100,
               textAlign: 'center'
             },
             motivationalBox: {
