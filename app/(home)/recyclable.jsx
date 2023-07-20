@@ -4,6 +4,8 @@ import { Camera } from 'expo-camera';
 import axios from 'axios';
 import 'react-native-console-time-polyfill';
 import { Button } from 'react-native-paper';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default class Recyclable extends React.Component {
   state = {
@@ -108,7 +110,13 @@ export default class Recyclable extends React.Component {
   };
 
   renderImageView = () => {
+    const navigation = useNavigation();
     const { imageUri, predictions, errorMessage } = this.state;
+
+    const handleBackButton = () => {
+      navigation.goBack();
+      return true;
+    };
   
     const colorMap = {
       recyclable: 'green',
@@ -134,6 +142,11 @@ export default class Recyclable extends React.Component {
   
     return (
       <View style={{ flex: 1 }}>
+        <TouchableOpacity onPress={handleBackButton} 
+                          style={{position: 'absolute', top: 50, left: 16, zIndex: 1, padding: 10,
+                          borderRadius: 10,}}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
         <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
         {/* Display the name and probability of the predictions */}
         <View style={{ alignItems: 'center', padding: 15 }}>
@@ -153,12 +166,12 @@ export default class Recyclable extends React.Component {
             </View>
           ))}
         </View>
-        <Button
+        {/* <Button
           style={{ alignSelf: 'center', borderColor: 'black', borderWidth: 3, marginBottom: 10 }}
           onPress={() => this.setState({ imageUri: null })}
         >
           <Text style={{ fontSize: 18, color: 'black' }}>Retake Photo</Text>
-        </Button>
+        </Button> */}
       </View>
     );
   };
