@@ -110,13 +110,7 @@ export default class Recyclable extends React.Component {
   };
 
   renderImageView = () => {
-    const navigation = useNavigation();
     const { imageUri, predictions, errorMessage } = this.state;
-
-    const handleBackButton = () => {
-      navigation.goBack();
-      return true;
-    };
   
     const colorMap = {
       recyclable: 'green',
@@ -142,7 +136,7 @@ export default class Recyclable extends React.Component {
   
     return (
       <View style={{ flex: 1 }}>
-        <TouchableOpacity onPress={handleBackButton} 
+        <TouchableOpacity onPress={() => this.setState({imageUri: null})} 
                           style={{position: 'absolute', top: 50, left: 16, zIndex: 1, padding: 10,
                           borderRadius: 10,}}>
           <Ionicons name="arrow-back" size={24} color="black" />
