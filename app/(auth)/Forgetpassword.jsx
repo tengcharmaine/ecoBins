@@ -95,7 +95,7 @@ export default function ForgetPasswordScreen() {
         </>
       ) : (
         <>
-        <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+        <TouchableOpacity onPress={handleGoBack} style={styles.backButton1}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <View style= {styles.innerContainer1}>
@@ -134,6 +134,15 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'left',
     top: -220,
+    left: 16,
+    zIndex: 1,
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'left'
+  },
+  backButton1: {
+    position: 'left',
+    top: -200,
     left: 16,
     zIndex: 1,
     padding: 10,
