@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState  }  from "react";
-import { View, Image, Text, Animated, TouchableOpacity, Dimensions } from "react-native";
+import { View, Image, Text, Animated, TouchableOpacity, Dimensions, ActivityIndicator } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
@@ -8,10 +8,49 @@ import BinsScreen from "./binsnearme";
 import Recyclable from "./recyclable";
 import Movement from "./rewards";
 import LeaderboardStackScreen from "./ranking";
+import { useFonts } from 'expo-font';
+import { Poppins_100Thin,
+  Poppins_100Thin_Italic,
+  Poppins_200ExtraLight,
+  Poppins_200ExtraLight_Italic,
+  Poppins_300Light,
+  Poppins_300Light_Italic,
+  Poppins_400Regular,
+  Poppins_400Regular_Italic,
+  Poppins_500Medium,
+  Poppins_500Medium_Italic,
+  Poppins_600SemiBold,
+  Poppins_600SemiBold_Italic,
+  Poppins_700Bold,
+  Poppins_700Bold_Italic,
+  Poppins_800ExtraBold,
+  Poppins_800ExtraBold_Italic,
+  Poppins_900Black,
+  Poppins_900Black_Italic, } from '@expo-google-fonts/poppins';
 
 const Tab = createBottomTabNavigator();
 
 export default function Screen() {
+  const [loaded] = useFonts({
+    Poppins_100Thin,
+    Poppins_100Thin_Italic,
+    Poppins_200ExtraLight,
+    Poppins_200ExtraLight_Italic,
+    Poppins_300Light,
+    Poppins_300Light_Italic,
+    Poppins_400Regular,
+    Poppins_400Regular_Italic,
+    Poppins_500Medium,
+    Poppins_500Medium_Italic,
+    Poppins_600SemiBold,
+    Poppins_600SemiBold_Italic,
+    Poppins_700Bold,
+    Poppins_700Bold_Italic,
+    Poppins_800ExtraBold,
+    Poppins_800ExtraBold_Italic,
+    Poppins_900Black,
+    Poppins_900Black_Italic,
+  });
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -46,6 +85,14 @@ function CustomTabBar({ state, descriptors, navigation }) {
 
   const tabWidth = windowWidth / state.routes.length;
   const tabHeight = 50;
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
 
   return (
     <View style={{ flexDirection: "row", justifyContent: "space-around", backgroundColor: "white", }}>
