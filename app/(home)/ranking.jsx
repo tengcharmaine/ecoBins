@@ -131,16 +131,6 @@ const LeaderboardScreen = () => {
   useEffect(() => {
     fetchLeaderboardData();
 
-  //    // Subscribe to real-time updates on friendships table
-  //    const subscription = supabase
-  //    .from('friendships')
-  //    .on('INSERT', handleFriendshipChange)
-  //    .on('UPDATE', handleFriendshipChange)
-  //    .on('DELETE', handleFriendshipChange)
-  //    .subscribe();
-
-  //  // Clean up the subscription when the component unmounts
-  //  return () => subscription.unsubscribe();
   }, []);
 
   const handleFriendshipChange = (payload) => {

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Linking, Platform, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
@@ -9,6 +9,7 @@ export default class BinsScreen extends React.Component {
     this.state = {
       currentLocation: null,
       nearestMarker: null,
+      locationPermissionGranted: null,
     };
   }
 
@@ -18,20 +19,47 @@ export default class BinsScreen extends React.Component {
   
   getLocation = async () => {
     try {
+      this.setState({ locationPermissionGranted: null });
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.error('Permission to access location was denied');
+        //console.error('Permission to access location was denied');
+        this.showLocationPermissionDeniedAlert();
+        this.setState({ locationPermissionGranted: false });
         return;
+        
       }
   
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      this.setState({ currentLocation: { latitude, longitude } });
+      this.setState({ currentLocation: { latitude, longitude }, locationPermissionGranted: true, });
       this.findNearestMarker({ latitude, longitude });
     } catch (error) {
       console.error('Error getting location:', error);
     }
   };  
+
+  showLocationPermissionDeniedAlert = () => {
+    Alert.alert(
+      'Location Permission Required',
+      'You have denied location permission for the app. To enable this feature, please go to the app settings and allow location access.',
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.openAppSettings();
+          },
+        },
+      ]
+    );
+  };
+  
+  openAppSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.openSettings();
+    } else {
+      Linking.openURL('app-settings:');
+    }
+  };
 
   findNearestMarker = (currentLocation) => {
     const { latitude, longitude } = currentLocation;
@@ -84,8 +112,36 @@ export default class BinsScreen extends React.Component {
   // };
 
   render() {
-    const { currentLocation, nearestMarker } = this.state;
+    const { currentLocation, nearestMarker, locationPermissionGranted } = this.state;
   
+    if (locationPermissionGranted === null) {
+      // Show a loading indicator or any other content while the permission is being checked
+      return (
+        <View style={styles.container}>
+          <Image source={{uri: "https://media.giphy.com/media/vbeNMLuswd7RR25lah/giphy.gif" }}
+                   style={{height: '30%', width: '60%', borderRadius: 60}}></Image>
+        </View>
+      );
+    }
+
+    if (!locationPermissionGranted) {
+      // If permission is denied, show the permission request button
+      return (
+        <View style={styles.container}>
+          <Image source={require('./../../images/map.png')}
+                   style={{height: '40%', width: '50%', resizeMode: 'contain'}}></Image>
+          <Text style={styles.text2}>This feature requires location permissions {'\n'} to provide real-time updates for finding {'\n'} the nearest recycling bin near you.</Text>
+          <Text style={styles.text2}>Thank you for your kind understanding!</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.getLocation}
+          >
+            <Text style={styles.text1}>I have already granted {'\n'} my location permission.</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         {currentLocation ? (
@@ -287,4 +343,27 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  button: {
+    borderColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: "#c7dede",
+    width: '85%',
+    height: 60,
+    marginTop: 40,
+    marginBottom: 10,
+    borderRadius: 20,
+    },
+text1: {
+  color: "black",
+  fontWeight: 'bold',
+  fontSize: 19,
+  textAlign: 'center',
+  },
+  text2: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 10,
+},
 });

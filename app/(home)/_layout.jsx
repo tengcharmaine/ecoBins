@@ -110,7 +110,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
               >
                 <Icon name={iconName} size={iconSize} color={iconColor} />
                 {isFocused && (
-                  <Text style={{ color: "white", fontFamily: 'Poppins-Regular', marginLeft: 5 }}>
+                  <Text style={{ color: "white", marginLeft: 5 }}>
                     {tabName}
                   </Text>
                 )}
