@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image} from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, Alert, Linking, Platform} from 'react-native';
 import { Camera } from 'expo-camera';
 import axios from 'axios';
 import 'react-native-console-time-polyfill';
@@ -16,10 +16,48 @@ export default class Recyclable extends React.Component {
     errorMessage: '',
     isLoading: false,
   };
-  async componentDidMount() {
-    const { status } = await Camera.requestCameraPermissionsAsync();
-    this.setState({ hasCameraPermission: status === 'granted' });
+
+  componentDidMount = async () => {
+    this.setState({ hasCameraPermission: null });
+    this.checkPermissions();
   }
+
+  checkPermissions = async () => {
+    const { status } = await Camera.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      //console.error('Permission to access location was denied');
+      this.showLocationPermissionDeniedAlert();
+      this.setState({ hasCameraPermission: false });
+      return;
+      
+    }
+    this.setState({ hasCameraPermission: status === 'granted' });
+    this.renderCameraView();
+  }
+
+  showLocationPermissionDeniedAlert = () => {
+    Alert.alert(
+      'Camera Permission Required',
+      'You have denied camera permission for the app. To enable this feature, please go to the app settings and allow camera access.',
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.openAppSettings();
+          },
+        },
+      ]
+    );
+  };
+
+  openAppSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.openSettings();
+    } else {
+      Linking.openURL('app-settings:');
+    }
+  };
+  
   objectDetection = async () => {
     console.log(1);
     if (this.camera) {
@@ -53,9 +91,27 @@ export default class Recyclable extends React.Component {
   renderCameraView = () => {
     const { hasCameraPermission, imageUri, errorMessage, isLoading } = this.state;
     if (hasCameraPermission === null) {
-      return <View />;
+      return (
+        <View style={styles.container}>
+          <Image source={{uri: "https://media.giphy.com/media/vbeNMLuswd7RR25lah/giphy.gif" }}
+                   style={{height: '30%', width: '60%', borderRadius: 60}}></Image>
+        </View>
+      );
     } else if (hasCameraPermission === false) {
-      return <Text>No access to camera</Text>;
+      return (
+        <View style={styles.container}>
+          <Image source={require('./../../images/camera.png')}
+                   style={{height: '40%', width: '50%', resizeMode: 'contain'}}></Image>
+          <Text style={styles.text2}>This feature requires camera permissions {'\n'} to provide insights on {'\n'} whether the item is recyclable.</Text>
+          <Text style={styles.text2}>Thank you for your kind understanding!</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.checkPermissions}
+          >
+            <Text style={styles.text1}>I have already granted {'\n'} my camera permission.</Text>
+          </TouchableOpacity>
+        </View>
+      );
     } else {
       return (
         <View style={{ flex: 1 }}>
@@ -75,30 +131,12 @@ export default class Recyclable extends React.Component {
               }}
             >
               <TouchableOpacity
-                style={{
-                  alignSelf: 'center',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: '#D9D9D6',
-                  padding: 15,
-                  paddingVertical: 15,
-                  marginBottom: 20,
-                  borderRadius: 10,
-                  width: 200,
-                }}
+                style={styles.button}
                 onPress={this.objectDetection}
               >
               {isLoading 
-              ? (<Text style={{
-                        borderRadius: 10, 
-                        fontSize: 18, 
-                        color: 'black' 
-                      }}>Loading...</Text>) 
-              : (<Text style={{ 
-                        borderRadius: 10, 
-                        fontSize: 18, 
-                        color: 'black' 
-                      }}>Detect Objects</Text>
+              ? (<Text style={styles.text1}>Loading...</Text>) 
+              : (<Text style={styles.text1}>Detect Objects</Text>
               )}
 
               </TouchableOpacity>
@@ -176,3 +214,82 @@ export default class Recyclable extends React.Component {
     return imageUri ? this.renderImageView() : this.renderCameraView();
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  nearestMarkerContainer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 20,
+    right: 20,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+  nearestMarkerText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  nearestMarkerDescription: {
+    marginTop: 5,
+    textAlign: 'center'
+  },
+  myLocationButton: {
+    position: 'absolute',
+    bottom: 90,
+    right: 16,
+    backgroundColor: '#fff',
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 2,
+    elevation: 2,
+    marginBottom: 20,
+  },
+  myLocationButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  button: {
+    borderColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    //backgroundColor: "#c7dede",
+    width: '85%',
+    height: 60,
+    marginTop: 40,
+    marginBottom: 20,
+    borderRadius: 20,
+    alignSelf: 'center',
+      //   justifyContent: 'center',
+      //   alignItems: 'center',
+    backgroundColor: '#D9D9D6',
+      //   padding: 15,
+      //   paddingVertical: 15,
+      //   width: 200,
+    },
+text1: {
+  color: "black",
+  fontWeight: 'bold',
+  fontSize: 19,
+  textAlign: 'center',
+  },
+  text2: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 10,
+},
+});

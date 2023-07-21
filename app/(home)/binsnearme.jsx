@@ -14,6 +14,7 @@ export default class BinsScreen extends React.Component {
   }
 
   componentDidMount() {
+    this.setState({ locationPermissionGranted: null });
     this.getLocation();
   }
   
@@ -347,7 +348,7 @@ const styles = StyleSheet.create({
     borderColor: "black",
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: "#c7dede",
+    backgroundColor: "#D9D9D6",
     width: '85%',
     height: 60,
     marginTop: 40,
