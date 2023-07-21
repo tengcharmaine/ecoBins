@@ -141,7 +141,7 @@ export default class Recyclable extends React.Component {
                           borderRadius: 10,}}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Image source={{ uri: imageUri }} style={{ flex: 1 }} resizeMode="contain" />
+        <Image source={{ uri: imageUri }} style={{ marginTop: 90, flex: 1 }} resizeMode="contain" />
         {/* Display the name and probability of the predictions */}
         <View style={{ alignItems: 'center', padding: 15 }}>
           {displayPredictions.map((prediction, index) => (

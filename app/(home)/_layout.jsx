@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState  }  from "react";
-import { View, Image, Text, Animated, TouchableOpacity } from "react-native";
+import { View, Image, Text, Animated, TouchableOpacity, Dimensions } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation } from "@react-navigation/native";
@@ -13,6 +13,9 @@ const Tab = createBottomTabNavigator();
 
 export default function Screen() {
 
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
 function CustomTabBar({ state, descriptors, navigation }) {
   const [selectedTab, setSelectedTab] = useState(state.index);
 
@@ -21,7 +24,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
   useEffect(() => {
     // Animate tab scale when selectedTab changes
     Animated.spring(tabScale, {
-      toValue: 1.2,
+      toValue: 1.1,
       useNativeDriver: true,
       delay: 0
     }).start();
@@ -41,8 +44,11 @@ function CustomTabBar({ state, descriptors, navigation }) {
     }
   };
 
+  const tabWidth = windowWidth / state.routes.length;
+  const tabHeight = 50;
+
   return (
-    <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+    <View style={{ flexDirection: "row", justifyContent: "space-around", backgroundColor: "white", }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const isFocused = state.index === index;
@@ -83,7 +89,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
           <TouchableOpacity
             key={index}
             onPress={() => handleTabPress(index)}
-            style={{ alignItems: "center" }}
+            style={{ alignItems: "center"}}
           >
             <Animated.View style={{ transform: [{ scale: tabScaleValue }] }}>
               <View
@@ -93,17 +99,18 @@ function CustomTabBar({ state, descriptors, navigation }) {
                   backgroundColor: isFocused ? "black" : "white",
                   borderRadius: 15,
                   justifyContent: "center",
-                  paddingHorizontal: 10,
-                  paddingVertical: 5,
+                  //paddingHorizontal: 10,
+                  //paddingVertical: 5,
+                  //padding: 10,
                   marginHorizontal: 5,
                   marginBottom: 20,
-                  width: tabName == "REWARDS" && isFocused ? 110 : (isFocused ? 80 : 50),
+                  width: tabName == "REWARDS" && isFocused ? tabWidth + 20 : (isFocused ? tabWidth : tabWidth - 32),
                   height: 50,
                 }}
               >
                 <Icon name={iconName} size={iconSize} color={iconColor} />
                 {isFocused && (
-                  <Text style={{ color: "white", fontFamily: 'Thonburi-Bold', marginLeft: 5 }}>
+                  <Text style={{ color: "white", fontFamily: 'Poppins-Regular', marginLeft: 5 }}>
                     {tabName}
                   </Text>
                 )}
@@ -120,7 +127,8 @@ return (
       <Tab.Navigator
         tabBar={(props) => <CustomTabBar {...props} />}
         screenOptions={{
-          headerShown: false
+          headerShown: false,
+          contentStyle: { backgroundColor: 'white' } 
       }}
       >
             <Tab.Screen name="index" component={HomeScreen} options={{ title: "Profile"}} />
