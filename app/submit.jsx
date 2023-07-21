@@ -248,7 +248,7 @@ export default function SubmitScreen() {
             height: 90,
             //marginRight: 10,
             resizeMode: 'contain',
-            //alignSelf: 'center',
+            alignSelf: 'center',
         },
         text: {
             marginTop: 20,
