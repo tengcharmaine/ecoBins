@@ -151,19 +151,18 @@ export default function HomeScreen() {
 
 
     const renderActivityButton = ({ item }) => (
-      <ImageBackground source={item.source} style={styles.backgroundImage
-      && { marginRight: 20, borderRadius: 20, overflow: "hidden"}}>
-        <TouchableOpacity
-          style={styles.activityButton}
-          onPress={() => Linking.openURL(item.link)}
-        >
-          
-            <Text style={styles.activityButtonText}>{item.title}</Text>
-          
-        </TouchableOpacity>
+      
+      <TouchableOpacity
+      style={{ marginRight: 20, borderRadius: 20, overflow: 'hidden' }}
+      onPress={() => Linking.openURL(item.link)}
+    >
+      <ImageBackground source={item.source} style={styles.backgroundImage}>
+        <View style={styles.activityButton}>
+          <Text style={styles.activityButtonText}>{item.title}</Text>
+        </View>
       </ImageBackground>
-  
-    );
+    </TouchableOpacity>
+  );
 
 
     const renderMotivationalBox = () => {
@@ -314,23 +313,24 @@ export default function HomeScreen() {
               marginLeft: 20,
               marginRight: 20,
               marginBottom: 30,
-              height: 200
+              height: 200,
             },
             activityButton: {
               width: 250,
               //height: 80,
-              justifyContent: 'flex-start',
-              alignItems: 'flex-start',
+              marginTop: 50,
+              // borderRadius: ,
             },
             activityButtonText: {
               color: 'black',
               fontSize: 15,
               backgroundColor: "white",
-              borderRadius: 10,
+              borderRadius: 100,
               paddingHorizontal: 8,
               paddingVertical: 10,
-              //width: 100,
-              textAlign: 'center'
+              // width: 150,
+              textAlign: 'center',
+              alignSelf: 'center',
             },
             motivationalBox: {
               flexDirection: 'row',

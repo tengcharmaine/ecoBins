@@ -65,11 +65,6 @@ export default function RedemptionSuccess() {
     const handlegorewards = () => {
         navigation.navigate('Rewards');
     };
-
-    const handleGoBack = () => {
-        navigation.navigate('Rewards');
-        navigation.navigate('Rewards');
-    };
       
     return (
         <View style={styles.container}>
@@ -78,9 +73,6 @@ export default function RedemptionSuccess() {
             <Text style={styles.text}>Your redemption is successfull! Enjoy your food!</Text>
             <Button style = {styles.button} onPress={handlegorewards}>
                 <Text style={styles.text1}>Redeem another</Text>
-            </Button>
-            <Button style = {styles.button1} onPress={handleGoBack}>
-                <Text style={styles.text1}>Back to stalls catalogue</Text>
             </Button>
         </View>
     )
