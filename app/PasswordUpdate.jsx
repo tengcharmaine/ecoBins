@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button, IconButton } from 'react-native-paper';
+import { View, StyleSheet, TouchableOpacity, Image  } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button, IconButton} from 'react-native-paper';
 import { supabase } from "../lib/supabase";
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+
 
 import * as ExpoLinking from 'expo-linking'; // Import ExpoLinking from the 'expo-linking' package
 import { useURL } from 'expo-linking'; // Import the useURL hook from 'expo-linking'
@@ -15,6 +17,12 @@ export default function PasswordUpdate() {
   const route = useRoute();
   const navigation = useNavigation();
 
+  const [loaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+  });
 
   //const { userId, token } = route.params;
   //console.log(userId);
@@ -60,36 +68,43 @@ export default function PasswordUpdate() {
   const styles = StyleSheet.create({
     container: {
         flex: 1, 
+        backgroundColor: "white",
+
     },
     input: {
-        borderColor: "black",
-        borderWidth: 1,
-        backgroundColor: "white",
-        width: '75%',
-        borderRadius: 5
+      flexDirection: 'row',
+      alignItems: 'flex-end',
+      marginBottom: 20,
     },
     title: {
       color: "black",
-      fontSize: 20,
-      marginBottom: 20, 
-      fontWeight: "bold",
+      marginTop: 20,
+      justifyContent: 'center',
+      fontWeight: 'bold',
+      fontSize: 34,
+      textAlign: 'left',
+      marginRight: 40,
+      marginBottom: 15,
+      fontFamily: 'PoppinsBold',
   },
     button: {
-        borderColor: "black",
-        alignItems: 'center',
-        backgroundColor: "#c7dede",
-        width: '40%',
-        marginTop: 20,
-        marginBottom: 10,
-        borderRadius: 10,
+      borderColor: "black",
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: "#c7dede",
+      width: '85%',
+      height: 60,
+      marginTop: 20,
+      marginBottom: 10,
+      borderRadius: 20,
         
     },
     text1: {
-        color: "black",
-        marginTop: 20,
-        textAlign: 'left',
-        marginRight: 230,
-        marginBottom: 5,
+      color: "black",
+      fontWeight: 'bold',
+      fontSize: 19,
+      textAlign: 'center',
+      fontFamily: 'PoppinsSemiBold',
     },
   
     text2: {
@@ -105,8 +120,11 @@ export default function PasswordUpdate() {
         marginBottom: 5,
     },
     passwordInput: {
+      borderColor: "white",
+      borderWidth: 1,
+      borderBottomColor: "grey",
       backgroundColor: "white",
-      borderRadius: 5
+      width: '75%',
     },
   
     error: {
@@ -132,7 +150,21 @@ export default function PasswordUpdate() {
       left: 20,
       zIndex: 1,
   },
+    emailIcon: {
+      width: 30,
+      height: 30,
+      resizeMode: 'contain',
+      marginRight: 20,
+    },
   });
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
 
   return (
     <KeyboardAwareScrollView
@@ -145,8 +177,12 @@ export default function PasswordUpdate() {
     </TouchableOpacity>
     <View style= {styles.innerContainer}>
     <Text style= {styles.title}> Reset password </Text>
-      <Text style= {styles.text1}>Password</Text>
+      {/* <Text style= {styles.text1}>Password</Text> */}
             <View style={styles.input}>
+            <Image
+            source={require('./../images/lock.png')}
+            style={styles.emailIcon}
+          />
                 <TextInput
                     secureTextEntry={!passwordVisible}
                     placeholder="Password"
@@ -168,9 +204,9 @@ export default function PasswordUpdate() {
                 />
                 </TouchableOpacity>
             </View>
-            <Button style = {styles.button} onPress={handlePasswordUpdate}>
+            <TouchableOpacity style = {styles.button} onPress={handlePasswordUpdate}>
                 <Text style={styles.text1}> Update password </Text>
-            </Button>
+            </TouchableOpacity>
       {errMsg !== "" && <Text>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </View>

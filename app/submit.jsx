@@ -3,11 +3,13 @@ import { View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { Text, Button, ActivityIndicator } from "react-native-paper";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../contexts/auth";
-import { useRouter, Link, useFocusEffect } from "expo-router";
+import { useRouter, Link, useFocusEffect, } from "expo-router";
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import Pick from './pick';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+
 
 console.warn = (message) => {
     if (message.includes('Key "cancelled" in the image picker result is deprecated')) {
@@ -17,6 +19,12 @@ console.warn = (message) => {
   };
   
 export default function SubmitScreen() {
+    const [loaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+        PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+        PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+      });
     const [loading, setLoading] = useState(false);
     const [image, setImage] = useState(null);
     const [errMsg, setErrMsg] = useState('');
@@ -195,6 +203,10 @@ export default function SubmitScreen() {
         navigation.navigate('index');
     }
 
+    const handleSubmissionComplete = () => {
+        navigation.navigate('SubmissionComplete');
+    }
+
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
@@ -212,12 +224,13 @@ export default function SubmitScreen() {
         button: {
             borderColor: "black",
             alignItems: 'center',
+            justifyContent: 'center',
             backgroundColor: "#c7dede",
-            width: '25%',
+            width: '85%',
+            height: 60,
             marginTop: 20,
             marginBottom: 10,
-            marginLeft: 10,
-            borderRadius: 10,
+            borderRadius: 20,
         },
         button1: {
             borderColor: "black",
@@ -257,14 +270,16 @@ export default function SubmitScreen() {
             fontSize: 15,
             textAlign: 'center',
             //flex: 1,
-            width: '70%'
+            width: '70%',
+            fontFamily: 'PoppinsSemiBold',
         },
         text1: {
             color: "black",
-            marginTop: 15,
-            textAlign: 'left',
-            marginRight: 255,
-            marginBottom: 5,
+            fontWeight: 'bold',
+            fontSize: 19,
+            textAlign: 'center',
+            fontFamily: 'PoppinsSemiBold',
+            justifyContent: 'center'
         },
         text2: {
             color: "black",
@@ -303,6 +318,14 @@ export default function SubmitScreen() {
           },
     });
 
+    if (!loaded) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        );
+      }
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -320,12 +343,11 @@ export default function SubmitScreen() {
              </TouchableOpacity>}
              {errMsg !== '' && <Text style={styles.error}>{errMsg}</Text>}
              <Pick />
-             <Button onPress={handleSubmit}
+             <TouchableOpacity onPress={handleSubmit}
                      style={styles.button}>
-                <Text style={styles.text1}
-                      href='/SubmissionComplete'>Submit
+                <Text style={styles.text1}>Submit
                 </Text>
-             </Button>
+             </TouchableOpacity>
              {loading && <ActivityIndicator />}
          </View>
     );
