@@ -177,7 +177,7 @@ export default function HomeScreen() {
         <View style={styles.motivationalBox}>
           <View style={styles.quoteContainer}>
             <Text style={styles.quoteText}>
-              "Your future is created by what you do today, not tomorrow."
+              "Your future is created by what {'\n'} you do today, {'\n'}not tomorrow."
             </Text>
           </View>
           <Image
