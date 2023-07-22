@@ -5,9 +5,10 @@ import { Text, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
-import { Linking } from 'react-native';
+import { Linking, ActivityIndicator } from 'react-native';
 import { ScrollView, RectButton } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useFonts } from 'expo-font';
 
 export default function HomeScreen() {
     const [remainingPoints, setRemainingPoints] = useState(0);
@@ -16,6 +17,12 @@ export default function HomeScreen() {
     const [users, setUsers] = useState(null);
     const [userId, setUserId] = useState(null);
     const scrollAnim = useRef(new Animated.Value(0)).current;
+
+    const [loaded] = useFonts({
+      Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+      Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+      Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+    });
 
     const windowHeight = Dimensions.get('window').height;
 
@@ -272,15 +279,15 @@ export default function HomeScreen() {
             fontSize: 50,
             textAlign: 'left',
             marginLeft: 20,
-            fontWeight: 'bold'
-            // fontFamily: "Optima"
+            fontWeight: 'bold',
+            fontFamily: "Poppins_Bold"
           },
           usernameText: {
             fontSize: 30,
             textAlign: 'left',
             marginLeft: 20,
             // fontWeight: 'thin'
-            fontFamily: "Optima"
+            fontFamily: "Poppins"
           },
           friendsIcon: {
             position: 'absolute',
@@ -306,7 +313,8 @@ export default function HomeScreen() {
               fontSize: 16,
               fontWeight: 'bold',
               marginTop: 20,
-              marginBottom: 10,
+              marginBottom: 5,
+              fontFamily: "Poppins_Bold"
             },
             activityContainer: {
               marginVertical: 10,
@@ -331,6 +339,7 @@ export default function HomeScreen() {
               // width: 150,
               textAlign: 'center',
               alignSelf: 'center',
+              fontFamily: "Poppins"
             },
             motivationalBox: {
               flexDirection: 'row',
@@ -350,6 +359,7 @@ export default function HomeScreen() {
               fontWeight: 'bold',
               textAlign: 'center',
               marginRight: 20,
+              fontFamily: "Poppins_SemiBold"
             },
             motivationalImage: {
               width: 100,
@@ -369,13 +379,14 @@ export default function HomeScreen() {
               fontWeight: 'bold',
               textAlign: 'center',
               color: "white",
+              fontFamily: "Poppins_SemiBold"
             },
             pointsBottomText: {
               fontSize: 15,
               //fontWeight: 'bold',
               textAlign: 'center',
-              marginTop: 5,
               color: "white",
+              fontFamily: "Poppins"
             },
             friendsButton: {
               flexDirection: 'column',
@@ -394,6 +405,7 @@ export default function HomeScreen() {
               marginBottom: 'auto',
               marginTop: 15,
               marginRight: 5,
+              fontFamily: "Poppins_SemiBold"
             },
             submitButton: {
               flexDirection: 'column',
@@ -411,6 +423,7 @@ export default function HomeScreen() {
               textAlign: 'center',
               color: "white",
               marginTop: 'auto',
+              fontFamily: "Poppins_SemiBold"
             },
             recyclingText: {
               fontSize: 18,
@@ -418,6 +431,7 @@ export default function HomeScreen() {
               textAlign: 'center',
               color: "white",
               marginTop: 15,
+              fontFamily: "Poppins_SemiBold"
             },
             submitPointsContainer: {
               flexDirection: 'row',
@@ -438,7 +452,7 @@ export default function HomeScreen() {
             },
             backgroundImage: {
               flex: 1,
-              resizeMode: 'cover', // Optional: Adjust the image resize mode as needed
+              resizeMode: 'cover',
             },
             backgroundContainer: {
               flex: 1,
@@ -447,12 +461,14 @@ export default function HomeScreen() {
               width: 100,
               height: 160,
               marginBottom: 10,
+              marginTop: -10,
               resizeMode: 'contain',
             },
             friendsImage: {
               width: 110,
               height: 140,
               //marginBottom: 30,
+              marginTop: -10,
               resizeMode: 'contain',
             },
             scrollViewContent: {
@@ -461,14 +477,21 @@ export default function HomeScreen() {
             
     });
 
+    if (!loaded) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      );
+    }
+
     return (
     <View style={styles.backgroundContainer}>
       {/* <ImageBackground
           source={require('../../images/scenery2.jpg')}
           style={styles.backgroundImage}
         > */}
-<View style={styles.container}>
-          
+      <View style={styles.container}>
       <View style={{ position: 'fixed', marginBottom: 50}}>
           <Text style={styles.welcomeText}>Welcome,</Text>
           <Text style={styles.usernameText}>{username}!</Text>

@@ -4,6 +4,7 @@ import { Text, TextInput, Button, ActivityIndicator, IconButton } from "react-na
 import { Link, useFocusEffect, useNavigation } from "expo-router";
 import { supabase } from "../../lib/supabase";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { useFonts } from 'expo-font';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,6 +15,12 @@ export default function LoginPage() {
   const [passwordErrMsg, setPasswordErrMsg] = useState('');
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigation = useNavigation();
+
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+  });
 
   const handleSubmit = async () => {
     setErrMsg('');
@@ -58,6 +65,7 @@ export default function LoginPage() {
       borderBottomColor: "grey",
       backgroundColor: "white",
       width: '75%',
+      fontFamily: "Poppins"
       //borderRadius: 5
   },
   button: {
@@ -77,6 +85,7 @@ export default function LoginPage() {
       fontWeight: 'bold',
       fontSize: 19,
       textAlign: 'center',
+      fontFamily: "Poppins_SemiBold"
   },
 
   text2: {
@@ -84,12 +93,14 @@ export default function LoginPage() {
       textAlign: "center",
       fontSize: 16,
       marginTop: 10,
+      fontFamily: "Poppins"
   },
   text22: {
     color: "black",
     textAlign: "center",
     fontSize: 14,
-    marginBottom: 10
+    marginBottom: 10,
+    fontFamily: "Poppins"
 },
 
   text3: {
@@ -101,6 +112,7 @@ export default function LoginPage() {
       textAlign: 'left',
       marginRight: 255,
       marginBottom: 15,
+      fontFamily: "Poppins_Bold"
   },
   passwordInput: {
     backgroundColor: "white",
@@ -111,6 +123,7 @@ export default function LoginPage() {
       color: "red",
       marginTop: 4,
       marginBottom: 5,
+      fontFamily: "Poppins"
   },
   innerContainer: {
       justifyContent: 'center',
@@ -157,6 +170,14 @@ export default function LoginPage() {
     }, [])
   );
 
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+  
   return (
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}

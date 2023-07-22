@@ -1,8 +1,9 @@
 import React, { useEffect, useState} from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
+import { useFonts } from 'expo-font';
 
 const FriendRankingsScreen = () => {
     const [friendRankings, setRankings] = useState([]);
@@ -75,11 +76,25 @@ const FriendRankingsScreen = () => {
       };
     
       const renderUsername = (userName) => {
-        if (userName.length > 8) {
-          return `${userName.substring(0, 8)}...`;
+        if (userName.length > 10) {
+          return `${userName.substring(0, 10)}...`;
         }
         return userName;
       };
+
+      const [loaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        Poppins_Bold: require('../assets/fonts/Poppins-Bold.ttf'),
+        Poppins_SemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+      });
+
+      if (!loaded) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        );
+      }
 
     return (
       <View style={styles.container}>
@@ -178,12 +193,14 @@ const FriendRankingsScreen = () => {
         textAlign: 'left',
         justifyContent: 'center',
         marginLeft: 30,
+        fontFamily: "Poppins_SemiBold"
       },
       itemText1: {
         fontSize: 16,
         fontWeight: 'bold',
         textAlign: 'right',
         marginRight: 30,
+        fontFamily: "Poppins_SemiBold"
       },
       itemTextContainer: {
         flex: 1,
@@ -203,6 +220,7 @@ const FriendRankingsScreen = () => {
         fontWeight: 'bold',
         marginBottom: 20,
         justifyContent: 'center',
+        fontFamily: "Poppins_Bold"
       },
       addButton: {
         backgroundColor: 'blue',
@@ -215,6 +233,7 @@ const FriendRankingsScreen = () => {
         textAlign: 'center',
         fontSize: 15,
         marginTop: 15,
+        fontFamily: "Poppins_SemiBold"
       },
       image: {
         height: 25,
@@ -230,6 +249,7 @@ const FriendRankingsScreen = () => {
     modalText: {
       fontSize: 18,
       marginBottom: 10,
+      fontFamily: "Poppins"
     },  
   });
   

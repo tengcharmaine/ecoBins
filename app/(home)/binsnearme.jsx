@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, Linking, Platform, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useFonts } from 'expo-font';
 
 export default class BinsScreen extends React.Component {
   constructor(props) {
@@ -112,6 +113,22 @@ export default class BinsScreen extends React.Component {
   //   }
   // };
 
+  BinsScreenWrapper = () => {
+    const [loaded] = useFonts({
+      Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+      Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+      Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+    });
+  
+    if (!loaded) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      );
+    }
+  }
+
   render() {
     const { currentLocation, nearestMarker, locationPermissionGranted } = this.state;
   
@@ -152,7 +169,7 @@ export default class BinsScreen extends React.Component {
             showsUserLocation
             ref={(ref) => (this.mapRef = ref)}
             showsMyLocationButton={true}
-            mapPadding={{right: 10, bottom: 100, left: 10}}
+            mapPadding={{right: 10, bottom: 105, left: 10}}
             initialRegion={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
@@ -320,10 +337,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: "Poppins_Bold"
   },
   nearestMarkerDescription: {
     marginTop: 5,
-    textAlign: 'center'
+    textAlign: 'center',
+    fontFamily: "Poppins"
   },
   myLocationButton: {
     position: 'absolute',
@@ -340,31 +359,18 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 20,
   },
-  myLocationButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  button: {
-    borderColor: "black",
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: "#D9D9D6",
-    width: '85%',
-    height: 60,
-    marginTop: 40,
-    marginBottom: 10,
-    borderRadius: 20,
-    },
 text1: {
   color: "black",
   fontWeight: 'bold',
   fontSize: 19,
   textAlign: 'center',
+  fontFamily: "Poppins_SemiBold"
   },
   text2: {
     color: "black",
     textAlign: "center",
     fontSize: 16,
     marginTop: 10,
+    fontFamily: "Poppins"
 },
 });

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, TextInput, Alert } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, TextInput, Alert, ActivityIndicator } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 const Friends = () => {
   const [friendRankings, setRankings] = useState([]);
@@ -19,6 +20,12 @@ const Friends = () => {
   const [isPendingRequestsLoaded, setIsPendingRequestsLoaded] = useState(false);
   const [isIncomingRequestsLoaded, setIsIncomingRequestsLoaded] = useState(false);
   const isFocused = useIsFocused();
+
+  const [loaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+  });
 
   const fetchFriendsData = async () => {
     await fetchFriends();
@@ -557,6 +564,14 @@ const Friends = () => {
     navigation.navigate('index');
   };
 
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={goBack} style={styles.backButton}>
@@ -580,10 +595,12 @@ const styles = StyleSheet.create({
       borderWidth: 1,
       backgroundColor: 'white',
       fontSize: 16,
+      fontFamily: "Poppins"
     },
         smallheader: {
           fontSize: 15,
-          marginBottom: 5
+          marginBottom: 5,
+          fontFamily: "Poppins"
         },
         textContainer: {
           flex: 1,
@@ -635,6 +652,7 @@ const styles = StyleSheet.create({
           tabButtonText: {
             fontSize: 16,
             fontWeight: 'bold',
+            fontFamily: "Poppins_SemiBold"
           },
         button: {
           marginRight: 10,
@@ -678,12 +696,14 @@ const styles = StyleSheet.create({
             textAlign: 'left',
             justifyContent: 'center',
             marginLeft: 30,
+            fontFamily: "Poppins_SemiBold"
           },
           itemText1: {
             fontSize: 16,
             fontWeight: 'bold',
             textAlign: 'right',
             marginRight: 30,
+            fontFamily: "Poppins_SemiBold"
           },
           itemTextContainer: {
             flex: 1,
@@ -702,19 +722,8 @@ const styles = StyleSheet.create({
             fontSize: 25,
             fontWeight: 'bold',
             justifyContent: 'center',
-            marginTop: 35
-          },
-          addButton: {
-            backgroundColor: 'blue',
-            paddingHorizontal: 10,
-            paddingVertical: 5,
-            borderRadius: 5,
-          },
-          buttonText: {
-            color: 'black',
-            textAlign: 'center',
-            fontSize: 15,
-            marginTop: 15,
+            marginTop: 35,
+            fontFamily: "Poppins_Bold"
           },
           image: {
             height: 25,
@@ -730,6 +739,7 @@ const styles = StyleSheet.create({
         modalText: {
           fontSize: 18,
           marginBottom: 10,
+          fontFamily: "Poppins"
         },  
       });
 
