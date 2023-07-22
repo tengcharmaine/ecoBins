@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Link, useRouter } from 'expo-router';
@@ -7,6 +7,7 @@ import { Button } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { BackHandler } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 const foodcataloguedata = [
     {
@@ -103,7 +104,8 @@ const styles = StyleSheet.create({
         width: '30%',
         alignSelf: 'center',
         borderRadius: 30,
-        marginBottom: 10,
+        // marginBottom: 10,
+        marginTop: -10
     },
 
     buttonPressed: {
@@ -116,11 +118,11 @@ const styles = StyleSheet.create({
 
     text1: {
         color: "black",
-        marginTop: 20,
+        marginTop: 5,
         textAlign: 'left',
         marginRight: 230,
-        marginBottom: 5,
-        fontSize: 15,
+        fontSize: 14,
+        fontFamily: "Poppins"
     },
 
     itemContainer: {
@@ -141,12 +143,14 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         marginLeft: 30,
+        fontFamily: "Poppins_SemiBold"
     },
 
     description: {
         fontSize: 14,
         color: 'gray',
         marginLeft: 30,
+        fontFamily: "Poppins"
     },
 
     image: {
@@ -157,11 +161,12 @@ const styles = StyleSheet.create({
     },
 
     pointsheading: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        // fontWeight: 'bold',
         marginBottom: 30,
         marginTop: 70,
-        alignSelf: 'center',
+        textAlign: 'center',
+        fontFamily: "Poppins_SemiBold"
     },
     backButton: {
       position: 'absolute',
@@ -171,6 +176,11 @@ const styles = StyleSheet.create({
       padding: 10,
       borderRadius: 10,
     },
+
+    buttonText: {
+      fontFamily: "Poppins_SemiBold",
+      fontSize: 13
+    }
 });
 
 export function RewardsScreen({route}) {
@@ -414,7 +424,7 @@ export function SelectionScreen({ route }) {
   
           {isConfirmButtonVisible && (
             <Button style={styles.button1} onPress={handleConfirmation}>
-              <Text style={styles.text1}>
+              <Text style={styles.buttonText}>
                 Confirm
               </Text>
             </Button>
@@ -427,6 +437,20 @@ export function SelectionScreen({ route }) {
 const Stack = createNativeStackNavigator();
 
 export default function Movement() {
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+  });
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
     return (
       <Stack.Navigator initialRouteName="Rewards" screenOptions={{headerShown:false}}>
         <Stack.Screen name="Rewards" component={RewardsScreen} />

@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FriendRankingsScreen from '../friendsranking';
 import Modal from 'react-native-modal';
+import { useFonts } from 'expo-font';
 
 const LeaderboardStack = createStackNavigator();
 
@@ -17,6 +18,12 @@ const LeaderboardScreen = () => {
   const [selectedUserName, setSelectedUserName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeRankingType, setActiveRankingType] = useState('global');
+
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+  });
 
   const addFriend = async (friend) => {
     try {
@@ -235,6 +242,14 @@ const LeaderboardScreen = () => {
     return userName;
   };
 
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Leaderboard</Text>
@@ -349,12 +364,14 @@ const styles = StyleSheet.create({
     textAlign: 'left',
     justifyContent: 'center',
     marginLeft: 30,
+    fontFamily: "Poppins_SemiBold"
   },
   itemText1: {
     fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'right',
     marginRight: 30,
+    fontFamily: "Poppins_SemiBold"
   },
   itemTextContainer: {
     flex: 1,
@@ -373,7 +390,8 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
     justifyContent: 'center',
-    marginTop: 50
+    marginTop: 50,
+    fontFamily: "Poppins_Bold"
   },
   addButton: {
     backgroundColor: 'blue',
@@ -386,6 +404,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 15,
     fontSize: 15,
+    fontFamily: "Poppins_SemiBold"
   },
   image: {
     height: 25,
@@ -401,6 +420,7 @@ const styles = StyleSheet.create({
   modalText: {
     fontSize: 18,
     marginBottom: 10,
+    fontFamily: "Poppins"
   },
 });
 

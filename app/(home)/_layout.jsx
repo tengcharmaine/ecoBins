@@ -13,13 +13,14 @@ import { useFonts } from 'expo-font';
 
 const Tab = createBottomTabNavigator();
 
-
 export default function Screen() {
   
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
-    // Add other Poppins variants here (e.g., Poppins-Bold, Poppins-Italic, etc.) if needed.
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
   });
+  
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
@@ -125,7 +126,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
               >
                 <Icon name={iconName} size={iconSize} color={iconColor} />
                 {isFocused && (
-                  <Text style={{ color: "white", marginLeft: 5, fontFamily: "Poppins" }}>
+                  <Text style={{ color: "white", marginLeft: 5, fontFamily: "Poppins_SemiBold" }}>
                     {tabName}
                   </Text>
                 )}

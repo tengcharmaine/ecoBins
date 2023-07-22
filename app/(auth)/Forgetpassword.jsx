@@ -4,6 +4,7 @@ import { Text, Button, TextInput } from "react-native-paper";
 import { supabase } from "../../lib/supabase";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation} from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 
 export default function ForgetPasswordScreen() {
   const [email, setEmail] = useState('');
@@ -13,6 +14,12 @@ export default function ForgetPasswordScreen() {
   const [isEmailSent, setIsEmailSent] = useState(false);
   const [error, setError] = useState(null);
   const navigation = useNavigation();
+
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+  });
 
   const handleSendEmail = async () => {
     setEmailErrMsg('');
@@ -57,6 +64,14 @@ export default function ForgetPasswordScreen() {
   const handleGoBack = () => {
     navigation.navigate('Login');
   };
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -121,8 +136,8 @@ export default function ForgetPasswordScreen() {
             <Text style={styles.buttonText}>Verify OTP</Text>
           </TouchableOpacity>
           {error && <Text style={styles.errorText}>{error}</Text>}
-          {loading && <ActivityIndicator />}
           </View>
+          {loading && <ActivityIndicator />}
         </>
       )}    
     </View>
@@ -176,7 +191,8 @@ const styles = StyleSheet.create({
       fontSize: 34,
       textAlign: 'left',
       marginRight: 50,
-      marginBottom: 15,
+      // marginBottom: 15,
+      fontFamily: "Poppins_Bold"
   },
   title1: {
     color: "black",
@@ -187,12 +203,14 @@ const styles = StyleSheet.create({
       textAlign: 'left',
       marginRight: 170,
       marginBottom: 15,
+      fontFamily: "Poppins_Bold"
   },
   subtitle: {
     color: "black",
     fontSize: 16,
     alignItems: 'flex-start',
     textAlign: 'left',
+    fontFamily: "Poppins"
     //marginBottom: 20,
   },
   input: {
@@ -220,6 +238,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 19,
     textAlign: 'center',
+    fontFamily: "Poppins_SemiBold"
   },
   text1: {
     color: "black",
@@ -234,6 +253,7 @@ const styles = StyleSheet.create({
   },
   errorText: {
     color: "red",
+    fontFamily: "Poppins"
   },
   emailIcon: {
     width: 30,

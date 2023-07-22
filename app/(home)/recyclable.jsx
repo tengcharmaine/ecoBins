@@ -1,13 +1,30 @@
 import React from 'react';
-import { Text, View, TouchableOpacity, Image, StyleSheet, Alert, Linking, Platform} from 'react-native';
+import { Text, View, TouchableOpacity, Image, StyleSheet, Alert, Linking, Platform, ActivityIndicator } from 'react-native';
 import { Camera } from 'expo-camera';
 import axios from 'axios';
 import 'react-native-console-time-polyfill';
 import { Button } from 'react-native-paper';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { useFonts } from 'expo-font';
 
 export default class Recyclable extends React.Component {
+  BinsScreenWrapper = () => {
+    const [loaded] = useFonts({
+      Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+      Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+      Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+    });
+  
+    if (!loaded) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      );
+    }
+  }
+
   state = {
     hasCameraPermission: null,
     type: Camera.Constants.Type.back,
@@ -193,17 +210,11 @@ export default class Recyclable extends React.Component {
                 borderRadius: 5,
               }}
             >
-              <Text style={{ fontSize: 18, color: 'white' }}>{prediction.name}</Text>
-              <Text style={{ fontSize: 14, color: 'white' }}>Probability: {prediction.value}</Text>
+              <Text style={{ fontSize: 18, color: 'white', fontFamily: "Poppins_SemiBold" }}>{prediction.name}</Text>
+              <Text style={{ fontSize: 14, color: 'white', fontFamily: "Poppins"}}>Probability: {prediction.value}</Text>
             </View>
           ))}
         </View>
-        {/* <Button
-          style={{ alignSelf: 'center', borderColor: 'black', borderWidth: 3, marginBottom: 10 }}
-          onPress={() => this.setState({ imageUri: null })}
-        >
-          <Text style={{ fontSize: 18, color: 'black' }}>Retake Photo</Text>
-        </Button> */}
       </View>
     );
   };
@@ -285,11 +296,13 @@ text1: {
   fontWeight: 'bold',
   fontSize: 19,
   textAlign: 'center',
+  fontFamily: "Poppins_SemiBold"
   },
   text2: {
     color: "black",
     textAlign: "center",
     fontSize: 16,
     marginTop: 10,
+    fontFamily: "Poppins"
 },
 });
