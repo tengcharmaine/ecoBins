@@ -6,6 +6,8 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
+import {useRouter} from 'expo-router';
+
 
 
 import * as ExpoLinking from 'expo-linking'; // Import ExpoLinking from the 'expo-linking' package
@@ -16,6 +18,8 @@ import * as Linking from 'expo-linking';
 export default function PasswordUpdate() {
   const route = useRoute();
   const navigation = useNavigation();
+  const router = useRouter();
+
 
   const [loaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
@@ -59,6 +63,8 @@ export default function PasswordUpdate() {
       setErrMsg(error.message);
       return;
     }
+
+    navigation.navigate("passwordUpdateSuccess");
   };
 
   const goBack = () => {
