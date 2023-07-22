@@ -15,6 +15,7 @@ const Tab = createBottomTabNavigator();
 
 export default function Screen() {
   
+  // method to load fonts used
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
     Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
@@ -24,6 +25,7 @@ export default function Screen() {
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+// method to create the tab bar
 function CustomTabBar({ state, descriptors, navigation }) {
   const [selectedTab, setSelectedTab] = useState(state.index);
 
@@ -38,6 +40,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
     }).start();
   }, [selectedTab]);
 
+  // method to handle selection of a new tab
   const handleTabPress = (index) => {
     if (index !== selectedTab) {
       // Animate tab scale when a new tab is selected
@@ -55,6 +58,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
   const tabWidth = windowWidth / state.routes.length;
   const tabHeight = 50;
 
+  // to make sure that fonts are loaded
   if (!loaded) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -64,6 +68,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
   }
 
   return (
+    // Tab bar components
     <View style={{ flexDirection: "row", justifyContent: "space-around", backgroundColor: "white", }}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
@@ -72,22 +77,32 @@ function CustomTabBar({ state, descriptors, navigation }) {
         let iconName = "";
             let tabName = "";
             switch (route.name) {
+
+              // home screen
               case "index":
                 iconName = isFocused ? "home" : "home-outline";
                 tabName = "HOME";
                 break;
+
+                // bins near me screen
               case "binsnearme":
                 iconName = isFocused ? "map-marker" : "map-marker-outline";
                 tabName = "MAP";
                 break;
+
+                // recyclable screen
               case "recyclable":
                 iconName = isFocused ? "camera" : "camera-outline";
                 tabName = "SCAN";
                 break;
+
+                // rewards screen
               case "rewards":
                 iconName = isFocused ? "gift" : "gift-outline";
                 tabName = "REWARDS";
                 break;
+
+                // ranking screen
               case "ranking":
                 iconName = isFocused ? "podium-gold" : "podium";
                 tabName = "RANK";
@@ -102,6 +117,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
         const tabScaleValue = isFocused ? tabScale : 1;
 
         return (
+          // combining of components of tab bar
           <TouchableOpacity
             key={index}
             onPress={() => handleTabPress(index)}
@@ -140,6 +156,7 @@ function CustomTabBar({ state, descriptors, navigation }) {
 }
 
 return (
+  // linking tab bar to the screens
       <Tab.Navigator
         tabBar={(props) => <CustomTabBar {...props} />}
         screenOptions={{

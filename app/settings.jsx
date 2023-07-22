@@ -165,7 +165,7 @@ function SettingsScreen() {
     backButton: {
       position: 'absolute',
       top: 40,
-      left: 10,
+      left: 0,
       zIndex: 1,
       padding: 10,
       borderRadius: 10,

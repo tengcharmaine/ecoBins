@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createNativeStackNavigator();
 
+// Method to create the stack screens for auth
 export default function AuthRoot() {
   return (
       <SafeAreaProvider>
