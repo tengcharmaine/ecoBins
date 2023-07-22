@@ -1,15 +1,31 @@
 import React, { useRef } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Video } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+
 
 export default function VideoScreen() {
+  const [loaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+  });
     const navigation = useNavigation();
 
     const handleGoBack = () => {
         navigation.navigate('settings');
     };
+
+    if (!loaded) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      );
+    }
 
   return (
     <View style={styles.container}>
@@ -33,9 +49,14 @@ export default function VideoScreen() {
 
 const styles = StyleSheet.create({
     title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 20,
+      color: "black",
+      marginTop: 20,
+      justifyContent: 'center',
+      fontWeight: 'bold',
+      fontSize: 34,
+      textAlign: 'left',
+      marginBottom: 30,
+      fontFamily: 'PoppinsBold',
       },
     backButton: {
         position: 'absolute',

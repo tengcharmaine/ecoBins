@@ -1,11 +1,20 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, Image, TouchableOpacity, ScrollView, ActivityIndicator } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { supabase } from '../lib/supabase';
+import { useFonts } from 'expo-font';
+
 
 function ProfileSection({ profilePicture, username }) {
+  const [loaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+        PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+        PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+      });
+
   const styles = StyleSheet.create({
     sectionContainer: {
       marginTop: 30,
@@ -21,8 +30,18 @@ function ProfileSection({ profilePicture, username }) {
     usernameText: {
       fontSize: 20,
       fontWeight: 'bold',
+      fontFamily: 'PoppinsSemiBold',
+
     },
   });
+
+  if (!loaded) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        );
+      }
 
   return (
     <View style={styles.sectionContainer}>
@@ -47,9 +66,11 @@ function SectionHeader({ title, iconName }) {
       marginBottom: 10,
     },
     sectionHeaderText: {
-      fontSize: 18,
+      fontSize: 19,
       fontWeight: 'bold',
       marginLeft: 10,
+      fontFamily: 'PoppinsSemiBold',
+      
     },
   });
 
@@ -62,6 +83,12 @@ function SectionHeader({ title, iconName }) {
 }
 
 function SettingsScreen() {
+  const [loaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+        PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+        PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+      });
   const navigation = useNavigation();
   const [username, setUsername] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -129,8 +156,8 @@ function SettingsScreen() {
       paddingHorizontal: 20,
     },
     header: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
+      //flexDirection: 'row',
+      //justifyContent: 'space-between',
       alignItems: 'center',
       paddingVertical: 20,
       marginTop: 30,
@@ -146,9 +173,11 @@ function SettingsScreen() {
     headerTitle: {
       fontSize: 30,
       fontWeight: 'bold',
-      // alignSelf: 'center',
-      marginLeft: 115,
-      marginTop: 30
+      alignSelf: 'center',
+      //marginLeft: 100,
+      marginTop: 30,
+      fontFamily: 'PoppinsBold',
+
     },
     content: {
       flex: 1,
@@ -166,8 +195,9 @@ function SettingsScreen() {
       position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, marginBottom: 30
     },
     logoutButtonText: {
-      fontSize: 18,
+      fontSize: 19,
       fontWeight: 'bold',
+      fontFamily: 'PoppinsSemiBold',
     },
     profilepicturecontainer: {
       marginTop: -35,
@@ -192,15 +222,23 @@ function SettingsScreen() {
     },
     editText: {
       fontSize: 14,
-    //   fontWeight: 'bold',
       color: 'black',
       marginRight: 10,
+      fontFamily: 'Poppins',
     },
     arrowIcon: {
       marginLeft: 'auto',
       padding: 5
     },
   });
+
+  if (!loaded) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        );
+      }
 
   return (
     <View style={styles.container}>
@@ -209,7 +247,7 @@ function SettingsScreen() {
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Settings</Text>
-        <View style={{ width: 24 }}></View>
+        {/* <View style={{ width: 24 }}></View> */}
       </View>
       <View style={styles.content}>
         <View style={styles.profilepicturecontainer}>

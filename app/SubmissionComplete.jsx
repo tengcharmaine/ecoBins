@@ -1,13 +1,24 @@
 import { Text, Button } from "react-native-paper";
-import { StyleSheet, View, Image } from "react-native";
+import { StyleSheet, View, Image, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
+import { useFonts } from 'expo-font';
+import { useNavigation } from "expo-router";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function SubmissionComplete() {
+    const navigation= useNavigation();
+    const [loaded] = useFonts({
+        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+        PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+        PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+        PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+    
+      });
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            alignItems: 'center',
+            //alignItems: 'center',
         },
         input: {
             borderColor: "black",
@@ -18,29 +29,51 @@ export default function SubmissionComplete() {
         },
         button: {
             borderColor: "black",
-            alignItems: 'center',
+            alignSelf: 'center',
+            justifyContent: 'center',
             backgroundColor: "#c7dede",
-            width: '35%',
+            width: '85%',
+            height: 60,
             marginTop: 20,
-            borderRadius: 10,
+            marginBottom: 10,
+            borderRadius: 20,
+            
+        },
+        button1: {
+            borderColor: "black",
+            alignSelf: 'center',
+            justifyContent: 'center',
+            backgroundColor: "#dedede",
+            width: '85%',
+            height: 60,
+            marginTop: 20,
+            marginBottom: 10,
+            borderRadius: 20,
             
         },
         text: {
             color: "black",
-            marginTop: 20,
-            fontSize: 25,
+            fontWeight: 'bold',
+            fontSize: 24,
+            textAlign: 'center',
+            fontFamily: 'PoppinsSemiBold',
+            marginTop: 30,
         },
 
         text1: {
             color: "black",
-            marginLeft: 5,
-            flexWrap: 'wrap',
-            flex: 1,
+            fontWeight: 'bold',
+            fontSize: 19,
+            textAlign: 'center',
+            fontFamily: 'PoppinsSemiBold',
         },
         text2: {
             color: "black",
-            marginTop: 20,
-            fontSize: 20,
+            fontWeight: 'bold',
+            fontSize: 19,
+            textAlign: 'center',
+            fontFamily: 'PoppinsSemiBold',
+            marginTop: 10,
         },
 
         title: {
@@ -56,21 +89,35 @@ export default function SubmissionComplete() {
         },
         
     });
+
+    if (!loaded) {
+        return (
+          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <ActivityIndicator size="large" color="black" />
+          </View>
+        );
+      }
+
+    const handlegosubmit = () => {
+        navigation.goBack();
+    };
+
+    const handlegorewards = () => {
+        navigation.navigate('Rewards');
+    };
     
     return (
         <View style={styles.container}>
             <Image source={{uri: "https://media0.giphy.com/media/DyQrKMpqkAhNHZ1iWe/giphy.gif?cid=ecf05e47bdzn0x5gumv2v08hecawsy486c2dzd9blc87s8tg&ep=v1_gifs_search&rid=giphy.gif&ct=g" }}
-                   style={{height: '30%', width: '60%', borderRadius: 60}}></Image>            
-            <Text style={styles.text}>Your submission is successfull!</Text>
+                   style={{height: '30%', width: '60%', borderRadius: 60, alignSelf: 'center'}}></Image>            
+            <Text style={styles.text}>Your submission is successful!</Text>
             <Text style={styles.text2}>+1 point for redemption</Text>
-            <Button style = {styles.button}>
-                <Link style={styles.text1}
-                        href='/submit'>Submit another</Link>
-            </Button>
-            <Button style={styles.button}>
-                <Link style={styles.text1}
-                        href='/rewards'>Redeem here!</Link>
-            </Button>
+            <TouchableOpacity style = {styles.button} onPress={handlegosubmit}>
+                <Text style={styles.text1}>Submit another</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button1} onPress={handlegorewards}>
+                <Text style={styles.text1}>Redeem here!</Text>
+            </TouchableOpacity>
         </View>
     )
 }

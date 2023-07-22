@@ -246,7 +246,7 @@ export default function SubmitScreen() {
         uploadImage: {
             width: 90,
             height: 90,
-            //marginRight: 10,
+            marginLeft: 10,
             resizeMode: 'contain',
             alignSelf: 'center',
         },
