@@ -15,23 +15,27 @@ export default function ForgetPasswordScreen() {
   const [error, setError] = useState(null);
   const navigation = useNavigation();
 
+  // Method to load fonts used
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
     Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
     Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
   });
 
+  // Method to send the email with OTP to user
   const handleSendEmail = async () => {
     setEmailErrMsg('');
     setError(null);
     
     try {
+      // error catching: leaving email input empty
       if (email === '' ) {
             setEmailErrMsg("Email cannot be empty");
             return;
           } 
 
       setLoading(true);
+      // send email with OTP designed in Supabase
       const { error } = await supabase.auth.signInWithOtp({email: email});
       setLoading(false);
 
@@ -45,11 +49,11 @@ export default function ForgetPasswordScreen() {
     }
   };
 
+  // Method to verify OTP keyed in
   const handleVerifyOTP = async () => {
     setError(null);
     try {
       setLoading(true);
-      // Use the token as the OTP for password reset
       const { error } = await supabase.auth.verifyOtp({ email: email, token: otp, type: 'email' });
       setLoading(false);
 
@@ -61,10 +65,12 @@ export default function ForgetPasswordScreen() {
     }
   };
   
+  // Navigation for back arrow
   const handleGoBack = () => {
     navigation.navigate('Login');
   };
 
+  // To make sure that fonts are completely loaded in
   if (!loaded) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -78,10 +84,15 @@ export default function ForgetPasswordScreen() {
       
       {!isEmailSent ? (
         <>
-        
+
+        {/* Forget password screen */}
+
+        {/* back arrow */}
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
+
+        {/* main components of screen */}
         <View style= {styles.innerContainer}>
         <Text style={styles.title}>Forget Password</Text>
         <View style= {styles.emailContainer}>
@@ -89,7 +100,6 @@ export default function ForgetPasswordScreen() {
               source={require('./../../images/envelope-open.png')}
               style={styles.emailIcon}
             />
-          {/* <Text style={styles.text1}>Enter your email</Text> */}
           <TextInput
             autoCapitalize="none"
             placeholder="Email"
@@ -110,9 +120,15 @@ export default function ForgetPasswordScreen() {
         </>
       ) : (
         <>
+
+        {/* Verify OTP screen */}
+
+        {/* back button */}
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton1}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
+
+        {/* main component of screen */}
         <View style= {styles.innerContainer1}>
         <Text style={styles.title1}>Enter OTP</Text>
         <Text style={styles.subtitle}>An 6 digit code has been sent to</Text>
@@ -141,10 +157,10 @@ export default function ForgetPasswordScreen() {
         </>
       )}    
     </View>
-    
   );
 }
 
+// custom stylesheet
 const styles = StyleSheet.create({
   backButton: {
     position: 'left',

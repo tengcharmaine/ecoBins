@@ -1,26 +1,9 @@
 import React, {useState} from 'react';
 import {Text, StyleSheet, View, TextInput, Button} from 'react-native';
 import { Picker } from '@react-native-picker/picker';
-import { useFonts } from 'expo-font';
-
 
 export default function Pick() {
   const [location, setLocation] = useState('Beside Terrace Canteen');
-  const [loaded] = useFonts({
-    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
-    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
-    PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
-    PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-
-  });
-
-  if (!loaded) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="black" />
-      </View>
-    );
-  }
 
   return (
     <View style={{fontFamily: "Poppins"}}>

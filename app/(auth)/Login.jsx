@@ -16,16 +16,20 @@ export default function LoginPage() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const navigation = useNavigation();
 
+  // method to load fonts used
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
     Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
     Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
   });
 
+  // method to login users into their account
   const handleSubmit = async () => {
     setErrMsg('');
     setEmailErrMsg('');
     setPasswordErrMsg('');
+
+    // error handling: email and password input left empty
     if (email === '' && password === '') {
       setEmailErrMsg("Email cannot be empty");
       setPasswordErrMsg("Password cannot be empty");
@@ -35,6 +39,7 @@ export default function LoginPage() {
       return;
     }
     setLoading(true);
+    // sign in users with Supabase auth
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
     if (error) {
@@ -43,18 +48,22 @@ export default function LoginPage() {
     }
   };
 
+  // method to toggle password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   }
 
+  // navigation to forget password screen
   const handleForgetPassword = () => {
     navigation.navigate('Forget Password');
   };
 
+  // navigation to register screen
   const handleRegister = () => {
     navigation.navigate('Register');
   };
 
+  // custom stylesheet
   const styles = StyleSheet.create({
   container: {
       flex: 1, 
@@ -160,6 +169,7 @@ export default function LoginPage() {
   }
 });
 
+  // method to refresh screen
   useFocusEffect(
     React.useCallback(() => {
       setEmail('');
@@ -170,6 +180,7 @@ export default function LoginPage() {
     }, [])
   );
 
+  // To make sure that fonts are completely loaded in
   if (!loaded) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -179,11 +190,14 @@ export default function LoginPage() {
   }
   
   return (
+    // make screen scrollable
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
     >
+      
+      {/* main component of screen */}
         <View style= {styles.innerContainer}>
             <Image source={require('./../../images/finalicon.jpeg')}
                    style={{height: '38%', width: '60%', borderRadius: 60, marginBottom: 20}}></Image>
