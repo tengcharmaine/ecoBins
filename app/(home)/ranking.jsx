@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { supabase } from '../../lib/supabase';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FriendRankingsScreen from '../friendsranking';
