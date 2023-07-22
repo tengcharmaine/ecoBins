@@ -172,6 +172,7 @@ export default function editprofilepic() {
     const [image, setImage] = useState(null);
     const [error, setError] = useState(null);
     const [showButton, setShowButton] = useState(true);
+    const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
 
     useFocusEffect(
@@ -218,6 +219,7 @@ export default function editprofilepic() {
     };
   
     const saveImage = async () => {
+      setLoading(true);
         if (image) {
           try {
             const { data: { user } } = await supabase.auth.getUser();
@@ -261,6 +263,8 @@ export default function editprofilepic() {
             }
       
             console.log('Profile picture updated successfully!');
+            setLoading(false);
+
             navigation.goBack();
             
           } catch (error) {
@@ -307,7 +311,7 @@ export default function editprofilepic() {
             )}
             {error !== null && <Text style={styles.error}>{error}</Text>}
             <TouchableOpacity style={styles.button} onPress={saveImage}>
-                <Text style={styles.text}>Confirm</Text>
+                {loading ? <Text style={styles.text}>Loading...</Text> : <Text style={styles.text}>Confirm</Text>}
             </TouchableOpacity>
             <TouchableOpacity style={styles.defaultButton} onPress={resetToDefault}>
                 <Text style={styles.text}>Reset to Default</Text>
