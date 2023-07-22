@@ -310,7 +310,7 @@ export default function HomeScreen() {
               right: 10,
             },
              activitiesHeading: {
-              fontSize: 16,
+              fontSize: 22,
               fontWeight: 'bold',
               marginTop: 20,
               marginBottom: 5,

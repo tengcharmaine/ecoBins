@@ -284,7 +284,7 @@ function SettingsScreen() {
               <Ionicons name="chevron-forward" size={18} color="#888" style={styles.arrowIcon} />
             </TouchableOpacity>
             <TouchableOpacity style={styles.editButton} onPress={handleaboutus}>
-              <Text style={styles.editText}>About us</Text>
+              <Text style={styles.editText}>Contact us</Text>
               <Ionicons name="chevron-forward" size={18} color="#888" style={styles.arrowIcon} />
             </TouchableOpacity>
           </View>

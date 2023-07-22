@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         marginTop: 5,
         textAlign: 'left',
         marginRight: 230,
-        fontSize: 14,
+        fontSize: 20,
         fontFamily: "Poppins"
     },
 
@@ -132,6 +132,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#c7dede',
         borderRadius: 30,
         height: 120,
+        marginTop: -5,
     },
 
     textContainer: {
@@ -140,14 +141,14 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: 'bold',
         marginLeft: 30,
         fontFamily: "Poppins_SemiBold"
     },
 
     description: {
-        fontSize: 14,
+        fontSize: 15,
         color: 'gray',
         marginLeft: 30,
         fontFamily: "Poppins"
@@ -179,7 +180,8 @@ const styles = StyleSheet.create({
 
     buttonText: {
       fontFamily: "Poppins_SemiBold",
-      fontSize: 13
+      fontSize: 14,
+      color: 'black',
     }
 });
 

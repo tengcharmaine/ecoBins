@@ -162,6 +162,11 @@ export default function PasswordUpdate() {
       resizeMode: 'contain',
       marginRight: 20,
     },
+    error: {
+      color: "red",
+      fontFamily: 'Poppins',
+      //marginTop: 10,
+  },
   });
 
   if (!loaded) {
@@ -210,10 +215,11 @@ export default function PasswordUpdate() {
                 />
                 </TouchableOpacity>
             </View>
+            {errMsg !== "" && <Text style = {styles.error}>{errMsg}</Text>}
+
             <TouchableOpacity style = {styles.button} onPress={handlePasswordUpdate}>
                 <Text style={styles.text1}> Update password </Text>
             </TouchableOpacity>
-      {errMsg !== "" && <Text>{errMsg}</Text>}
       {loading && <ActivityIndicator />}
     </View>
     </KeyboardAwareScrollView>

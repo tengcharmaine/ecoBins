@@ -150,6 +150,8 @@ export default function editprofilepic() {
 
         error: {
             color: "red",
+            fontFamily: 'Poppins',
+            marginTop: 10,
         },
 
         backButton: {

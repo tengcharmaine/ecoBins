@@ -402,8 +402,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'black',
     textAlign: 'center',
-    marginTop: 15,
-    fontSize: 15,
+    marginTop: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontSize: 18,
     fontFamily: "Poppins_SemiBold"
   },
   image: {

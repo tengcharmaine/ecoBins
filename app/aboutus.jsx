@@ -32,15 +32,12 @@ export default function AboutUsScreen() {
         </TouchableOpacity>
         <Image source={require('./../images/finalicon.jpeg')}
                    style={{height: '20%', width: '50%', borderRadius: 60, marginBottom: 20}}></Image>
-      <Text style={styles.title}>About Us</Text>
+      <Text style={styles.title}>Contact Us</Text>
       <Text style={styles.description}>
         Welcome to ecoBins! 
-        {'\n'}
-        {'\n'}
-        We want to encourage users to incorporate recycling into their lifestyle, especially in the NUS campus.
       </Text>
       <Text style={styles.description}>
-        If you have any questions, feedback, or suggestions, please don't hesitate to contact us on telegram. 
+        If you have any questions, feedback, {'\n'} or suggestions, please don't hesitate {'\n'} to contact us on telegram. 
       </Text>
       <Text style={styles.contactInfo}>
         Contact Information:

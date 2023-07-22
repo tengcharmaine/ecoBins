@@ -231,8 +231,8 @@ const FriendRankingsScreen = () => {
       buttonText: {
         color: 'black',
         textAlign: 'center',
-        fontSize: 15,
-        marginTop: 15,
+        fontSize: 18,
+        marginTop: 12,
         fontFamily: "Poppins_SemiBold"
       },
       image: {

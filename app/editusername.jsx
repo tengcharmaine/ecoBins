@@ -77,7 +77,8 @@ export default function editusername() {
     },
     errorText: {
       color: "red",
-      marginTop: 10,
+      //marginTop: 10,
+      fontFamily: 'Poppins',
     },
     backButton: {
       position: 'absolute',

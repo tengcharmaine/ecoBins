@@ -337,13 +337,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    fontFamily: "Poppins_Bold"
+    fontFamily: "Poppins_SemiBold"
   },
   nearestMarkerDescription: {
     marginTop: 5,
     textAlign: 'center',
     fontFamily: "Poppins"
   },
+  button: {
+    borderColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '85%',
+    height: 60,
+    marginTop: 40,
+    marginBottom: 20,
+    borderRadius: 20,
+    alignSelf: 'center',
+    backgroundColor: '#D9D9D6',
+    },
   myLocationButton: {
     position: 'absolute',
     bottom: 90,
