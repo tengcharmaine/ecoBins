@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, ActivityIndicator, RefreshControl, Alert, Button } from 'react-native';
 import { supabase } from '../../lib/supabase';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, Text, FlatList, Image, StyleSheet, Button, Alert, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import FriendRankingsScreen from '../friendsranking';
@@ -18,6 +18,7 @@ const LeaderboardScreen = () => {
   const [selectedUserName, setSelectedUserName] = useState('');
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeRankingType, setActiveRankingType] = useState('global');
+  const [isLoading, setIsLoading] = useState(false); 
 
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -136,8 +137,8 @@ const LeaderboardScreen = () => {
   };
   
   useEffect(() => {
+    setActiveRankingType('global');
     fetchLeaderboardData();
-
   }, []);
 
   const handleFriendshipChange = (payload) => {
@@ -159,6 +160,7 @@ const LeaderboardScreen = () => {
 
   const fetchLeaderboardData = async () => {
     try {
+      setIsLoading(true);
       const { data: {user} } = await supabase.auth.getUser();
       setYourUserId(user.id);
 
@@ -208,8 +210,10 @@ const LeaderboardScreen = () => {
 
       // Store the fetched leaderboardData in component state
       setLeaderboardData(rankedData);
+      setIsLoading(false);
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
+      setIsLoading(false);
     }
   };
   
@@ -222,6 +226,11 @@ const LeaderboardScreen = () => {
     setActiveRankingType('global');
     navigation.navigate('ranking');
   };
+
+  const onRefresh = async () => {
+    await fetchLeaderboardData();
+  };
+
 
   const navigateToFriendsRanking = () => {
     setActiveRankingType('friends');
@@ -306,6 +315,9 @@ const LeaderboardScreen = () => {
           </View>
         )}
         keyExtractor={(item) => item.id.toString()}
+        refreshControl={
+          <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+        }
       />
 
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>

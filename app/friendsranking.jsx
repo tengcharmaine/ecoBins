@@ -1,140 +1,159 @@
-import React, { useEffect, useState} from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, ActivityIndicator } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, ActivityIndicator, RefreshControl } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation } from '@react-navigation/native';
 import Modal from 'react-native-modal';
 import { useFonts } from 'expo-font';
 
 const FriendRankingsScreen = () => {
-    const [friendRankings, setRankings] = useState([]);
-    const [selectedUserName, setSelectedUserName] = useState('');
-    const [isModalVisible, setIsModalVisible] = useState(false);
-    const [activeRankingType, setActiveRankingType] = useState('friends');
-    const navigation = useNavigation();
+  const [friendRankings, setRankings] = useState([]);
+  const [selectedUserName, setSelectedUserName] = useState('');
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [activeRankingType, setActiveRankingType] = useState('friends');
+  const [refreshing, setRefreshing] = useState(false); 
+  const navigation = useNavigation();
 
-    useEffect(() => {
-      const fetchFriendsData = async () => {
-        await fetchFriends();
-      };
-  
-      fetchFriendsData();
-  
-      // Fetch data every time the screen is focused
-      const unsubscribe = navigation.addListener('focus', fetchFriendsData);
-  
-      setActiveRankingType('friends');
+  useEffect(() => {
+    const fetchFriendsData = async () => {
+      await fetchFriends();
+    };
 
-      return unsubscribe;
-    }, []);
+    fetchFriendsData();
 
-    const fetchFriends = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          const { data: friends, error } = await supabase
-            .from('friendships')
-            .select('friend_id')
-            .eq('user_id', user.id);
-      
-          if (error) {
-            console.error(error);
-          } else {
-            const friendIds = friends.map((friend) => friend.friend_id);
-      
-            const { data: rankingsData, error: rankingsError } = await supabase
-              .from('ranking')
-              .select('profile, user_name, score')
-              .in('user_id', friendIds)
-              .order('score', { ascending: false });
-      
-            if (rankingsError) {
-              console.error(rankingsError);
-            } else {
-              console.log(rankingsData);
-              // Update state with the rankings data
-              setRankings(rankingsData.map((item, index) => ({
-                ...item,
-                rank: index + 1, // Assign a rank to each item in the rankings data
-              })));
-            }
-          }
+    // Fetch data every time the screen is focused
+    const unsubscribe = navigation.addListener('focus', fetchFriendsData);
+
+    setActiveRankingType('friends');
+
+    return unsubscribe;
+  }, []);
+
+  const fetchFriends = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: friends, error } = await supabase
+        .from('friendships')
+        .select('friend_id')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        const friendIds = friends.map((friend) => friend.friend_id);
+
+        const { data: rankingsData, error: rankingsError } = await supabase
+          .from('ranking')
+          .select('profile, user_name, score')
+          .in('user_id', friendIds)
+          .order('score', { ascending: false });
+
+        if (rankingsError) {
+          console.error(rankingsError);
+        } else {
+          console.log(rankingsData);
+          // Update state with the rankings data
+          setRankings(rankingsData.map((item, index) => ({
+            ...item,
+            rank: index + 1, // Assign a rank to each item in the rankings data
+          })));
         }
-      };
-      
-      const navigateToGlobalRanking = () => {
-        setActiveRankingType('global');
-        navigation.goBack();
-      };
-    
-      const navigateToFriendsRanking = () => {
-        setActiveRankingType('friends');
-        navigation.navigate('friendsRanking');
-      };
-  
-      const toggleModal = (userName) => {
-        setSelectedUserName(userName);
-        setIsModalVisible(!isModalVisible);
-      };
-    
-      const renderUsername = (userName) => {
-        if (userName.length > 10) {
-          return `${userName.substring(0, 10)}...`;
-        }
-        return userName;
-      };
-
-      const [loaded] = useFonts({
-        Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
-        Poppins_Bold: require('../assets/fonts/Poppins-Bold.ttf'),
-        Poppins_SemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
-      });
-
-      if (!loaded) {
-        return (
-          <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <ActivityIndicator size="large" color="black" />
-          </View>
-        );
       }
+    }
+  };
 
+  const navigateToGlobalRanking = () => {
+    setActiveRankingType('global');
+    navigation.goBack();
+  };
+
+  const navigateToFriendsRanking = () => {
+    setActiveRankingType('friends');
+    navigation.navigate('friendsRanking');
+  };
+
+  const toggleModal = (userName) => {
+    setSelectedUserName(userName);
+    setIsModalVisible(!isModalVisible);
+  };
+
+  const renderUsername = (userName) => {
+    if (userName.length > 10) {
+      return `${userName.substring(0, 10)}...`;
+    }
+    return userName;
+  };
+
+  const [loaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+  });
+
+  if (!loaded) {
     return (
-      <View style={styles.container}>
-        <Text style={styles.title}>Friend Rankings</Text>
-        <View style={styles.buttonContainer}>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        activeRankingType === 'global' && styles.activeButton,
-      ]}
-      onPress={navigateToGlobalRanking}
-    >
-      <Text style={styles.buttonText}>Global</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        activeRankingType === 'friends' && styles.activeButton,
-      ]}
-      onPress={navigateToFriendsRanking}
-    >
-      <Text style={styles.buttonText}>Friends</Text>
-    </TouchableOpacity>
-  </View>
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
+  const onRefresh = async () => {
+    // Set refreshing state to true when the user initiates a refresh
+    setRefreshing(true);
+
+    try {
+      // Fetch the updated data
+      await fetchFriends();
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+    }
+
+    // Set refreshing state back to false when the data fetching is complete
+    setRefreshing(false);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Friend Rankings</Text>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            activeRankingType === 'global' && styles.activeButton,
+          ]}
+          onPress={navigateToGlobalRanking}
+        >
+          <Text style={styles.buttonText}>Global</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[
+            styles.button,
+            activeRankingType === 'friends' && styles.activeButton,
+          ]}
+          onPress={navigateToFriendsRanking}
+        >
+          <Text style={styles.buttonText}>Friends</Text>
+        </TouchableOpacity>
+      </View>
       <FlatList
-          data={friendRankings}
-          renderItem={({ item }) => (
-            <View style={styles.itemContainer}>
+        data={friendRankings}
+        renderItem={({ item }) => (
+          <View style={styles.itemContainer}>
             <Text style={styles.itemText}>{item.rank}</Text>
             <Image source={{ uri: item.profile }} style={styles.profilePicture} />
             <View style={styles.itemTextContainer}>
-              <View style = {styles.container1}>
+              <View style={styles.container1}>
                 <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
                   <Text style={styles.itemText}>{renderUsername(item.user_name)}</Text>
                 </TouchableOpacity>
-                </View>
               </View>
-              <Text style={styles.itemText1}>{item.score}</Text>
+            </View>
+            <Text style={styles.itemText1}>{item.score}</Text>
           </View>
-          )}
+        )}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
       />
       <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
         <View style={styles.modalContainer}>
@@ -143,8 +162,8 @@ const FriendRankingsScreen = () => {
         </View>
       </Modal>
     </View>
-    );
-  };
+  );
+};
   
   const styles = StyleSheet.create({
     buttonContainer: {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, TextInput, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity, Button, TextInput, Alert, ActivityIndicator, RefreshControl } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Modal from 'react-native-modal';
@@ -20,12 +20,27 @@ const Friends = () => {
   const [isPendingRequestsLoaded, setIsPendingRequestsLoaded] = useState(false);
   const [isIncomingRequestsLoaded, setIsIncomingRequestsLoaded] = useState(false);
   const isFocused = useIsFocused();
+  const [isRefreshing, setIsRefreshing] = useState(false);
 
   const [loaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
     Poppins_Bold: require('../assets/fonts/Poppins-Bold.ttf'),
     Poppins_SemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
   });
+
+  // Function to handle pull-to-refresh
+  const onRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchFriendsData();
+    setIsRefreshing(false);
+  };
+
+  // Function to handle manual pull-to-refresh action
+  const handleManualRefresh = async () => {
+    setIsRefreshing(true);
+    await fetchFriendsData();
+    setIsRefreshing(false);
+  };
 
   const fetchFriendsData = async () => {
     await fetchFriends();
@@ -418,68 +433,68 @@ const Friends = () => {
               // Render pending friend requests content
               return (
                 <View>
-                  <Text style={styles.smallheader}>Pending Friend Requests</Text>
-                  <View>
+          <Text style={styles.smallheader}>Pending Friend Requests</Text>
                   <FlatList
-                    data={friendRequests}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
-                        <View style={styles.itemContainer}>
-                          <Image source={{ uri: item.profile }} style={styles.profilePicture} />
-                          <View style={styles.textContainer}>
-                          <Text style={styles.itemText}>{renderUsername1(item.user_name)}</Text>
-                          </View>
-                          <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
-                        <View style={styles.modalContainer}>
-                        <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
-                        <Button title="Close" onPress={toggleModal} />
-                        </View>
-                      </Modal>
-                      
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
-                  />
+          data={friendRequests}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+              <View style={styles.itemContainer}>
+                <Image source={{ uri: item.profile }} style={styles.profilePicture} />
+                <View style={styles.textContainer}>
+                  <Text style={styles.itemText}>{renderUsername1(item.user_name)}</Text>
                 </View>
-                </View>
-              );
+                <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
+                    <Button title="Close" onPress={toggleModal} />
+                  </View>
+                </Modal>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
+        />
+      </View>
+    );
             } else if (activeTab === 'incoming') {
               // Render incoming friend requests content
               return (
                 <View>
-                  <Text style={styles.smallheader}>Incoming Friend Requests</Text>
-                  <View>
-                  <FlatList
-                    data={incomingFriendRequests}
-                    renderItem={({ item }) => (
-                      <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
-                        <View style={styles.itemContainer}>
-                          <Image source={{ uri: item.profile }} style={styles.profilePicture} />
-                          <View style={styles.textContainer1}>
-                          <Text style={styles.itemText}>{renderUsername2(item.user_name)}</Text>
-                          </View>                      
-                          <TouchableOpacity onPress={() => acceptFriendRequest(item)}>
-                            <Image source={require('../images/check.png')} style={styles.icon} />
-                          </TouchableOpacity>
-                          <TouchableOpacity onPress={() => rejectFriendRequest(item)}>
-                            <Image source={require('../images/cross.png')} style={styles.icon} />
-                          </TouchableOpacity>
-
-                          <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
-                        <View style={styles.modalContainer}>
-                        <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
-                        <Button title="Close" onPress={toggleModal} />
-                        </View>
-                      </Modal>
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                    keyExtractor={(item, index) => index.toString()}
-                  />
+          <Text style={styles.smallheader}>Incoming Friend Requests</Text>
+        <FlatList
+          data={incomingFriendRequests}
+          renderItem={({ item }) => (
+            <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+              <View style={styles.itemContainer}>
+                <Image source={{ uri: item.profile }} style={styles.profilePicture} />
+                <View style={styles.textContainer1}>
+                  <Text style={styles.itemText}>{renderUsername2(item.user_name)}</Text>
                 </View>
-                </View>
-              );
+                <TouchableOpacity onPress={() => acceptFriendRequest(item)}>
+                  <Image source={require('../images/check.png')} style={styles.icon} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => rejectFriendRequest(item)}>
+                  <Image source={require('../images/cross.png')} style={styles.icon} />
+                </TouchableOpacity>
+                <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+                  <View style={styles.modalContainer}>
+                    <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
+                    <Button title="Close" onPress={toggleModal} />
+                  </View>
+                </Modal>
+              </View>
+            </TouchableOpacity>
+          )}
+          keyExtractor={(item, index) => index.toString()}
+          refreshControl={
+            <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+          }
+        />
+      </View>
+    );
             } else {
               // Render friend list content
               return (
@@ -533,6 +548,9 @@ const Friends = () => {
                     </TouchableOpacity>
                   )}
                   keyExtractor={(item) => item.rank.toString()}
+                  refreshControl={
+                    <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+                  }
                 />
                 </View>
               );
@@ -541,7 +559,7 @@ const Friends = () => {
 
   const renderTabs = () => {
     const tabs = [
-      { key: 'friends', label: 'Add Friends' },
+      { key: 'friends', label: 'Find Friends' },
       { key: 'pending', label: 'Pending Requests' },
       { key: 'incoming', label: 'Incoming Requests' },
     ];
@@ -585,6 +603,17 @@ const Friends = () => {
 };
 
 const styles = StyleSheet.create({
+  refreshButton: {
+    position: 'absolute',
+    top: 60,
+    right: 20,
+    zIndex: 1,
+  },
+  pendingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
     searchInput: {
       marginTop: 10,
       marginBottom: 10,
