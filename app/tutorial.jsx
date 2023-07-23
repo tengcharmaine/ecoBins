@@ -35,7 +35,7 @@ export default function VideoScreen() {
         </TouchableOpacity>
 
       <Video
-        source={require('../videos/milestone2.mp4')}
+        source={require('../videos/ms33.mp4')}
         shouldPlay={true}
         isMuted={false}
         style={styles.video}
