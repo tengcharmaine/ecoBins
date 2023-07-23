@@ -100,19 +100,6 @@ export default class BinsScreen extends React.Component {
     return dist;
   };
 
-  // handleMyLocationPress = () => {
-  //   const { currentLocation } = this.state;
-  
-  //   if (currentLocation) {
-  //     this.mapRef.animateToRegion({
-  //       latitude: currentLocation.latitude,
-  //       longitude: currentLocation.longitude,
-  //       latitudeDelta: 0.0922,
-  //       longitudeDelta: 0.0421,
-  //     });
-  //   }
-  // };
-
   BinsScreenWrapper = () => {
     const [loaded] = useFonts({
       Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),

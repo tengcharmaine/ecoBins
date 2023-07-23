@@ -46,7 +46,7 @@ export default function Register() {
       setPasswordErrMsg("Password cannot be empty");
       return;
     } else if (!isPasswordValid(password)) {
-      setPasswordErrMsg('Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character.');
+      setPasswordErrMsg('Password must be at least 8 characters long' + '\n' + 'and contain at least one uppercase letter,' + '\n' + 'one lowercase letter, and one digit.' + '\n' + 'Please make sure that there is no special' + '\n' + 'characters in your password.');
       return;
     }
 
@@ -89,7 +89,7 @@ export default function Register() {
   }
 
   const isPasswordValid = (password) => {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/;
     const minLength = 8;
 
     return password.length >= minLength && passwordRegex.test(password);
@@ -242,7 +242,6 @@ export default function Register() {
             onChangeText={(text) => {
               setPassword(text);
               setPasswordErrMsg(''); // Clear the password error message
-              setConfirmPassword(''); // Clear the confirmation password field
             }}
           />
           <TouchableOpacity
