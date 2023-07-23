@@ -163,7 +163,8 @@ export default function Register() {
             },
             error: {
                 color: "red",
-                textAlign: 'center'
+                textAlign: 'center',
+                fontFamily: 'Poppins'
             },
             passwordIcon: {
                 position: 'absolute',

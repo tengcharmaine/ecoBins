@@ -200,7 +200,7 @@ export default function LoginPage() {
       {/* main component of screen */}
         <View style= {styles.innerContainer}>
             <Image source={require('./../../images/finalicon.jpeg')}
-                   style={{height: '38%', width: '60%', borderRadius: 60, marginBottom: 20}}></Image>
+                   style={{height: '35%', width: '60%', borderRadius: 60, marginBottom: 20}}></Image>
             <Text style= {styles.text3}>Login</Text>
             <View style= {styles.emailContainer}>
               <Image
