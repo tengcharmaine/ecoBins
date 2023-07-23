@@ -30,6 +30,7 @@ export default function VideoScreen() {
   return (
     <View style={styles.container}>
         <Text style={styles.title}>Tutorial video</Text>
+        <Text style={styles.text}>Do switch off your silent mode {'\n'} to enjoy the full experience of this feature!</Text>
         <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
@@ -55,9 +56,19 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
       fontSize: 34,
       textAlign: 'left',
-      marginBottom: 30,
+      marginBottom: 10,
       fontFamily: 'PoppinsBold',
       },
+      text: {
+        color: "black",
+        marginTop: 5,
+        justifyContent: 'center',
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+        marginBottom: 30,
+        fontFamily: 'Poppins',
+        },
     backButton: {
         position: 'absolute',
         top: 50,

@@ -1,7 +1,6 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
 import editusername from '../components/editusername';
-import { act } from 'react-dom/test-utils';
 
 
 describe('Register', () => {
