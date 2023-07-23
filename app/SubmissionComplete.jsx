@@ -2,10 +2,12 @@ import { Text, Button } from "react-native-paper";
 import { StyleSheet, View, Image, ActivityIndicator } from "react-native";
 import { Link } from "expo-router";
 import { useFonts } from 'expo-font';
-import { useNavigation } from "expo-router";
+import { useNavigation, useRouter } from "expo-router";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
 export default function SubmissionComplete() {
+    const router = useRouter();
+
     const navigation= useNavigation();
     const [loaded] = useFonts({
         Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
@@ -103,7 +105,7 @@ export default function SubmissionComplete() {
     };
 
     const handlegorewards = () => {
-        navigation.navigate('Rewards');
+        router.push('rewards');
     };
     
     return (
