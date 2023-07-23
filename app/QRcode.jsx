@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { Link } from 'expo-router';
 import {supabase} from '../lib/supabase';
 import {useRouter} from 'expo-router';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
+
 
 export default function QRCodeScreen() {
+
+  const [loaded] = useFonts({
+    Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
+
+  });
+
+  const navigation = useNavigation();
   const [remainingPoints, setRemainingPoints] = useState(0);
   const router = useRouter();
   useEffect(() => {
@@ -71,36 +85,66 @@ export default function QRCodeScreen() {
         console.error('Error updating user points:', error.message);
       }
   };
+
+  const handleBackButton = () => {
+    navigation.goBack();
+    return true;
+  };
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
   
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={handleBackButton} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
       <QRCode value={qrCodeValue} size={300} />
-      <Button style={styles.button} onPress={handleConfirmation}>
+      <TouchableOpacity style={styles.button} onPress={handleConfirmation}>
         <Text style={styles.text1}>Confirm Redemption</Text>
-      </Button>
-
-      <Button style = {styles.button1}>
-            <Link style={styles.text1} href='/rewards'>Cancel</Link>
-      </Button>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 16,
+    zIndex: 1,
+    padding: 10,
+    borderRadius: 10,
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'white'
   },
 
   button: {
     borderColor: "black",
     alignSelf: 'center',
+    justifyContent: 'center',
     backgroundColor: "#c7dede",
-    width: '47%',
-    marginTop: 20,
+    width: '85%',
+    height: 60,
+    marginTop: 40,
     marginBottom: 10,
-    borderRadius: 10,
+    borderRadius: 20,
+    
+    // borderColor: "black",
+    // alignSelf: 'center',
+    // backgroundColor: "#c7dede",
+    // width: '47%',
+    // marginTop: 20,
+    // borderRadius: 10,
   },
 
   button1: {
@@ -115,8 +159,9 @@ const styles = StyleSheet.create({
 
   text1: {
     color: "black",
-    marginLeft: 5,
-    flexWrap: 'wrap',
-    flex: 1,
+    fontWeight: 'bold',
+    fontSize: 19,
+    textAlign: 'center',
+    fontFamily: 'PoppinsSemiBold',
   },
 });

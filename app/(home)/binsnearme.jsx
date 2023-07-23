@@ -1,37 +1,67 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, Linking, Platform, Image } from 'react-native';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
+import { useFonts } from 'expo-font';
 
-export default class App extends React.Component {
+export default class BinsScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       currentLocation: null,
       nearestMarker: null,
+      locationPermissionGranted: null,
     };
   }
 
   componentDidMount() {
+    this.setState({ locationPermissionGranted: null });
     this.getLocation();
   }
   
   getLocation = async () => {
     try {
+      this.setState({ locationPermissionGranted: null });
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
-        console.error('Permission to access location was denied');
+        //console.error('Permission to access location was denied');
+        this.showLocationPermissionDeniedAlert();
+        this.setState({ locationPermissionGranted: false });
         return;
+        
       }
   
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-      this.setState({ currentLocation: { latitude, longitude } });
+      this.setState({ currentLocation: { latitude, longitude }, locationPermissionGranted: true, });
       this.findNearestMarker({ latitude, longitude });
     } catch (error) {
       console.error('Error getting location:', error);
     }
   };  
+
+  showLocationPermissionDeniedAlert = () => {
+    Alert.alert(
+      'Location Permission Required',
+      'You have denied location permission for the app. To enable this feature, please go to the app settings and allow location access.',
+      [
+        {
+          text: 'OK',
+          onPress: () => {
+            this.openAppSettings();
+          },
+        },
+      ]
+    );
+  };
+  
+  openAppSettings = () => {
+    if (Platform.OS === 'android') {
+      Linking.openSettings();
+    } else {
+      Linking.openURL('app-settings:');
+    }
+  };
 
   findNearestMarker = (currentLocation) => {
     const { latitude, longitude } = currentLocation;
@@ -70,22 +100,53 @@ export default class App extends React.Component {
     return dist;
   };
 
-  handleMyLocationPress = () => {
-    const { currentLocation } = this.state;
+  BinsScreenWrapper = () => {
+    const [loaded] = useFonts({
+      Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+      Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+      Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+    });
   
-    if (currentLocation) {
-      this.mapRef.animateToRegion({
-        latitude: currentLocation.latitude,
-        longitude: currentLocation.longitude,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      });
+    if (!loaded) {
+      return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      );
     }
-  };
+  }
 
   render() {
-    const { currentLocation, nearestMarker } = this.state;
+    const { currentLocation, nearestMarker, locationPermissionGranted } = this.state;
   
+    if (locationPermissionGranted === null) {
+      // Show a loading indicator or any other content while the permission is being checked
+      return (
+        <View style={styles.container}>
+          <Image source={{uri: "https://media.giphy.com/media/vbeNMLuswd7RR25lah/giphy.gif" }}
+                   style={{height: '30%', width: '60%', borderRadius: 60}}></Image>
+        </View>
+      );
+    }
+
+    if (!locationPermissionGranted) {
+      // If permission is denied, show the permission request button
+      return (
+        <View style={styles.container}>
+          <Image source={require('./../../images/map.png')}
+                   style={{height: '40%', width: '50%', resizeMode: 'contain'}}></Image>
+          <Text style={styles.text2}>This feature requires location permissions {'\n'} to provide real-time updates for finding {'\n'} the nearest recycling bin near you.</Text>
+          <Text style={styles.text2}>Thank you for your kind understanding!</Text>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={this.getLocation}
+          >
+            <Text style={styles.text1}>I have already granted {'\n'} my location permission.</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         {currentLocation ? (
@@ -94,7 +155,8 @@ export default class App extends React.Component {
             provider={PROVIDER_GOOGLE}
             showsUserLocation
             ref={(ref) => (this.mapRef = ref)}
-            // showsMyLocationButton={true}
+            showsMyLocationButton={true}
+            mapPadding={{right: 10, bottom: 105, left: 10}}
             initialRegion={{
               latitude: currentLocation.latitude,
               longitude: currentLocation.longitude,
@@ -113,12 +175,12 @@ export default class App extends React.Component {
                 description={marker.description}
               />
             ))}
-             <TouchableOpacity
+             {/* <TouchableOpacity
               style={styles.myLocationButton}
               onPress={this.handleMyLocationPress}
             >
               <Text style={styles.myLocationButtonText}>My Location</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </MapView>
         ) : (
           <Text>Loading...</Text>
@@ -262,10 +324,25 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    fontFamily: "Poppins_SemiBold"
   },
   nearestMarkerDescription: {
     marginTop: 5,
+    textAlign: 'center',
+    fontFamily: "Poppins"
   },
+  button: {
+    borderColor: "black",
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '85%',
+    height: 60,
+    marginTop: 40,
+    marginBottom: 20,
+    borderRadius: 20,
+    alignSelf: 'center',
+    backgroundColor: '#D9D9D6',
+    },
   myLocationButton: {
     position: 'absolute',
     bottom: 90,
@@ -281,8 +358,18 @@ const styles = StyleSheet.create({
     elevation: 2,
     marginBottom: 20,
   },
-  myLocationButtonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
+text1: {
+  color: "black",
+  fontWeight: 'bold',
+  fontSize: 19,
+  textAlign: 'center',
+  fontFamily: "Poppins_SemiBold"
   },
+  text2: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 16,
+    marginTop: 10,
+    fontFamily: "Poppins"
+},
 });

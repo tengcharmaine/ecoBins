@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditProfilePic renders correctly 1`] = `<editprofilepic />`;
+
+exports[`EditProfilePic renders correctly with an error message 1`] = `
+<editprofilepic
+  error="Error uploading image"
+/>
+`;
+
+exports[`EditProfilePic renders correctly with an initial image 1`] = `
+<editprofilepic
+  image="https://example.com/default-profile-pic.jpg"
+/>
+`;

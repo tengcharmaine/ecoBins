@@ -33,6 +33,13 @@
       "eas": {
         "projectId": "6ea06a0e-3ead-404e-bda5-68292a16856a"
       }
+    },
+    "owner": "tengcharmaine",
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/6ea06a0e-3ead-404e-bda5-68292a16856a"
     }
   }
 }

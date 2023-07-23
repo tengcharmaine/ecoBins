@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, ActivityIndicator } from 'react-native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Link, useRouter } from 'expo-router';
 import { Button } from 'react-native-paper';
 import { supabase } from '../../lib/supabase';
 import { BackHandler } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 const foodcataloguedata = [
     {
@@ -22,10 +24,10 @@ const foodcataloguedata = [
         id: 2,
         title: 'Japanese',
         description: 'The Deck',
-        image: require('../../images/japanese.avif'),
+        image: require('../../images/sushi.jpeg'),
         points: '(20 Points)',
         menu1: 'Oyako Don',
-        menu2: 'Teriyaki Chicken Don',
+        menu2: 'Sushi',
         menu3: 'Ramen',
     },
     {
@@ -102,7 +104,8 @@ const styles = StyleSheet.create({
         width: '30%',
         alignSelf: 'center',
         borderRadius: 30,
-        marginBottom: 10,
+        // marginBottom: 10,
+        marginTop: -10
     },
 
     buttonPressed: {
@@ -115,11 +118,11 @@ const styles = StyleSheet.create({
 
     text1: {
         color: "black",
-        marginTop: 20,
+        marginTop: 5,
         textAlign: 'left',
         marginRight: 230,
-        marginBottom: 5,
-        fontSize: 15,
+        fontSize: 20,
+        fontFamily: "Poppins"
     },
 
     itemContainer: {
@@ -128,7 +131,8 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#c7dede',
         borderRadius: 30,
-        height: 95,
+        height: 120,
+        marginTop: -5,
     },
 
     textContainer: {
@@ -137,35 +141,54 @@ const styles = StyleSheet.create({
     },
 
     title: {
-        fontSize: 16,
+        fontSize: 17,
         fontWeight: 'bold',
         marginLeft: 30,
+        fontFamily: "Poppins_SemiBold"
     },
 
     description: {
-        fontSize: 14,
+        fontSize: 15,
         color: 'gray',
         marginLeft: 30,
+        fontFamily: "Poppins"
     },
 
     image: {
-        height: 80,
+        height: 85,
         width: 100,
         borderRadius: 30,
         marginRight: 30,
     },
 
     pointsheading: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 22,
+        // fontWeight: 'bold',
         marginBottom: 30,
-        marginTop: 20,
-        alignSelf: 'center',
+        marginTop: 70,
+        textAlign: 'center',
+        fontFamily: "Poppins_SemiBold"
     },
+    backButton: {
+      position: 'absolute',
+      top: 10,
+      left: 16,
+      zIndex: 1,
+      padding: 10,
+      borderRadius: 10,
+    },
+
+    buttonText: {
+      fontFamily: "Poppins_SemiBold",
+      fontSize: 14,
+      color: 'black',
+    }
 });
 
-export function RewardsScreen() {
+export function RewardsScreen({route}) {
     const navigation = useNavigation();
+
+    console.log(route.name);
     
     const handleSelectFood = (foodId) => {
         navigation.navigate('Select', { foodId });
@@ -251,6 +274,8 @@ export function SelectionScreen({ route }) {
       menu2: false,
       menu3: false
     });
+
+    console.log(route.name);
   
     const handleButtonPress = (menu) => {
       setButtonPressed((prevButtonPressed) => ({
@@ -340,6 +365,9 @@ export function SelectionScreen({ route }) {
         <Text style={styles.text1}>Catalogue:</Text>
   
         <View style={styles.selectcontainer}>
+        <TouchableOpacity onPress={handleBackButton} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="black" />
+        </TouchableOpacity>
           <View style={styles.itemContainer}>
             <View style={styles.textContainer}>
               <Text style={styles.title}>{selectedFood.title}</Text>
@@ -398,14 +426,11 @@ export function SelectionScreen({ route }) {
   
           {isConfirmButtonVisible && (
             <Button style={styles.button1} onPress={handleConfirmation}>
-              <Text style={styles.text1}>
+              <Text style={styles.buttonText}>
                 Confirm
               </Text>
             </Button>
           )}
-          <Button style={styles.button1} onPress={() => navigation.goBack()}>
-              <Text style={styles.text1}>Back</Text>
-          </Button>
         </View>
       </View>
     );
@@ -414,6 +439,20 @@ export function SelectionScreen({ route }) {
 const Stack = createNativeStackNavigator();
 
 export default function Movement() {
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    Poppins_Bold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    Poppins_SemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+  });
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
     return (
       <Stack.Navigator initialRouteName="Rewards" screenOptions={{headerShown:false}}>
         <Stack.Screen name="Rewards" component={RewardsScreen} />

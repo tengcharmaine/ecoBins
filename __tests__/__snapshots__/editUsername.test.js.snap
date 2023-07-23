@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Register renders correctly 1`] = `<editusername />`;
+
+exports[`Register renders correctly with an error message 1`] = `
+<editusername
+  error="Username is already taken"
+/>
+`;
+
+exports[`Register renders correctly with no errors and initial value 1`] = `
+<editusername
+  name="initialUsername"
+/>
+`;

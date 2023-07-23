@@ -4,12 +4,13 @@ import { Picker } from '@react-native-picker/picker';
 
 export default function Pick() {
   const [location, setLocation] = useState('Beside Terrace Canteen');
+
   return (
-    <View >
+    <View style={{fontFamily: "Poppins"}}>
         <Picker
           selectedValue={location}
           onValueChange={currentLocation => setLocation(currentLocation)}>
-          <Picker.Item label="Terrace" value="Beside Terrace Canteen" />
+          <Picker.Item label="Terrace" value="Beside Terrace Canteen"/>
           <Picker.Item label="CLB" value="Central Library" />
           <Picker.Item label="The Deck" value="The Deck canteen" />
           <Picker.Item label="Com 1" value="Com1 Level 2 study area" />
@@ -24,7 +25,7 @@ export default function Pick() {
           <Picker.Item label="USC" value="Near Tea Party" />
           <Picker.Item label="FoS" value="Near OCBC ATM" />
         </Picker>
-        <Text>
+        <Text style={{fontFamily: "Poppins"}}>
           Selected: {location}
         </Text>
       </View>
