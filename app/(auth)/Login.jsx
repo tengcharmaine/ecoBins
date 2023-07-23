@@ -1,3 +1,4 @@
+
 import { StyleSheet, View, Image, TouchableOpacity } from "react-native";
 import React, { useState, useEffect } from "react";
 import { Text, TextInput, Button, ActivityIndicator, IconButton } from "react-native-paper";
@@ -48,6 +49,7 @@ export default function LoginPage() {
     }
   };
 
+
   // method to toggle password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
@@ -62,6 +64,7 @@ export default function LoginPage() {
   const handleRegister = () => {
     navigation.navigate('Register');
   };
+
 
   // custom stylesheet
   const styles = StyleSheet.create({
@@ -111,6 +114,7 @@ export default function LoginPage() {
     marginBottom: 10,
     fontFamily: "Poppins"
 },
+
 
   text3: {
       color: "black",
@@ -191,11 +195,13 @@ export default function LoginPage() {
   
   return (
     // make screen scrollable
+
     <KeyboardAwareScrollView
       contentContainerStyle={styles.container}
       resetScrollToCoords={{ x: 0, y: 0 }}
       scrollEnabled={true}
     >
+
       
       {/* main component of screen */}
         <View style= {styles.innerContainer}>
