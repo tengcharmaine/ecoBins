@@ -15,9 +15,7 @@ export default function editprofilepic() {
         PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
         PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
         PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-    
-        // Add other Poppins variants here (e.g., Poppins-Bold, Poppins-Italic, etc.) if needed.
-      });
+    });
 
     const styles = StyleSheet.create({
         container: {
@@ -44,15 +42,6 @@ export default function editprofilepic() {
             marginTop: 20,
             marginBottom: 10,
             borderRadius: 20,
-            
-            // borderColor: "black",
-            // alignItems: 'center',
-            // backgroundColor: "#c7dede",
-            // width: '25%',
-            // marginTop: 20,
-            // marginBottom: 10,
-            // borderRadius: 10,
-            
         },
         defaultButton: {
             borderColor: "black",
@@ -63,15 +52,7 @@ export default function editprofilepic() {
             height: 60,
             marginTop: 20,
             marginBottom: 10,
-            borderRadius: 20,
-            // borderColor: "black",
-            // alignItems: 'center',
-            // backgroundColor: "#c7dede",
-            // width: '40%',
-            // marginTop: 20,
-            // marginBottom: 10,
-            // borderRadius: 10,
-            
+            borderRadius: 20, 
         },
 
         text: {
@@ -81,12 +62,6 @@ export default function editprofilepic() {
             textAlign: 'center',
             fontFamily: 'PoppinsSemiBold',
             justifyContent: 'center'
-            // color: "black",
-            // marginTop: 10,
-            // marginBottom: 10,
-            // fontSize: 15,
-            // textAlign: 'center',
-            // width: '70%',
         },
 
         text1: {
@@ -95,14 +70,8 @@ export default function editprofilepic() {
             marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
-            //flex: 1,
             width: '70%',
             fontFamily: 'PoppinsSemiBold',
-            // color: "black",
-            // marginTop: 20,
-            // textAlign: 'left',
-            // marginRight: 230,
-            // marginBottom: 5,
         },
 
         title: {
@@ -115,10 +84,6 @@ export default function editprofilepic() {
             marginRight: 40,
             marginBottom: 15,
             fontFamily: 'PoppinsBold',
-            // color: "black",
-            // fontSize: 20,
-            // marginBottom: 20, 
-            // fontWeight: "bold",
         },
 
         button2: {
@@ -131,21 +96,9 @@ export default function editprofilepic() {
             marginTop: 60,
             marginLeft: 10,
             borderRadius: 10,
-            //position: 'relative',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
-            // borderColor: "black",
-            // backgroundColor: "#cccc",
-            // width: '75%',
-            // height: '40%',
-            // marginTop: 20,
-            // marginLeft: 10,
-            // borderRadius: 10,
-            // position: 'relative',
-            // alignItems: 'center',
-            // justifyContent: 'center',
-            // flexDirection: 'row',
         },
 
         error: {
@@ -163,7 +116,6 @@ export default function editprofilepic() {
         uploadImage: {
             width: 90,
             height: 90,
-            //marginRight: 10,
             resizeMode: 'contain',
             alignSelf: 'center',
         },
