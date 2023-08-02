@@ -116,14 +116,14 @@ const Friends = () => {
       // Create a Set of friend IDs
       const friendIds = new Set(friendshipData.map(item => item.friend_id));
 
-      // Create a Set of friend IDs
+      // Create a Set of pending friend IDs
       const pendingIds = new Set(pendingData.map(item => item.friend_id));
 
       // Add a 'rank' property to each item in the fetched data
       const rankedData = fetchedData.map((item, index) => ({
         ...item,
         rank: index + 1,
-        isFriendAdded: friendIds.has(item.user_id), // Check if the friend is added
+        isFriendAdded: friendIds.has(item.user_id),
         isFriendPending: pendingIds.has(item.user_id)
       }));
 
@@ -224,17 +224,6 @@ const Friends = () => {
                 console.error('Error removing friend:', error);
                 return;
               }
-
-              // // Find the index of the friend in the leaderboardData
-              // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-              // if (friendIndex !== -1) {
-              //   // Create a copy of the leaderboardData array
-              //   const updatedData = [...leaderboardData];
-              //   // Update the 'isFriendAdded' property of the friend in the copied array
-              //   updatedData[friendIndex].isFriendAdded = false;
-              //   // Update the leaderboardData state with the copied array
-              //   setLeaderboardData(updatedData);
-              // }
             },
           },
         ],
@@ -248,7 +237,6 @@ const Friends = () => {
   // Function to handle tab selection
   const handleTabSelection = (tab) => {
     setActiveTab(tab);
-    // Perform additional logic based on the selected tab if needed
   };
 
   const fetchFriendRequests = async () => {
@@ -278,7 +266,7 @@ const Friends = () => {
           // Update state with the rankings data
           setFriendRequests(requestData.map((item, index) => ({
             ...item,
-            rank: index + 1, // Assign a rank to each item in the rankings data
+            rank: index + 1,
           })));
           console.log(friendRequests);
         }
@@ -313,7 +301,7 @@ const Friends = () => {
           // Update state with the rankings data
           setIncomingFriendRequests(requestData.map((item, index) => ({
             ...item,
-            rank: index + 1, // Assign a rank to each item in the rankings data
+            rank: index + 1,
           })));
           console.log(incomingFriendRequests);
         }
@@ -403,12 +391,7 @@ const Friends = () => {
           
               if (error) {
                 console.error('Error rejecting friend request:', error);
-              } //else {
-              //   // Remove the rejected request from the incomingFriendRequests state
-              //   setIncomingFriendRequests((prevRequests) => prevRequests.filter((r) => r.id !== request.id));
-              //   // Add the rejected request to the rejectedRequests state
-              //   setRejectedRequests((prevRequests) => [...prevRequests, request.id]);
-              // }
+              } 
             } catch (error) {
               console.error('Error rejecting friend request:', error);
             }
