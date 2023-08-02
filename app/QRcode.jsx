@@ -24,7 +24,7 @@ export default function QRCodeScreen() {
   const [remainingPoints, setRemainingPoints] = useState(0);
   const router = useRouter();
   useEffect(() => {
-    // Fetch the user's score or remaining points from Supabase or any other data source
+    // Fetch the user's score or remaining points from Supabase
     const fetchRemainingPoints = async () => {
       try {
         const { data: { user } } = await supabase.auth.getUser()
@@ -58,7 +58,7 @@ export default function QRCodeScreen() {
     };
 
     fetchRemainingPoints();
-  }, []); // Run this effect only once, on component mount
+  }, []);
   
   const qrCodeValue = Math.random().toString(36).substring(2, 8);
   const handleConfirmation = async () => {

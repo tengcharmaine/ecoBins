@@ -4,13 +4,10 @@ import { supabase } from '../../lib/supabase';
 import { useFocusEffect } from '@react-navigation/native';
 import { useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import FriendRankingsScreen from '../friendsranking';
 import Modal from 'react-native-modal';
 import { useFonts } from 'expo-font';
 
-const LeaderboardStack = createStackNavigator();
-
-const LeaderboardScreen = () => {
+export default LeaderboardScreen = () => {
   const navigation = useNavigation();
 
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -19,6 +16,8 @@ const LeaderboardScreen = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [activeRankingType, setActiveRankingType] = useState('global');
   const [isLoading, setIsLoading] = useState(false); 
+  const [friendRankings, setRankings] = useState([]);
+  const [refreshing, setRefreshing] = useState(false); 
 
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
@@ -54,27 +53,7 @@ const LeaderboardScreen = () => {
                 .from('friendrequest')
                 .insert([{ user_id: user.id, friend_id: friend.user_id, status: 'pending' },
                 { user_id: friend.user_id, friend_id: user.id, status: 'incoming' }] );
-              // const { data, error } = await supabase
-              //   .from('friendships')
-              //   .insert([
-              //     { user_id: user.id, friend_id: friend.user_id, friend_name: friend.user_name},
-              //     { user_id: friend.user_id, friend_id: user.id, friend_name: userEmail }]);
-          
-              // if (error) {
-              //   console.error('Error adding friend1:', error);
-              //   return;
-              // }
-
-              // // Find the index of the friend in the leaderboardData
-              // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-              // if (friendIndex !== -1) {
-              //   // Create a copy of the leaderboardData array
-              //   const updatedData = [...leaderboardData];
-              //   // Update the 'isFriendAdded' property of the friend in the copied array
-              //   updatedData[friendIndex].isFriendAdded = true;
-              //   // Update the leaderboardData state with the copied array
-              //   setLeaderboardData(updatedData);
-              // }
+            
             },
           },
         ],
@@ -115,17 +94,6 @@ const LeaderboardScreen = () => {
                 console.error('Error removing friend:', error);
                 return;
               }
-
-              // // Find the index of the friend in the leaderboardData
-              // const friendIndex = leaderboardData.findIndex(item => item.user_id === friend.user_id);
-              // if (friendIndex !== -1) {
-              //   // Create a copy of the leaderboardData array
-              //   const updatedData = [...leaderboardData];
-              //   // Update the 'isFriendAdded' property of the friend in the copied array
-              //   updatedData[friendIndex].isFriendAdded = false;
-              //   // Update the leaderboardData state with the copied array
-              //   setLeaderboardData(updatedData);
-              // }
             },
           },
         ],
@@ -139,6 +107,7 @@ const LeaderboardScreen = () => {
   useEffect(() => {
     setActiveRankingType('global');
     fetchLeaderboardData();
+    fetchFriends();
   }, []);
 
   const handleFriendshipChange = (payload) => {
@@ -220,21 +189,46 @@ const LeaderboardScreen = () => {
   const reloadScreen = useCallback(() => {
     fetchLeaderboardData();
     setActiveRankingType('global');
+    fetchFriends();
   }, []);
-
-  const navigateToGlobalRanking = () => {
-    setActiveRankingType('global');
-    navigation.navigate('ranking');
-  };
 
   const onRefresh = async () => {
     await fetchLeaderboardData();
+    await fetchFriends();
   };
 
 
-  const navigateToFriendsRanking = () => {
-    setActiveRankingType('friends');
-    navigation.navigate('friendsRanking');
+  const fetchFriends = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { data: friends, error } = await supabase
+        .from('friendships')
+        .select('friend_id')
+        .eq('user_id', user.id);
+
+      if (error) {
+        console.error(error);
+      } else {
+        const friendIds = friends.map((friend) => friend.friend_id);
+
+        const { data: rankingsData, error: rankingsError } = await supabase
+          .from('ranking')
+          .select('profile, user_name, score')
+          .in('user_id', friendIds)
+          .order('score', { ascending: false });
+
+        if (rankingsError) {
+          console.error(rankingsError);
+        } else {
+          console.log(rankingsData);
+          // Update state with the rankings data
+          setRankings(rankingsData.map((item, index) => ({
+            ...item,
+            rank: index + 1,
+          })));
+        }
+      }
+    }
   };
 
   useFocusEffect(reloadScreen); 
@@ -251,38 +245,36 @@ const LeaderboardScreen = () => {
     return userName;
   };
 
-  if (!loaded) {
-    return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator size="large" color="black" />
-      </View>
-    );
-  }
+  const handleTabSelection = (tab) => {
+    setActiveRankingType(tab);
+  };
 
-  return (
-    <View style={styles.container}>
-        <Text style={styles.title}>Leaderboard</Text>
-        <View style={styles.buttonContainer}>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        activeRankingType === 'global' && styles.activeButton,
-      ]}
-      onPress={navigateToGlobalRanking}
-    >
-      <Text style={styles.buttonText}>Global</Text>
-    </TouchableOpacity>
-    <TouchableOpacity
-      style={[
-        styles.button,
-        activeRankingType === 'friends' && styles.activeButton,
-      ]}
-      onPress={navigateToFriendsRanking}
-    >
-      <Text style={styles.buttonText}>Friends</Text>
-    </TouchableOpacity>
-  </View>
-        <FlatList
+  const renderTabs = () => {
+    const tabs = [
+      { key: 'global', label: 'Global' },
+      { key: 'friends', label: 'Friends' },
+    ];
+
+    return tabs.map((tab) => (
+      <TouchableOpacity
+        key={tab.key}
+        style={[
+          styles.tabButton,
+          activeRankingType === tab.key && styles.activeTabButton,
+        ]}
+        onPress={() => handleTabSelection(tab.key)}
+      >
+        <Text style={styles.tabButtonText}>{tab.label}</Text>
+      </TouchableOpacity>
+    ));
+  };
+
+  const renderContent = () => {
+    if (activeRankingType == 'global') {
+      return (
+        <View>
+          
+<FlatList
         data={leaderboardData}
         renderItem={({ item }) => (
           <View style={styles.itemContainer}>
@@ -327,10 +319,64 @@ const LeaderboardScreen = () => {
         </View>
       </Modal>
     </View>
+      );
+    } else {
+      return (
+        <View>
+          <FlatList
+            data={friendRankings}
+            renderItem={({ item }) => (
+              <View style={styles.itemContainer}>
+                <Text style={styles.itemText}>{item.rank}</Text>
+                <Image source={{ uri: item.profile }} style={styles.profilePicture} />
+                <View style={styles.itemTextContainer}>
+                  <View style={styles.container1}>
+                    <TouchableOpacity onPress={() => toggleModal(item.user_name)}>
+                      <Text style={styles.itemText}>{renderUsername(item.user_name)}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+                <Text style={styles.itemText1}>{item.score}</Text>
+              </View>
+            )}
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={onRefresh} />
+            }
+          />
+          <Modal isVisible={isModalVisible} onBackdropPress={toggleModal}>
+            <View style={styles.modalContainer}>
+              <Text style={styles.modalText}>{selectedUserName ? selectedUserName.toString() : ''}</Text>
+              <Button title="Close" onPress={toggleModal} />
+            </View>
+          </Modal>
+        </View>
+      );
+    }
+  }
+
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+        <Text style={styles.title}>Leaderboard</Text>
+        <View style={styles.tabContainer}>{renderTabs()}</View>
+        <View style={styles.contentContainer}>{renderContent()}</View>
+    </View> 
   );
 };
 
 const styles = StyleSheet.create({
+  contentContainer: {
+    flex: 1,
+    marginTop: 5,
+
+  },
   buttonContainer: {
     flex: 0,
     flexDirection: 'row',
@@ -436,27 +482,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontFamily: "Poppins"
   },
+  tabContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 2,
+    borderBottomColor: 'lightgray',
+  },
+  activeTabButton: {
+    borderBottomColor: 'blue',
+  },
+  tabButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    fontFamily: "Poppins_SemiBold"
+  },
 });
 
-const LeaderboardStackScreen = () => {
-  return (
-    <LeaderboardStack.Navigator>
-    <LeaderboardStack.Screen
-      name="leaderBoard"
-      component={LeaderboardScreen}
-      options={{ headerShown: false }}
-    />
-    <LeaderboardStack.Screen
-      name="friendsRanking"
-      component={FriendRankingsScreen}
-      options={{ headerShown: false }}
-    />
-  </LeaderboardStack.Navigator>
-    // <LeaderboardStack.Navigator screenOptions={{ headerShown: false }}>
-    //   <LeaderboardStack.Screen name="leaderBoard" component={LeaderboardScreen} />
-    //   <LeaderboardStack.Screen name="friendsRanking" component={FriendRankingsScreen} />
-    // </LeaderboardStack.Navigator>
-  );
-};
-
-export default LeaderboardStackScreen;

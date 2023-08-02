@@ -11,7 +11,7 @@ export default function Register() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // New state for confirmation password
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [emailErrMsg, setEmailErrMsg] = useState('');
@@ -21,6 +21,7 @@ export default function Register() {
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [cfmpasswordVisible, setcfmPasswordVisible] = useState(false);
 
+  // method to load fonts used
   const [loaded] = useFonts({
     Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
     PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf'),
@@ -29,6 +30,7 @@ export default function Register() {
 
   });
 
+  // method for registering an account
   const handleSubmit = async () => {
     setErrMsg('');
     setEmailErrMsg('');
@@ -36,6 +38,7 @@ export default function Register() {
     setcfmPasswordErrMsg('');
     setcfmPasswordErrMsg('');
 
+    // error handling
     if (email === '' && password === '') {
       setEmailErrMsg("Email cannot be empty");
       setPasswordErrMsg("Password cannot be empty");
@@ -57,6 +60,7 @@ export default function Register() {
     }
 
     setLoading(true);
+    // to register an account into supabase
     const { data, error } = await supabase.auth.signUp({ email, password });
     setLoading(false);
     if (error) {
@@ -67,11 +71,13 @@ export default function Register() {
       return;
     }
 
-    setShowEmailCheck(true); // Show the "Check your email" message
-
+    // Show the "Check your email" message
+    setShowEmailCheck(true); 
+    
     navigation.navigate('Login');
   }
 
+  // alert for users
   const showVerificationAlert = () => {
     Alert.alert(
       'Email Verification',
@@ -80,6 +86,7 @@ export default function Register() {
     );
   };
 
+  // password visibility
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   }
@@ -88,6 +95,7 @@ export default function Register() {
     setcfmPasswordVisible(!cfmpasswordVisible);
   }
 
+  // password complexity
   const isPasswordValid = (password) => {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/;
     const minLength = 8;
@@ -95,10 +103,12 @@ export default function Register() {
     return password.length >= minLength && passwordRegex.test(password);
   };
 
+  // navigation
   const handleGoBack = () => {
     navigation.navigate('Login');
   }
 
+  // styling
   const styles = StyleSheet.create({
             container: {
                 flex: 1, 
@@ -193,6 +203,7 @@ export default function Register() {
               },
         });
 
+  // ensure that all fonts needed are loaded
   if (!loaded) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -242,7 +253,7 @@ export default function Register() {
             value={password}
             onChangeText={(text) => {
               setPassword(text);
-              setPasswordErrMsg(''); // Clear the password error message
+              setPasswordErrMsg('');
             }}
           />
           <TouchableOpacity

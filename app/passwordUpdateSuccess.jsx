@@ -13,12 +13,11 @@ export default function PasswordUpdateSuccess() {
         PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
         PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
         PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-    
-        // Add other Poppins variants here (e.g., Poppins-Bold, Poppins-Italic, etc.) if needed.
-      });
-  
+    });
+
+    // Navigate to the "settings" screen after successful password update
     const handleReturn = () => {
-      navigation.navigate("settings"); // Navigate to the "settings" screen after successful password update
+      navigation.navigate("settings");
     };
   
     const styles = StyleSheet.create({

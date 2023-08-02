@@ -13,7 +13,7 @@ function ProfileSection({ profilePicture, username }) {
         PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
         PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
         PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-      });
+  });
 
   const styles = StyleSheet.create({
     sectionContainer: {
@@ -88,7 +88,8 @@ function SettingsScreen() {
         PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
         PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
         PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-      });
+  });
+  
   const navigation = useNavigation();
   const [username, setUsername] = useState(null);
   const [profilePicture, setProfilePicture] = useState(null);
@@ -156,8 +157,6 @@ function SettingsScreen() {
       paddingHorizontal: 20,
     },
     header: {
-      //flexDirection: 'row',
-      //justifyContent: 'space-between',
       alignItems: 'center',
       paddingVertical: 20,
       marginTop: 30,
@@ -174,7 +173,6 @@ function SettingsScreen() {
       fontSize: 30,
       fontWeight: 'bold',
       alignSelf: 'center',
-      //marginLeft: 100,
       marginTop: 30,
       fontFamily: 'PoppinsBold',
 
@@ -247,7 +245,6 @@ function SettingsScreen() {
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Settings</Text>
-        {/* <View style={{ width: 24 }}></View> */}
       </View>
       <View style={styles.content}>
         <View style={styles.profilepicturecontainer}>
