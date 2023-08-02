@@ -39,6 +39,9 @@ export default function PasswordUpdate() {
     if (password === "") {
       setErrMsg("Password cannot be empty");
       return;
+    } else if (!isPasswordValid(password)) {
+      setErrMsg('Password must be at least 8 characters long' + '\n' + 'and contain at least one uppercase letter,' + '\n' + 'one lowercase letter, and one digit.' + '\n' + 'Please make sure that there is no special' + '\n' + 'characters in your password.');
+      return;
     }
 
     setLoading(true);
@@ -53,6 +56,14 @@ export default function PasswordUpdate() {
     }
 
     navigation.navigate("passwordUpdateSuccess");
+  };
+
+  // password complexity
+  const isPasswordValid = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/;
+    const minLength = 8;
+
+    return password.length >= minLength && passwordRegex.test(password);
   };
 
   const goBack = () => {
