@@ -16,8 +16,6 @@ export default function editusername() {
     PoppinsBold: require('../assets/fonts/Poppins-Bold.ttf'),
     PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
     PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
-
-    // Add other Poppins variants here (e.g., Poppins-Bold, Poppins-Italic, etc.) if needed.
   });
 
   const styles = StyleSheet.create({
@@ -77,7 +75,6 @@ export default function editusername() {
     },
     errorText: {
       color: "red",
-      //marginTop: 10,
       fontFamily: 'Poppins',
     },
     backButton: {
