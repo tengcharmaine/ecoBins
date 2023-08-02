@@ -251,7 +251,6 @@ export default function SubmitScreen() {
             marginTop: 60,
             marginLeft: 10,
             borderRadius: 10,
-            //position: 'relative',
             alignItems: 'center',
             justifyContent: 'center',
             flexDirection: 'column',
@@ -269,7 +268,6 @@ export default function SubmitScreen() {
             marginBottom: 10,
             fontSize: 15,
             textAlign: 'center',
-            //flex: 1,
             width: '70%',
             fontFamily: 'PoppinsSemiBold',
         },
@@ -332,9 +330,6 @@ export default function SubmitScreen() {
                 <TouchableOpacity onPress={goBack} style={styles.backButton}>
                 <Ionicons name="arrow-back" size={24} color="black" />
                 </TouchableOpacity>
-                {/* <Text style={styles.text2}>
-                Hi! Please upload a photo of all the items you are recycling and indicate where you are recycling them at!
-                </Text> */}
             </View>
              {image && <Image source={{ uri: image }} style={{ width: 270, height: 270 }} />}
              {showButton && <TouchableOpacity onPress={handleAddImage} style={styles.button2}>
