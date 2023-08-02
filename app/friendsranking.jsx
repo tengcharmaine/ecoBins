@@ -54,7 +54,7 @@ const FriendRankingsScreen = () => {
           // Update state with the rankings data
           setRankings(rankingsData.map((item, index) => ({
             ...item,
-            rank: index + 1, // Assign a rank to each item in the rankings data
+            rank: index + 1,
           })));
         }
       }
