@@ -11,7 +11,7 @@ export default function Register() {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // New state for confirmation password
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState('');
   const [emailErrMsg, setEmailErrMsg] = useState('');
@@ -71,8 +71,9 @@ export default function Register() {
       return;
     }
 
-    setShowEmailCheck(true); // Show the "Check your email" message
-
+    // Show the "Check your email" message
+    setShowEmailCheck(true); 
+    
     navigation.navigate('Login');
   }
 
@@ -252,7 +253,7 @@ export default function Register() {
             value={password}
             onChangeText={(text) => {
               setPassword(text);
-              setPasswordErrMsg(''); // Clear the password error message
+              setPasswordErrMsg('');
             }}
           />
           <TouchableOpacity
