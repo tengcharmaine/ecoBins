@@ -12,12 +12,12 @@ export default function RedemptionSuccess() {
         PoppinsSemiBold: require('../assets/fonts/Poppins-SemiBold.ttf'),
         PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
       });
+    
     const navigation= useNavigation();
     const styles = StyleSheet.create({
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'center',
         },
         input: {
             borderColor: "black",
