@@ -20,7 +20,6 @@ export default function SubmissionComplete() {
         container: {
             flex: 1, 
             justifyContent: 'center',  
-            //alignItems: 'center',
         },
         input: {
             borderColor: "black",
