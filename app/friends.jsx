@@ -183,6 +183,7 @@ const Friends = () => {
                   return item;
                 })
               );
+              onRefresh();
             },
           },
         ],
@@ -224,6 +225,7 @@ const Friends = () => {
                 console.error('Error removing friend:', error);
                 return;
               }
+              onRefresh();
             },
           },
         ],
@@ -237,6 +239,7 @@ const Friends = () => {
   // Function to handle tab selection
   const handleTabSelection = (tab) => {
     setActiveTab(tab);
+    onRefresh();
   };
 
   const fetchFriendRequests = async () => {
@@ -365,16 +368,20 @@ const Friends = () => {
               const { error2 } = await supabase
                     .from('friendrequest')
                     .delete()
-                    .eq('user_id', user.id);
+                    .eq('user_id', user.id)
+                    .eq('friend_id', request.user_id);
+
               console.log(request);
                     const { error1 } = await supabase
                     .from('friendrequest')
                     .delete()
-                    .eq('user_id', request.user_id);
+                    .eq('user_id', request.user_id)
+                    .eq('friend_id', user.id);
 
           } catch (error) {
             console.error('Error accepting friend request:', error);
           }
+          onRefresh()
         };     
     
           const rejectFriendRequest = async (request) => {
@@ -382,12 +389,14 @@ const Friends = () => {
               const { error } = await supabase
                     .from('friendrequest')
                     .delete()
-                    .eq('user_id', user.id);
+                    .eq('user_id', user.id)
+                    .eq('friend_id', request.user_id);;
     
               const { error1 } = await supabase
                     .from('friendrequest')
                     .delete()
-                    .eq('user_id', request.user_id);
+                    .eq('user_id', request.user_id)
+                    .eq('friend_id', user.id);
           
               if (error) {
                 console.error('Error rejecting friend request:', error);
@@ -395,6 +404,7 @@ const Friends = () => {
             } catch (error) {
               console.error('Error rejecting friend request:', error);
             }
+            onRefresh()
           };
     
           const renderUsername1 = (userName) => {
@@ -656,7 +666,7 @@ const styles = StyleSheet.create({
             width: 24,
             height: 24,
             marginLeft: 10,
-            marginRight: 10,
+            marginRight: 21,
           },
           activeTabButton: {
             borderBottomColor: 'blue',
