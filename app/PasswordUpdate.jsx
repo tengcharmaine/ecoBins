@@ -8,18 +8,10 @@ import { Ionicons } from '@expo/vector-icons';
 import { useFonts } from 'expo-font';
 import {useRouter} from 'expo-router';
 
-
-
-import * as ExpoLinking from 'expo-linking'; // Import ExpoLinking from the 'expo-linking' package
-import { useURL } from 'expo-linking'; // Import the useURL hook from 'expo-linking'
-import * as Linking from 'expo-linking';
-
-
 export default function PasswordUpdate() {
   const route = useRoute();
   const navigation = useNavigation();
   const router = useRouter();
-
 
   const [loaded] = useFonts({
     Poppins: require('../assets/fonts/Poppins-Regular.ttf'),
@@ -28,9 +20,6 @@ export default function PasswordUpdate() {
     PoppinsBlack: require('../assets/fonts/Poppins-Black.ttf'),
   });
 
-  //const { userId, token } = route.params;
-  //console.log(userId);
-  console.log(route.params);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [errMsg, setErrMsg] = useState("");
@@ -52,7 +41,6 @@ export default function PasswordUpdate() {
       return;
     }
 
-    //const { data: { user }, error: userError } = await supabase.auth.getUser()
     setLoading(true);
     const { error } = await supabase.auth.updateUser({
       password: password,
