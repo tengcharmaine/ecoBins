@@ -1,130 +1,310 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { supabase } from "../../lib/supabase";
-import { StyleSheet, View } from "react-native";
-import { Text, TextInput, ActivityIndicator, Button } from 'react-native-paper';
+import { StyleSheet, View, Alert, TouchableOpacity, Image } from "react-native";
+import { Text, TextInput, ActivityIndicator, Button, IconButton } from 'react-native-paper';
+import { useNavigation } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { Ionicons } from '@expo/vector-icons';
+import { useFonts } from 'expo-font';
 
 export default function Register() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
-    const [errMsg, setErrMsg] = useState('');
-    const [emailErrMsg, setEmailErrMsg] = useState('');
-    const [passwordErrMsg, setPasswordErrMsg] = useState('');
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errMsg, setErrMsg] = useState('');
+  const [emailErrMsg, setEmailErrMsg] = useState('');
+  const [passwordErrMsg, setPasswordErrMsg] = useState('');
+  const [cfmpasswordErrMsg, setcfmPasswordErrMsg] = useState('');
+  const [showEmailCheck, setShowEmailCheck] = useState(false);
+  const [passwordVisible, setPasswordVisible] = useState(false);
+  const [cfmpasswordVisible, setcfmPasswordVisible] = useState(false);
 
-    const handleSubmit = async () => {
-        setErrMsg('');
-        setEmailErrMsg('');
-        if (email == '') {
-            setEmailErrMsg("Email cannot be empty")
-            return;
-        }
-        setPasswordErrMsg('');
-        if (password == '') {
-            setPasswordErrMsg("Password cannot be empty")
-            return;
-        }
-        /*
-        if (email == '') {
-            setErrMsg("Email cannot be empty")
-            return;
-        }
-        if (password == '') {
-            setErrMsg("Password cannot be empty")
-            return;
-        }*/
-        setLoading(true);
-        const { error } = await supabase.auth.signUp({ email, password });
-        setLoading(false);
-        if (error) {
-            setErrMsg(error.message);
-            return;
-        }
+  // method to load fonts used
+  const [loaded] = useFonts({
+    Poppins: require('../../assets/fonts/Poppins-Regular.ttf'),
+    PoppinsBold: require('../../assets/fonts/Poppins-Bold.ttf'),
+    PoppinsSemiBold: require('../../assets/fonts/Poppins-SemiBold.ttf'),
+    PoppinsBlack: require('../../assets/fonts/Poppins-Black.ttf'),
+
+  });
+
+  // method for registering an account
+  const handleSubmit = async () => {
+    setErrMsg('');
+    setEmailErrMsg('');
+    setPasswordErrMsg('');
+    setcfmPasswordErrMsg('');
+    setcfmPasswordErrMsg('');
+
+    // error handling
+    if (email === '' && password === '') {
+      setEmailErrMsg("Email cannot be empty");
+      setPasswordErrMsg("Password cannot be empty");
+      return;
+    } else if (email === '' && password !== '') {
+      setEmailErrMsg("Email cannot be empty");
+    } else if (password === '') {
+      setPasswordErrMsg("Password cannot be empty");
+      return;
+    } else if (!isPasswordValid(password)) {
+      setPasswordErrMsg('Password must be at least 8 characters long' + '\n' + 'and contain at least one uppercase letter,' + '\n' + 'one lowercase letter, and one digit.' + '\n' + 'Please make sure that there is no special' + '\n' + 'characters in your password.');
+      return;
     }
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1, 
-            justifyContent: 'center',  
-            alignItems: 'center',
-        },
-        input: {
-            borderColor: "black",
-            borderWidth: 1,
-            backgroundColor: "white",
-            width: '75%',
-            borderRadius: 5
-        },
-        button: {
-            borderColor: "black",
-            alignItems: 'center',
-            backgroundColor: "#c7dede",
-            width: '25%',
-            marginTop: 20,
-            marginBottom: 10,
-            borderRadius: 10,
-            
-        },
-        text1: {
-            color: "black",
-            marginTop: 20,
-            textAlign: 'left',
-            marginRight: 255,
-            marginBottom: 5,
-        },
+    // Password confirmation check
+    if (password !== confirmPassword) {
+      setcfmPasswordErrMsg("Passwords do not match");
+      return;
+    }
 
-        text2: {
-            color: "black",
-            marginTop: 20,
-            textAlign: 'left',
-            marginRight: 230,
-            marginBottom: 5,
-        },
+    setLoading(true);
+    // to register an account into supabase
+    const { data, error } = await supabase.auth.signUp({ email, password });
+    setLoading(false);
+    if (error) {
+      setErrMsg(error.message);
+      return;
+    } else if (data.user?.identities?.length === 0) {
+      setErrMsg('User has already registered');
+      return;
+    }
 
-        title: {
-            color: "black",
-            fontSize: 20,
-            marginBottom: 20, 
-            fontWeight: "bold",
-        },
-        error: {
-            color: "red",
-            marginTop: 4,
-            marginBottom: 5,
-        },
-        
-    });
+    // Show the "Check your email" message
+    setShowEmailCheck(true); 
+    
+    navigation.navigate('Login');
+  }
 
-    return (
-        <View style={styles.container}>
-            <Text style= {styles.title}> Registration </Text>
-            <Text style= {styles.text1}>Email</Text>
-            <TextInput
-                autoCapitalize='none'
-                placeholder="Email"
-                placeholderTextColor={"#dfd8dc"}
-                style={styles.input}
-                textContentType='emailAddress'
-                value={email}
-                onChangeText={setEmail} />
-            {emailErrMsg !== "" && <Text style= {styles.error}>{emailErrMsg}</Text>}
-
-            <Text style= {styles.text2}>Password</Text>
-            <TextInput
-                secureTextEntry
-                placeholder="Password"
-                placeholderTextColor={"#dfd8dc"}
-                style={styles.input}
-                autoCapitalize='none'
-                textContentType='password'
-                value={password}
-                onChangeText={setPassword} />
-            {passwordErrMsg !== "" && <Text style= {styles.error}>{passwordErrMsg}</Text>}
-
-            <Button style = {styles.button} onPress={handleSubmit}>
-                <Text style={styles.text1}> Enter </Text>
-            </Button>
-            {errMsg !== "" && <Text style= {styles.error}>{errMsg}</Text>}
-            {loading && <ActivityIndicator />}
-        </View>
+  // alert for users
+  const showVerificationAlert = () => {
+    Alert.alert(
+      'Email Verification',
+      'Please check your email for the verification link.',
+      [{ text: 'OK' }],
     );
+  };
+
+  // password visibility
+  const togglePasswordVisibility = () => {
+    setPasswordVisible(!passwordVisible);
+  }
+
+  const togglecfmPasswordVisibility = () => {
+    setcfmPasswordVisible(!cfmpasswordVisible);
+  }
+
+  // password complexity
+  const isPasswordValid = (password) => {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]+$/;
+    const minLength = 8;
+
+    return password.length >= minLength && passwordRegex.test(password);
+  };
+
+  // navigation
+  const handleGoBack = () => {
+    navigation.navigate('Login');
+  }
+
+  // styling
+  const styles = StyleSheet.create({
+            container: {
+                flex: 1, 
+                justifyContent: 'center', 
+            },
+            innerContainer: {
+                justifyContent: 'center',
+                alignItems: 'center',
+                marginTop: '10%', 
+                marginBottom: 30, 
+            },
+            input: {
+                borderColor: "white",
+                borderWidth: 1,
+                borderBottomColor: "grey",
+                backgroundColor: "white",
+                width: '75%',
+                //height: 40,
+            },
+            passwordInput: {
+                backgroundColor: "white",
+                borderRadius: 5
+            },
+            button: {
+                borderColor: "black",
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: "#c7dede",
+                width: '85%',
+                height: 60,
+                marginTop: 20,
+                marginBottom: 10,
+                borderRadius: 20,
+                
+            },
+            text1: {
+                color: "black",
+                fontWeight: 'bold',
+                fontSize: 19,
+                textAlign: 'center',
+                fontFamily: 'PoppinsSemiBold',
+            },
+    
+            text2: {
+                color: "black",
+                marginTop: 20,
+                textAlign: 'left',
+                marginRight: 230,
+                marginBottom: 5,
+            },
+    
+            title: {
+                color: "black",
+                marginTop: 20,
+                justifyContent: 'center',
+                fontWeight: 'bold',
+                fontSize: 34,
+                textAlign: 'left',
+                marginRight: 140,
+                marginBottom: 15,
+                fontFamily: 'PoppinsBold',
+            },
+            error: {
+                color: "red",
+                textAlign: 'center',
+                fontFamily: 'Poppins'
+            },
+            passwordIcon: {
+                position: 'absolute',
+                right: 10,
+                top: '30%',
+                transform: [{ translateY: -12 }],
+              },
+              emailIcon: {
+                width: 30,
+                height: 30,
+                resizeMode: 'contain',
+                marginRight: 20,
+              },
+              emailContainer: {
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                marginBottom: 20,
+              },
+              backButton: {
+                position: 'absolute',
+                top: 50,
+                left: 16,
+                zIndex: 1,
+                padding: 10,
+                borderRadius: 10,
+              },
+        });
+
+  // ensure that all fonts needed are loaded
+  if (!loaded) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator size="large" color="black" />
+      </View>
+    );
+  }
+
+  return (
+    <KeyboardAwareScrollView
+      contentContainerStyle={styles.container}
+      resetScrollToCoords={{ x: 0, y: 0 }}
+      scrollEnabled={true}>
+      <TouchableOpacity onPress={handleGoBack} style={styles.backButton}>
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
+      <View style={styles.innerContainer}>
+        <Text style={styles.title}> Registration </Text>
+        <View style={styles.emailContainer}>
+          <Image
+            source={require('./../../images/envelope-open.png')}
+            style={styles.emailIcon}
+          />
+          <TextInput
+            autoCapitalize='none'
+            placeholder="Email"
+            placeholderTextColor={"#dfd8dc"}
+            style={styles.input}
+            textContentType='emailAddress'
+            value={email}
+            onChangeText={setEmail} />
+        </View>
+        {emailErrMsg !== "" && <Text style={styles.error}>{emailErrMsg}</Text>}
+
+        <View style={styles.emailContainer}>
+          <Image
+            source={require('./../../images/lock.png')}
+            style={styles.emailIcon}
+          />
+          <TextInput
+            secureTextEntry={!passwordVisible}
+            placeholder="Password"
+            placeholderTextColor={"#dfd8dc"}
+            style={styles.input}
+            autoCapitalize='none'
+            textContentType='password'
+            value={password}
+            onChangeText={(text) => {
+              setPassword(text);
+              setPasswordErrMsg('');
+            }}
+          />
+          <TouchableOpacity
+            style={styles.passwordIcon}
+            onPress={togglePasswordVisibility}
+          >
+            <IconButton
+              icon={passwordVisible ? "eye-off" : "eye"}
+              color="#000"
+              size={23}
+            />
+          </TouchableOpacity>
+        </View>
+        {passwordErrMsg !== "" && <Text style={styles.error}>{passwordErrMsg}</Text>}
+
+        {/* Confirmation password input */}
+        <View style={styles.emailContainer}>
+          <Image
+            source={require('./../../images/lock.png')}
+            style={styles.emailIcon}
+          />
+          <TextInput
+            secureTextEntry={!cfmpasswordVisible}
+            placeholder="Confirm Password"
+            placeholderTextColor={"#dfd8dc"}
+            style={styles.input}
+            autoCapitalize='none'
+            textContentType='password'
+            value={confirmPassword}
+            onChangeText={setConfirmPassword}
+          />
+          <TouchableOpacity
+            style={styles.passwordIcon}
+            onPress={togglecfmPasswordVisibility}
+          >
+            <IconButton
+              icon={cfmpasswordVisible ? "eye-off" : "eye"}
+              color="#000"
+              size={23}
+            />
+          </TouchableOpacity>
+        </View>
+        {cfmpasswordErrMsg !== "" && <Text style={styles.error}>{cfmpasswordErrMsg}</Text>}
+
+        <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.text1}> Continue </Text>
+        </TouchableOpacity>
+        {errMsg !== "" && <Text style={styles.error}>{errMsg}</Text>}
+        {loading && <ActivityIndicator />}
+        {showEmailCheck && showVerificationAlert()}
+      </View>
+    </KeyboardAwareScrollView>
+  );
 }

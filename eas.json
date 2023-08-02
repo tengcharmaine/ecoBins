@@ -2,6 +2,9 @@
     "build": {
       "ms1": {
         "channel": "ms1"
+      },
+      "milestone2": {
+        "channel": "milestone2"
       }
     }
 }
